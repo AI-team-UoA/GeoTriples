@@ -1,0 +1,60 @@
+		<MenuBar xmlns="org.apache.pivot.wtk" xmlns:bxml="http://pivot.apache.org/bxml" xmlns:content="org.apache.pivot.wtk.content">
+                <MenuBar.Item buttonData="Input">
+                    <Menu>
+                        <Menu.Section>
+                            <Menu.Item action="fileOpen">
+                                <buttonData>
+                                    <content:MenuItemData text="Connect" keyboardShortcut="CMD-O" />
+                                </buttonData>
+                            </Menu.Item>
+                            <Menu.Item action="loadOntology">
+                                <buttonData>
+                                    <content:MenuItemData text="Load Ontology" keyboardShortcut="CMD-H" />
+                                </buttonData>
+                            </Menu.Item>
+                        </Menu.Section>
+                    </Menu>
+                </MenuBar.Item>
+                <!--<MenuBar.Item buttonData="Edit">
+                    <Menu>
+                        <Menu.Section>
+                            <Menu.Item action="cut">
+                                <buttonData>
+                                    <content:MenuItemData text="Cut" keyboardShortcut="CMD-X" />
+                                </buttonData>
+                            </Menu.Item>
+                            <Menu.Item action="copy">
+                                <buttonData>
+                                    <content:MenuItemData text="Copy" keyboardShortcut="CMD-C" />
+                                </buttonData>
+                            </Menu.Item>
+                            <Menu.Item action="paste">
+                                <buttonData>
+                                    <content:MenuItemData text="Paste" keyboardShortcut="CMD-V" />
+                                </buttonData>
+                            </Menu.Item>
+                            <Menu.Item action="addSourceTable">
+                                <buttonData>
+                                    <content:MenuItemData text="Add Source Table" keyboardShortcut="CMD-A" />
+                                </buttonData>
+                            </Menu.Item>
+                        </Menu.Section>
+                    </Menu>
+                </MenuBar.Item>-->
+                <MenuBar.Item buttonData="Generate">
+                    <Menu>
+                        <Menu.Section>
+                            <Menu.Item action="generateMapping">
+                                <buttonData>
+                                    <content:MenuItemData text="R2RML Mapping" keyboardShortcut="CMD-G" />
+                                </buttonData>
+                            </Menu.Item>
+                            <Menu.Item action="dumpRDF">
+                                <buttonData>
+                                    <content:MenuItemData text="RDF graph" keyboardShortcut="CMD-D" />
+                                </buttonData>
+                            </Menu.Item>
+                        </Menu.Section>
+                    </Menu>
+                </MenuBar.Item>
+            </MenuBar>

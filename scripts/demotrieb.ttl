@@ -1,0 +1,191 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:Demobetrieb_TFB_Polygon_geometry
+    rr:logicalTable [ rr:tableName "`Demobetrieb_TFB_Polygon`"; ];
+    rr:subjectMap [ rr:class vocab:Demobetrieb_TFB_Polygon_geometry; rr:template "http://www.linkedeodata.eu/demotrieb/Geometry/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:isEmpty; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:is3D;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:is3D; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:dimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "Demobetrieb_TFB_Polygon_geometry #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:asGML;
+        rr:objectMap [
+            rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
+            rrx:transformation [ rrx:function rrxf:asGML; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:hasSerialization;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:transformation [ rrx:function rrxf:hasSerialization; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:transformation [ rrx:function rrxf:asWKT; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:isSimple; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:coordinateDimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:spatialDimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    .
+map:Demobetrieb_TFB_Polygon
+    rr:logicalTable [ rr:tableName "`Demobetrieb_TFB_Polygon`"; ];
+    rr:subjectMap [ rr:class vocab:Demobetrieb_TFB_Polygon; rr:template "http://www.linkedeodata.eu/demotrieb/Demobetrieb_TFB_Polygon/id/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_FieldName;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`FieldName`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_FMArea;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column "`FMArea`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_Vigor;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`Vigor`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_Watering;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`Watering`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_CV;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column "`CV`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_Usage;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`Usage`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_SubPeriod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`SubPeriod`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_ID;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`ID`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "Demobetrieb_TFB_Polygon #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:Demobetrieb_TFB_Polygon_geometry;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_Processed;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`Processed`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_MainPeriod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`MainPeriod`";
+        ];
+    ];
+    .

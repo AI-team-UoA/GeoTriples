@@ -1,0 +1,211 @@
+ <geotriplesgui:SourceTable horizontalScrollBarPolicy="fill" xmlns:bxml="http://pivot.apache.org/bxml"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:geotriplesgui="eu.linkedeodata.geotriples.gui"
+    xmlns="org.apache.pivot.wtk">  
+    <Expander bxml:id="expander" title="UnknownTitle" expanded="false" >
+    <BoxPane orientation="vertical" styles="{fill:true,
+                padding:{left:2, right:2}}">
+    		
+    		
+    		
+    		
+    		
+    		
+    		<TablePane styles="{verticalSpacing:2, showHorizontalGridLines:true,
+							    horizontalSpacing:2, showVerticalGridLines:true}"
+							    xmlns:bxml="http://pivot.apache.org/bxml"
+							    xmlns="org.apache.pivot.wtk">
+		<columns>
+							        <TablePane.Column width="1*"/>
+							        <TablePane.Column width="-1"/>
+		</columns>
+		<TablePane.Row height="-1" bxml:id="mainRow">
+		
+		
+		
+		
+		
+		
+		
+		<TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+							    horizontalSpacing:1, showVerticalGridLines:true}"
+							    xmlns:bxml="http://pivot.apache.org/bxml"
+							    xmlns="org.apache.pivot.wtk">
+							        
+							    
+							    <columns>
+							        <TablePane.Column width="1*"/>
+							    </columns>
+							    <TablePane.Row height="-1">
+							    <TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+							    horizontalSpacing:1, showVerticalGridLines:true}">
+							    <columns>
+							        <TablePane.Column width="1*"/>
+							        <TablePane.Column width="-1"/>
+							    </columns>
+							    			<TablePane.Row height="-1">
+					                        <Label bxml:id="title" text="UnknownTitle" styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+					                        <TextInput bxml:id="className" prompt="ClassName" styles="{horizontalAlignment:'center'}" tooltipText="Class"/>
+					                        </TablePane.Row>
+					                    </TablePane>
+									    
+																	    
+							    </TablePane.Row>
+							     <TablePane.Row height="1*" >
+							        <SplitPane bxml:id="splitPane" splitRatio="0.4" preferredHeight="400">
+						                <left>
+						                    <Border styles="{color:10}">
+						                        <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+						                            verticalScrollBarPolicy="fill_to_capacity">
+						                            <StackPane>
+						                                <TableView bxml:id="tableView" selectMode="multi"
+						                                    styles="{showHorizontalGridLines:false} ">                                  
+						                                    <columns>
+						                                        <TableView.Column name="columnName"
+						                                            headerData="%columnName" width="1*" />
+						                                        <TableView.Column name="dataType" headerData="%DataType" width="1*">
+						                                            <cellRenderer>
+						                                                <content:TableViewNumberCellRenderer styles="{horizontalAlignment:'right'}"/>
+						                                            </cellRenderer>
+						                                        </TableView.Column>
+						                                        <TableView.Column name="predicate" headerData="%Predicate" width="1*">
+						                                            <cellRenderer>
+						                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"
+						                                                    numberFormat="+0.00;-0.00"/>
+						                                            </cellRenderer>
+						                                        </TableView.Column>
+						                                        <TableView.Column name="transformation" headerData="%Transformation" width="1*">
+					                                            <cellRenderer>
+					                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"/>
+					                                            </cellRenderer>
+					                                        </TableView.Column>
+						                                    </columns>
+						                                    <rowEditor>
+						                    <content:TableViewRowEditor editEffect="horizontal_slide">
+						                        <cellEditors>
+						                            <predicate>
+						                            <TextInput bxml:id="predicateColumnEditor" strictValidation="true" textKey="predicate">
+						                                </TextInput>
+						                            </predicate>
+						
+						                            <dataType>
+						                            <ListButton bxml:id="types"
+						                                    selectedItemKey="dataType"/>      
+						                            </dataType>
+						                            <transformation>
+						                            <ListButton bxml:id="transformationColumnEditor"  listData="['isEmpty', 'is3D', 'asWKT', 'hasSerialization' , 'identity']"
+						                                    selectedItemKey="transformation"/>      
+						                            </transformation>                    
+						                        </cellEditors>
+						                    </content:TableViewRowEditor>
+						                </rowEditor>
+						                                </TableView>
+						                            </StackPane>
+						
+						                            <columnHeader>
+						                                <TableViewHeader tableView="$tableView" sortMode="single_column"/>
+						                            </columnHeader>
+						                        </ScrollPane>
+						                    </Border>
+						                </left>
+						
+						                <right>
+						                <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+						                            verticalScrollBarPolicy="fill_to_capacity">
+						                    <Border styles="{color:10}">
+						                    	<TablePane>
+								                	<columns>
+								                	<TablePane.Column width="1*"/>
+								                	
+								                	</columns>
+								                	<TablePane.Row height="-1">
+								            	<BoxPane styles="{horizontalAlignment:'center'}">
+										    <LinkButton bxml:id="previousButton" buttonData="Details"/>
+										    <LinkButton bxml:id="nextButton" buttonData="Geometry Table"/>
+										</BoxPane>
+		                    					    </TablePane.Row>
+								                	<TablePane.Row height="-1">
+								            <CardPane bxml:id="cardPane">
+								                <bxml:include bxml:id="detailPane" src="detail_pane.bxml"/>
+								                <TablePane>
+								                	<columns>
+								                	<TablePane.Column width="1*"/>
+								                	</columns>
+								                	<TablePane.Row height="24">
+											            <BoxPane styles="{verticalAlignment:'center',horizontalAlignment:'center'}">
+											                <Checkbox bxml:id="useGeometry" buttonData="Use geometry!"/>
+											            </BoxPane>
+											        </TablePane.Row>
+								                	<TablePane.Row bxml:id="geometryPane" height="1*" >
+								                	
+								                	</TablePane.Row>
+								                </TablePane>
+								            </CardPane>
+								            </TablePane.Row>
+								            
+		                    					  </TablePane>
+						                    </Border>
+						                    </ScrollPane>
+						                </right>
+						            </SplitPane>
+							    </TablePane.Row>
+							    
+							    <TablePane.Row height="-1">
+									    <TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+									    horizontalSpacing:1, showVerticalGridLines:true}">
+									    <columns>
+									        <TablePane.Column width="1*"/>
+									        <TablePane.Column width="-1"/>
+									    </columns>
+									    			<TablePane.Row height="-1">
+								                        <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+											                <Label text="%Columns" styles="{font:{bold:true}}" />
+											                <ListButton bxml:id="symbolTextInput"
+											                                    selectedItemKey="dataType"/>
+											                
+											                <LinkButton bxml:id="addSymbolButton" enabled="false"
+											                    tooltipText="%addColumn">
+											                    <content:ButtonData icon="@add.png" />
+											                </LinkButton>
+											                <LinkButton bxml:id="removeSymbolsButton" enabled="false"
+											                    tooltipText="%removeColumn">
+											                    <content:ButtonData icon="@delete.png" />
+											                </LinkButton>
+											                
+											            </BoxPane>
+								                        <LinkButton bxml:id="removeTable" enabled="true"
+											                    tooltipText="%removeTable">
+											                    <content:ButtonData icon="@delete.png" />
+											        	</LinkButton>
+							                        </TablePane.Row>
+							          </TablePane>
+						        </TablePane.Row>
+        
+       
+        
+    	</TablePane>
+    	
+    	
+    	
+    	
+    	<!--Geometry Table-->
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	</TablePane.Row>
+    	 </TablePane>
+    	</BoxPane>
+    </Expander>
+           
+</geotriplesgui:SourceTable>
+        

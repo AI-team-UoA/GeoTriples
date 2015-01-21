@@ -1,0 +1,149 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:waterways_geometry
+    rr:logicalTable [ rr:tableName "`waterways`"; ];
+    rr:subjectMap [ rr:class vocab:waterways_geometry; rr:template "http://www.linkedeodata.eu/waterways/Geometry/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:dimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:asGML;
+        rr:objectMap [
+            rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
+            rrx:transformation [ rrx:function rrxf:asGML; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:spatialDimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:transformation [ rrx:function rrxf:coordinateDimension; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:isSimple; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:isEmpty; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:hasSerialization;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:transformation [ rrx:function rrxf:hasSerialization; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "waterways_geometry #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:is3D;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:transformation [ rrx:function rrxf:is3D; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:transformation [ rrx:function rrxf:asWKT; rrx:argumentMap [
+                    rr:column "`the_geom`";
+                ]; ];
+        ];
+    ];
+    .
+map:waterways
+    rr:logicalTable [ rr:tableName "`waterways`"; ];
+    rr:subjectMap [ rr:class vocab:waterways; rr:template "http://www.linkedeodata.eu/waterways/waterways/id/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "waterways #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:waterways_geometry;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`osm_id`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_width;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`width`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`name`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`type`";
+        ];
+    ];
+    .

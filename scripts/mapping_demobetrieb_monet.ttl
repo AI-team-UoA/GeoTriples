@@ -1,0 +1,152 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:sys_demobetriebGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "demobetrieb"."sys"."demobetrieb\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/demobetrieb/Geometry_{""}'; ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'demobetriebGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    .
+map:sys_demobetrieb
+    rr:logicalTable [ rr:tableName '"demobetrieb"."sys"."demobetrieb"'; ];
+    rr:subjectMap [ rr:class vocab:RasterCell; rr:template 'http://data.linkedeodata.eu/demobetrieb/id/RasterCell_{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:hasSubperiod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"subperiod"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_vigor;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"vigor"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'This is raster cell #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_processed;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"processed"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_fieldname;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"fieldname"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_watering;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"watering"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_mainperiod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"mainperiod"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_usage;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"usage"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:sys_demobetriebGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_cv;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"cv"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_fmarea;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"fmarea"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:sys_demobetrieb_id;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"id"';
+        ];
+    ];
+    .

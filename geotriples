@@ -1,0 +1,4 @@
+#!/bin/bash
+
+java -jar /usr/share/jdeb/lib/geotriples-1.0-SNAPSHOT.one-jar.jar
+

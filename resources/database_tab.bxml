@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in
+compliance with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<SplitPane
+	orientation="horizontal" splitRatio="0.6"
+    xmlns:bxml="http://pivot.apache.org/bxml"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:geotriplesgui="eu.linkedeodata.geotriples.gui"
+    xmlns="org.apache.pivot.wtk">
+    
+    <!-- add database xml gui code here -->
+
+	<left>
+		<TablePane bxml:id="dbTablePane" styles="{padding:8, horizontalSpacing:6, verticalSpacing:6}">
+            <columns>
+                <TablePane.Column width="1*"/>
+            </columns>
+			
+			<TablePane.Row height="-1">
+	            <Label text="Base URI"
+	                styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+        	</TablePane.Row>
+        	
+			<TablePane.Row height="-1">
+				
+			    <TextInput bxml:id="dbBaseIri" strictValidation="false" text="http://data.linkedeodata.eu"
+		            tooltipText="BaseIRI">
+			            <validator> 
+							<geotriplesgui:BaseIRIValidator/> 
+						</validator> 
+				</TextInput>
+				
+        	</TablePane.Row>
+        	
+        	<TablePane.Row height="-1">
+	            <Label text="Database Information"
+	                styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+        	</TablePane.Row>
+			
+			<TablePane.Row height="-1">
+			    <Border styles="{padding:6}">
+			        <TablePane>
+			            <columns>
+			                <TablePane.Column width="1*"/>
+			            </columns>
+			 
+			            <TablePane.Row height="1*">
+			                <Form>
+			                    <Form.Section heading="Input credentials">
+			                        <TextInput bxml:id="ipAddress" Form.label="IP address"/>
+			                        <TextInput bxml:id="dbName" Form.label="Name"/>
+			                        <ListButton bxml:id="dbEngine" Form.label="DB backend" listData="['PostgreSQL', 'MonetDB']"/>
+			                        <TextInput bxml:id="username" Form.label="Username"/>
+			                        <TextInput bxml:id="password" Form.label="Password" password="true"/>
+			                	</Form.Section>
+			                </Form>
+			            </TablePane.Row>
+			 
+			            <TablePane.Row height="-1">
+			                <Separator/>
+			            </TablePane.Row>
+			 
+			            <TablePane.Row height="-1">
+			                <TablePane>
+			                    <columns>
+			                        <TablePane.Column width="1*"/>
+			                        <TablePane.Column width="-1"/>
+			                    </columns>
+			 
+			                    <TablePane.Row>
+			                        <!--<BoxPane styles="{verticalAlignment:'left'}">
+			                            <PushButton bxml:id="dbReset" enabled="true" buttonData="Reset"
+			                                styles="{minimumAspectRatio:3}"/>
+			                        </BoxPane>-->
+			                        <BoxPane styles="{horizontalAlignment:'right', verticalAlignment:'center'}">
+			                        
+			                        	<PushButton bxml:id="dbSelectOntology" enabled="true" buttonData="Select Ontology File"
+			                                styles="{minimumAspectRatio:3}"/>
+			                        
+			                        	<PushButton bxml:id="dbLoadOntology" enabled="true" buttonData="Load Ontology"
+			                                styles="{minimumAspectRatio:3}"/>
+			                        
+			                            <PushButton bxml:id="loadButton" enabled="true" buttonData="Load"
+			                                styles="{minimumAspectRatio:3}"/>
+			                        </BoxPane>
+			                    </TablePane.Row>
+			                </TablePane>
+			            </TablePane.Row>
+			        </TablePane>
+			    </Border>
+			</TablePane.Row>
+			
+			<TablePane.Row height="-1">
+	            <Label text="Database Tables"
+	                styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+        	</TablePane.Row>
+			
+			<TablePane.Row height="1*">
+            <SplitPane splitRatio="0.4">
+            	<left>
+            		<ScrollPane>
+            		<TablePane bxml:id="mainTablePaneDB" styles="{padding:8, horizontalSpacing:6, verticalSpacing:6}">
+            			<columns>
+            				<TablePane.Column width="1*" />
+       					</columns>
+	            		<TablePane.Row height="1*">
+		                    <Border styles="{padding:6, color:10}">
+		                        <ScrollPane
+		                    		horizontalScrollBarPolicy="fill"
+		                    		verticalScrollBarPolicy="fill_to_capacity">
+		                    		<ListView bxml:id="loadedTables" selectMode="multi" />
+		                		</ScrollPane>
+		                    </Border>
+		                </TablePane.Row>
+	                    
+	                    <TablePane.Row height="-1">
+				            <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+				                <Label text="%Tables" styles="{font:{bold:true}}" />
+				                <ListButton bxml:id="dbTableList" />
+				                
+				                <LinkButton bxml:id="dbAddTablesButton" enabled="false"
+				                    tooltipText="%addColumn">
+				                    <content:ButtonData icon="@add.png" />
+				                </LinkButton>
+				                <LinkButton bxml:id="dbRemoveTablesButton" enabled="false"
+				                    tooltipText="%removeColumn">
+				                    <content:ButtonData icon="@delete.png" />
+				                </LinkButton>
+				            </BoxPane>
+	        			</TablePane.Row>
+	        		</TablePane>
+	        		</ScrollPane>
+                </left>
+                
+                <right>
+	                <TablePane styles="{padding:8, horizontalSpacing:6, verticalSpacing:6}">
+	            		<columns>
+	            			<TablePane.Column width="1*" />
+	       				</columns>
+	       				
+	       				<TablePane.Row height="20">
+	       					<Border styles="{color:10}">
+		       					<SplitPane>
+		       						<left>
+			       						<Label text="Select Class for this table" styles="{font:{bold:true}}" />
+			       					</left>
+			       					<right>
+			       						<ListButton bxml:id="dbClasses" listData="[]" />
+			       					</right>
+			       				</SplitPane>
+	       					</Border>
+	       				</TablePane.Row>
+	                    <TablePane.Row height="1*">
+	                    	<Border styles="{color:10}">
+		                        <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+		                            verticalScrollBarPolicy="fill_to_capacity">
+		                            <StackPane>
+		                                <TableView bxml:id="dbColumnsTableView" selectMode="multi"
+		                                    styles="{showHorizontalGridLines:false}">                                  
+		                                    <columns>
+		                                        <TableView.Column name="columnName"
+		                                            headerData="%columnName" width="1*" />
+		                                        <TableView.Column name="dataType" headerData="%DataType" width="1*">
+		                                            <cellRenderer>
+		                                                <content:TableViewNumberCellRenderer styles="{horizontalAlignment:'right'}"/>
+		                                            </cellRenderer>
+		                                        </TableView.Column>
+		                                        <TableView.Column name="predicate" headerData="%Predicate" width="1*">
+		                                            <cellRenderer>
+		                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"
+		                                                    numberFormat="+0.00;-0.00"/>
+		                                            </cellRenderer>
+		                                        </TableView.Column>
+		                                    </columns>
+		                                    <rowEditor>
+							                    <content:TableViewRowEditor editEffect="horizontal_slide">
+							                        <cellEditors>
+							                            <predicate>
+							                            <ListButton listData="[]"
+							                                    selectedItemKey="predicate"/>
+							                            </predicate>
+							
+							                            <dataType>
+							                            <ListButton listData="['Int', 'Date', 'Double', 'String' , 'Geometry']"
+							                                    selectedItemKey="dataType"/>      
+							                            </dataType>
+							
+							                                             
+							                        </cellEditors>
+							                    </content:TableViewRowEditor>
+		                					</rowEditor>
+		                                </TableView>
+		                            </StackPane>
+		
+		                            <columnHeader>
+		                                <TableViewHeader tableView="$dbColumnsTableView" sortMode="single_column"/>
+		                            </columnHeader>
+		                        </ScrollPane>
+		                	</Border>
+	                    </TablePane.Row>
+	                    
+	                    <TablePane.Row height="-1">
+				            <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+				                <Label text="%Columns" styles="{font:{bold:true}}" />
+				                <ListButton bxml:id="dbColumnsListView" />
+				                
+				                <LinkButton bxml:id="dbAddColumnsButton" enabled="false"
+				                    tooltipText="%addColumn">
+				                    <content:ButtonData icon="@add.png" />
+				                </LinkButton>
+				                <LinkButton bxml:id="dbRemoveColumnsButton" enabled="false"
+				                    tooltipText="%removeColumn">
+				                    <content:ButtonData icon="@delete.png" />
+				                </LinkButton>
+				            </BoxPane>
+	        			</TablePane.Row>
+	                    
+	            	</TablePane>
+                </right>
+
+            </SplitPane>
+        </TablePane.Row>
+        
+        <TablePane.Row height="-1">
+            <TablePane>
+                <columns>
+                    <TablePane.Column width="1*"/>
+                    <TablePane.Column width="-1"/>
+                </columns>
+
+                <TablePane.Row>
+                    <BoxPane>
+                        
+                        <LinkButton bxml:id="dbGenerateMapping" enabled="true"
+	                    tooltipText="Generate Mapping">
+	                    <content:ButtonData icon="@generatemapping.gif" />
+	                	</LinkButton>
+                    </BoxPane>
+                    <BoxPane>
+                    	<Label text="Select RDF output format" styles="{font:{bold:true}}" />
+                        <ListButton bxml:id="dbRDFFormadt" enabled="true" listData="['N3', 'N-TRIPLE', 'TURTLE', 'RDF/XML', 'RDF/XML-ABBREV' ]" />
+                        <LinkButton bxml:id="dbDumpRDF" enabled="true" tooltipText="Dump RDF">
+	                    	<content:ButtonData icon="@dumprdf.gif" />
+	                	</LinkButton>
+                    </BoxPane>
+                </TablePane.Row>
+            </TablePane>
+        </TablePane.Row>
+
+		</TablePane>
+	</left>
+    
+    
+    <right>
+    
+    <Border styles="{color:10}">
+        <ScrollPane horizontalScrollBarPolicy="fill">
+            <TablePane styles="{padding:8, verticalSpacing:8}">
+                <columns>
+                    <TablePane.Column width="1*"/>
+                </columns>
+ 				
+ 				<TablePane.Row height="-1">
+                    <Label text="%mappingpreview" styles="{font:{size:14, bold:true}, verticalAlignment:'center'}"/>
+                </TablePane.Row>
+                <TablePane.Row height="1*">
+                    <Border styles="{color:10}">
+                        <ScrollPane horizontalScrollBarPolicy="fill"
+                            verticalScrollBarPolicy="fill">
+                            <TextArea bxml:id="dbR2rmlPreview" text=""/>
+                        </ScrollPane>
+                    </Border>
+                </TablePane.Row>
+            </TablePane>
+        </ScrollPane>
+    </Border>
+</right>    
+    
+</SplitPane>
+        

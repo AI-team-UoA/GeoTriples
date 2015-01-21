@@ -1,0 +1,1386 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:rs_Fields
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."Fields"'; ];
+    rr:subjectMap [ rr:class vocab:rs_Fields; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/Fields/id/{"ID"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'Fields #{"ID"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_ClientID;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"ClientID"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_FM_area;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"FM_area"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_subperiod;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"subperiod"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_watering;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"watering"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_processed;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"processed"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_crop;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"crop"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_usage;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"usage"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_Name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"Name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Fields_mainperiod;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"mainperiod"';
+        ];
+    ];
+    .
+map:rs_Raster
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."Raster"'; ];
+    rr:subjectMap [ rr:class vocab:rs_Raster; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/Raster/id/{"id"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_y;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"y"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_vigor_value;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"vigor_value"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_cv;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"cv"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_x;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"x"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_FieldID;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_Fields;
+            rr:joinCondition [ rr:child '"FieldID"'; rr:parent '"ID"'; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'Raster #{"id"}';
+        ];
+    ];
+    .
+map:rs_buildingsGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."buildings\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/buildingsGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'buildingsGeo #{"gid"}';
+        ];
+    ];
+    .
+map:rs_buildings
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."buildings"'; ];
+    rr:subjectMap [ rr:class vocab:rs_buildings; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/buildings/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_buildings_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_buildings_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_buildingsGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_buildings_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'buildings #{"gid"}';
+        ];
+    ];
+    .
+map:rs_demobetrieb_tfb_polygonGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."demobetrieb_tfb_polygon\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/demobetrieb_tfb_polygonGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'demobetrieb_tfb_polygonGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:rs_demobetrieb_tfb_polygon
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."demobetrieb_tfb_polygon"'; ];
+    rr:subjectMap [ rr:class vocab:rs_demobetrieb_tfb_polygon; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/demobetrieb_tfb_polygon/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_fmarea;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"fmarea"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_usage;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"usage"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_subperiod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"subperiod"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_vigor;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"vigor"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_id;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_demobetrieb_tfb_polygonGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_watering;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"watering"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_processed;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"processed"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_mainperiod;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"mainperiod"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_cv;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"cv"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_demobetrieb_tfb_polygon_fieldname;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"fieldname"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'demobetrieb_tfb_polygon #{"gid"}';
+        ];
+    ];
+    .
+map:rs_landuseGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."landuse\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/landuseGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'landuseGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:rs_landuse
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."landuse"'; ];
+    rr:subjectMap [ rr:class vocab:rs_landuse; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/landuse/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_landuse_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'landuse #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_landuse_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_landuseGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_landuse_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    .
+map:rs_naturalplacesGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."naturalplaces\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/naturalplacesGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'naturalplacesGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    .
+map:rs_naturalplaces
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."naturalplaces"'; ];
+    rr:subjectMap [ rr:class vocab:rs_naturalplaces; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/naturalplaces/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_naturalplaces_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_naturalplaces_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_naturalplacesGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'naturalplaces #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_naturalplaces_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    .
+map:rs_osmwaterGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT id, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."osmwater\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/osmwaterGeo/Geometry/{"id"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'osmwaterGeo #{"id"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    .
+map:rs_osmwater
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."osmwater"'; ];
+    rr:subjectMap [ rr:class vocab:rs_osmwater; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/osmwater/id/{"id"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwater_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'osmwater #{"id"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwater_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwater_gid;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"gid"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_osmwaterGeo;
+            rr:joinCondition [ rr:child "id"; rr:parent "id"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwater_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    .
+map:rs_osmwaterplacesGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT id, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."osmwaterplaces\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/osmwaterplacesGeo/Geometry/{"id"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'osmwaterplacesGeo #{"id"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:rs_osmwaterplaces
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."osmwaterplaces"'; ];
+    rr:subjectMap [ rr:class vocab:rs_osmwaterplaces; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/osmwaterplaces/id/{"id"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_osmwaterplacesGeo;
+            rr:joinCondition [ rr:child "id"; rr:parent "id"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwaterplaces_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwaterplaces_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwaterplaces_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'osmwaterplaces #{"id"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_osmwaterplaces_gid;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"gid"';
+        ];
+    ];
+    .
+map:rs_placesGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."places\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/placesGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'placesGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:rs_places
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."places"'; ];
+    rr:subjectMap [ rr:class vocab:rs_places; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/places/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_places_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_places_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'places #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_places_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_placesGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    .
+map:rs_pointsGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."points\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/pointsGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'pointsGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    .
+map:rs_points
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."points"'; ];
+    rr:subjectMap [ rr:class vocab:rs_points; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/points/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_points_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'points #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_points_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_points_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_pointsGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    .
+map:rs_railwaysGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."railways\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/railwaysGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'railwaysGeo #{"gid"}';
+        ];
+    ];
+    .
+map:rs_railways
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."railways"'; ];
+    rr:subjectMap [ rr:class vocab:rs_railways; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/railways/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_railwaysGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_railways_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_railways_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'railways #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_railways_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    .
+map:rs_roadsGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."roads\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/roadsGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'roadsGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:rs_roads
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."roads"'; ];
+    rr:subjectMap [ rr:class vocab:rs_roads; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/roads/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_roadsGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_roads_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_roads_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'roads #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_roads_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    .
+map:rs_schalliGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."schalli\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/schalliGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'schalliGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    .
+map:rs_schalli
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."schalli"'; ];
+    rr:subjectMap [ rr:class vocab:rs_schalli; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/schalli/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_teilnum;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"teilnum"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'schalli #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_nummer;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"nummer"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_flaeche;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"flaeche"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_schalliGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    .
+map:rs_waterwaysGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT gid, Dimension(geom) as dimension, Dimension(geom) as "coordinateDimension", Dimension(geom) as "spatialDimension",  isSimple(geom) as "isSimple", isEmpty(geom) as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "monet-dump"."rs"."waterways\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/waterwaysGeo/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'waterwaysGeo #{"gid"}';
+        ];
+    ];
+    .
+map:rs_waterways
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."waterways"'; ];
+    rr:subjectMap [ rr:class vocab:rs_waterways; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/waterways/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_waterwaysGeo;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_waterways_osm_id;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"osm_id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'waterways #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_waterways_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_waterways_type;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"type"';
+        ];
+    ];
+    .
+map:rs_Raster_fert
+    rr:logicalTable [ rr:tableName '"monet-dump"."rs"."Raster_fert"'; ];
+    rr:subjectMap [ rr:class vocab:rs_Raster_fert; rr:template 'http://data.linkedeodata.eu/CWI-Workshop-Data/Raster_fert/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_vigor_value;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"vigor_value"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'Raster_fert #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_y;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"y"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_fert_value;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"fert_value"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_cv;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"cv"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_x;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"x"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_Raster_fert_FieldID;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"FieldID"';
+        ];
+    ];
+    .
