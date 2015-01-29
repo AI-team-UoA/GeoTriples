@@ -1,13 +1,11 @@
-<http://loc.example.com/city/Feature> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/City> .
-<http://loc.example.com/city/Feature> <http://www.opengis.net/ont/geosparql#asWKT> "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (125.6 10.1)" .
-<http://loc.example.com/city/Feature> <http://www.opengis.net/ont/geosparql#asGML> "<gml:Point srsName='http://www.opengis.net/def/crs/EPSG/0/4326'>   <gml:coordinates>     125.6,10.1    </gml:coordinates> </gml:Point> " .
 <http://loc.example.com/city/Brussels> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/City> .
-<http://loc.example.com/city/Brussels> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "3.7166700" .
 <http://loc.example.com/city/Brussels> <http://www.geonames.org/ontology#countryCode> "BE" .
 <http://loc.example.com/city/Brussels> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "51.0000000" .
-<http://loc.example.com/city/Brussels> <http://www.telegraphis.net/ontology/geography/geography#onContinent> "EU" .
+<http://loc.example.com/city/Brussels> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "3.7166700" .
 <http://loc.example.com/city/Gent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/City> .
-<http://loc.example.com/city/Gent> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "3.7166700" .
 <http://loc.example.com/city/Gent> <http://www.geonames.org/ontology#countryCode> "BE" .
 <http://loc.example.com/city/Gent> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "51.4657890" .
-<http://loc.example.com/city/Gent> <http://www.telegraphis.net/ontology/geography/geography#onContinent> "EU" .
+<http://loc.example.com/city/Gent> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "3.7166700" .
+<http://loc.example.com/city/Feature> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/City> .
+<http://loc.example.com/city/Feature> <http://www.opengis.net/ont/geosparql#asGML> "<gml:Polygon srsName='http://www.opengis.net/def/crs/EPSG/0/4326'>   <gml:outerBoundaryIs>     <gml:LinearRing>       <gml:coordinates>         100.0,0.0 101.0,0.0 101.0,1.0 100.0,1.0 100.0,0.0        </gml:coordinates>     </gml:LinearRing>   </gml:outerBoundaryIs> </gml:Polygon> " .
+<http://loc.example.com/city/Feature> <http://www.opengis.net/ont/geosparql#asWKT> "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON ((100 0, 101 0, 101 1, 100 1, 100 0))"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .

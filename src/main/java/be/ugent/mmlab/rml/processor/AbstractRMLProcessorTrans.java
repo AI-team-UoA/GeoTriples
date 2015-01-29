@@ -28,7 +28,10 @@ import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.model.transformation.GTransormationFunctions;
 import be.ugent.mmlab.rml.model.transformation.TransformationFunction;
+import be.ugent.mmlab.rml.processor.concrete.CSVProcessorTrans;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactoryTrans;
+import be.ugent.mmlab.rml.processor.concrete.JSONPathProcessorTrans;
+import be.ugent.mmlab.rml.processor.concrete.XPathProcessorTrans;
 import be.ugent.mmlab.rml.vocabulary.GEOMETRY_FUNCTIONS;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
@@ -46,12 +49,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import jena.qtest;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.core.R2RMLEngine;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.d2rq.db.types.UnsupportedDataType;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
@@ -64,9 +71,11 @@ import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.io.gml2.GMLReader;
 
 /**
  * This class contains all generic functionality for executing an iteration and
@@ -199,11 +208,20 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
                         for (Transformation transformation : transformations) {
                         	List<Value> objects = null;
 							try {
-								objects = processArgumentMap(transformation, node);
+								objects = processArgumentMap(transformation, node , map.getLogicalSource().getReferenceFormulation());
 							} catch (NoSuchAuthorityCodeException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							} catch (FactoryException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (SAXException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ParserConfigurationException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
@@ -270,62 +288,69 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
      * @return
      * @throws FactoryException 
      * @throws NoSuchAuthorityCodeException 
+     * @throws ParserConfigurationException 
+     * @throws IOException 
+     * @throws SAXException 
      */
-    public List<Value> processArgumentMap(Transformation transformation, Object node) throws NoSuchAuthorityCodeException, FactoryException {
+    public List<Value> processArgumentMap(Transformation transformation, Object node,QLTerm termkind) throws NoSuchAuthorityCodeException, FactoryException, SAXException, IOException, ParserConfigurationException {
     	ArgumentMap argumentMap=transformation.getArgumentMap();
     	String transformationFunction=transformation.getFunction();
         //A Term map returns one or more values (in case expression matches more)
         List<String> values = processTermMap(argumentMap, node);
-        GeometryJSON g=new GeometryJSON();
         
-        InputStream istream = new ByteArrayInputStream(values.get(0).getBytes(StandardCharsets.UTF_8));
-        Geometry geometry=null;
-        try {
-			geometry=g.read(istream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         List<Value> valueList = new ArrayList<>();
-        
+        URI datatype=argumentMap.getTransformationObjectMap().getDataType();
 		if (transformationFunction.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.asWKT((Geometry)geometry,CRS.decode("EPSG:4326"))));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.asWKT((Geometry)geometry,CRS.decode("EPSG:4326")),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.isSimple.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.isSimple((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.isSimple((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.hasSerialization.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.hasSerialization((Geometry)geometry,CRS.decode("EPSG:4326"))));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.hasSerialization((Geometry)geometry,CRS.decode("EPSG:4326")),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.asGML.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.asGML((Geometry)geometry,CRS.decode("EPSG:4326"))));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.asGML((Geometry)geometry,CRS.decode("EPSG:4326")),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.isEmpty.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.isEmpty((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.isEmpty((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.is3D.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.is3D((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.is3D((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.spatialDimension.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.spatialDimension((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.spatialDimension((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.dimension.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.dimension((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.dimension((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.coordinateDimension.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.coordinateDimension((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.coordinateDimension((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.area.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.area((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.area((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.length.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.length((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.length((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.centroidx.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.centroidx((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.centroidx((Geometry)geometry),datatype));
 		}
 		else if(transformationFunction.equals(GEOMETRY_FUNCTIONS.centroidy.toString())) {
-			valueList.add(new LiteralImpl(GTransormationFunctions.centroidy((Geometry)geometry)));
+			Geometry geometry=computeGeometry(values.get(0), termkind);
+			valueList.add(new LiteralImpl(GTransormationFunctions.centroidy((Geometry)geometry),datatype));
 		}
 		/*else
 		{
@@ -363,5 +388,29 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
 
         }*/
         return valueList;
+    }
+    private  Geometry computeGeometry(String value,QLTerm term) throws SAXException, IOException, ParserConfigurationException
+    {
+    	Geometry geometry=null;
+    	switch (term){
+        case XPATH_CLASS:
+        	GMLReader gmlreader=new GMLReader();
+        	geometry=gmlreader.read(value,null);
+            return geometry;
+        case CSV_CLASS:
+        	throw new UnsupportedOperationException("Reading geometries form CSV implementation is missing");
+		case JSONPATH_CLASS:
+        	GeometryJSON g=new GeometryJSON();
+            
+            InputStream istream = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
+            try {
+    			geometry=g.read(istream);
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+            return geometry;
+    }
+		return geometry;
     }
 }

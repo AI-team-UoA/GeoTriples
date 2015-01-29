@@ -49,7 +49,7 @@
 
   rr:predicateObjectMap [
       rr:predicate geosp:onContinent;
-      rr:objectMap [ rml:reference "continent" ]
+      rr:objectMap [ rml:reference "abs(continent)" ]
      ];
 
   rr:predicateObjectMap [
@@ -82,6 +82,7 @@ rr:predicateObjectMap
     rr:predicate ogc:asWKT;
     rr:objectMap 
     [
+		rr:datatype ogc:wktLiteral;
     	rr:transformation [ rr:function rrxf:asWKT; rr:argumentMap [
                     rml:reference "geometry"
                 ]; ];

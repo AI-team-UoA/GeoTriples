@@ -371,6 +371,7 @@
 							<executions>
 								<execution>
 									<id>InitializePhaseInstallRML</id>
+									<!-- <phase>initialize</phase> -->
 									<phase>initialize</phase>
 									<goals>
 										<goal>install-file</goal>

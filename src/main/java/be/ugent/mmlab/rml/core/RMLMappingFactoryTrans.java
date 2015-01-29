@@ -583,6 +583,8 @@ public abstract class RMLMappingFactoryTrans {
             Map<Resource, TriplesMap> triplesMapResources)
             throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
         log.debug("[RMLMappingFactory:extractTransformationObjectMap] Extract transformation object map..");
+        URI dataType = (URI) extractValueFromTermMap(r2rmlMappingGraph, object,
+                R2RMLTerm.DATATYPE);
         Set<Transformation> transformations = extractTransformations(
                 r2rmlMappingGraph, object);
         if (transformations.isEmpty()) {
@@ -598,7 +600,11 @@ public abstract class RMLMappingFactoryTrans {
         // Link between this reerencing object and its triplesMap parent will be
         // performed
         // at the end f treatment.
-        TransformationObjectMap refObjectMap = new StdTransformationObjectMap(null,transformations);
+        TransformationObjectMap refObjectMap = new StdTransformationObjectMap(null,transformations,dataType);
+        for(Transformation t:transformations)
+        {
+        	t.getArgumentMap().setTransformationObjectMap(refObjectMap);
+        }
         log.debug("[RMLMappingFactory:extractTransformationObjectMap] Extract referencing object map done.");
         return refObjectMap;
     }

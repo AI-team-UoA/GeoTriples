@@ -86,7 +86,12 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
         dnc.declarePrefix("simmep", "http://www.lbl.gov/namespaces/Sim/MepModel");
         this.nsContext.addNamespace("simmodel", "http://www.lbl.gov/namespaces/Sim/Model");
         dnc.declarePrefix("simmodel", "http://www.lbl.gov/namespaces/Sim/Model");
-
+        
+        this.nsContext.addNamespace("aaa", "http://www.myphotos.org");
+        dnc.declarePrefix("aaa", "http://www.myphotos.org");
+        this.nsContext.addNamespace("gml", "http://www.opengis.net/gml");
+        dnc.declarePrefix("gml", "http://www.opengis.net/gml");
+        
        //spc
        this.nsContext.addNamespace("mml","http://www.w3.org/1998/Math/MathML");
        dnc.declarePrefix("mml", "http://www.w3.org/1998/Math/MathML");
@@ -96,7 +101,7 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
        dnc.declarePrefix("xsi", "http://www.w3.org/2001/XMLSchema-instance");
        this.nsContext.addNamespace("tp", "http://www.plazi.org/taxpub");
        dnc.declarePrefix("tp", "http://www.plazi.org/taxpub");
-    
+       
        return dnc;
     }
     

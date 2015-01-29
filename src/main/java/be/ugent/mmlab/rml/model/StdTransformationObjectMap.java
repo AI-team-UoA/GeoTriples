@@ -27,15 +27,18 @@ package be.ugent.mmlab.rml.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class StdTransformationObjectMap implements TransformationObjectMap {
+import org.openrdf.model.URI;
 
+public class StdTransformationObjectMap implements TransformationObjectMap {
+	private URI dataType;
 	private Set<ArgumentMap> argumentMaps;
 	private HashSet<Transformation> transformations;
 	private PredicateObjectMap predicateObjectMap;
 
-	public StdTransformationObjectMap(PredicateObjectMap predicateObjectMap, Set<Transformation> transformations) {
+	public StdTransformationObjectMap(PredicateObjectMap predicateObjectMap, Set<Transformation> transformations,URI dataType) {
 		setPredicateObjectMap(predicateObjectMap);
 		setTransformations(transformations);
+		setDataType(dataType);
 
 	}
 
@@ -84,6 +87,13 @@ public class StdTransformationObjectMap implements TransformationObjectMap {
 				this.argumentMaps = argumentMaps;
 			}
 		}
-
+	@Override
+	public URI getDataType() {
+		return dataType;
+	}
+	@Override
+	public void setDataType(URI dataType) {
+		this.dataType = dataType;
+	}
 
 }

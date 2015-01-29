@@ -5,6 +5,12 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix ex: <http://www.example.com/> .
 @base <http://example.com/base> .
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix aaa: <http://www.myphotos.org/> .
+@prefix gml: <http://www.opengis.net/gml/> . 
+
 
 <#FieldAttributes>
 rml:logicalSource [ 
@@ -58,6 +64,13 @@ rr:subjectMap [
 			rr:datatype xsd:integer;
 		];
     ] ;
+	rr:predicateObjectMap [
+                     rr:predicate tfo:hasSubPeriod;
+                     rr:objectMap [
+                        rr:template "{fn:concat(@FM_area,'ff')}";
+                        rr:datatype xsd:integer;
+                ];
+    ] ;
     rr:predicateObjectMap [
                      rr:predicate tfo:hasWatering;
                      rr:objectMap [ 
@@ -99,6 +112,15 @@ rr:subjectMap [
     rr:predicateObjectMap [
                      rr:predicate tfo:hasGeometry;
 			        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}";];
-    ] 
+    ] ;
+    #rr:predicateObjectMap [
+    #                 rr:predicate tfo:hasGeo;
+    #                 rr:objectMap 
+#					[
+#                     rr:transformation [ rr:function rrxf:asWKT; rr:argumentMap [
+#                    rml:reference "gml:Polygon"
+#                ]; ];
+#                ]
+#    ] 
     .
     

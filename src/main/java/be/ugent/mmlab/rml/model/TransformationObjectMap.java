@@ -24,6 +24,8 @@ package be.ugent.mmlab.rml.model;
 
 import java.util.Set;
 
+import org.openrdf.model.URI;
+
 
 public interface TransformationObjectMap {
 	
@@ -42,5 +44,11 @@ public interface TransformationObjectMap {
 	
 	public Set<ArgumentMap> getArgumentMaps();
 	public void setArgumentMaps(Set<ArgumentMap> argumentMaps);
+
+
+	URI getDataType();
+
+
+	void setDataType(URI dataType);
 
 }
