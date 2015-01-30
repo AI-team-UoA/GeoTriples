@@ -1,19 +1,9 @@
 package be.ugent.mmlab.rml.processor.concrete;
 
-import be.ugent.mmlab.rml.core.NodeRMLPerformer;
-import be.ugent.mmlab.rml.core.RMLMappingFactory;
-import be.ugent.mmlab.rml.core.RMLPerformer;
-import be.ugent.mmlab.rml.model.ArgumentMap;
-import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
-import be.ugent.mmlab.rml.processor.AbstractRMLProcessorTrans;
-import be.ugent.mmlab.rml.processor.RMLProcessor;
-import be.ugent.mmlab.rml.processor.RMLProcessorFactory;
-import be.ugent.mmlab.rml.xml.XOMBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,25 +18,35 @@ import jlibs.xml.sax.dog.XMLDog;
 import jlibs.xml.sax.dog.expr.Expression;
 import jlibs.xml.sax.dog.expr.InstantEvaluationListener;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import nu.xom.Attribute;
-import nu.xom.Node;
-import nu.xom.Nodes;
-import nu.xom.XPathContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jaxen.saxpath.SAXPathException;
-import org.xml.sax.InputSource;
-
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
-import nu.xom.Element;
+import nu.xom.Attribute;
+import nu.xom.Node;
+import nu.xom.Nodes;
+import nu.xom.Text;
+import nu.xom.XPathContext;
+import nu.xom.XPathTypeException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jaxen.XPath;
+import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.xom.XOMXPath;
 import org.openrdf.model.Resource;
+import org.xml.sax.InputSource;
+
+import be.ugent.mmlab.rml.core.NodeRMLPerformer;
+import be.ugent.mmlab.rml.core.RMLMappingFactory;
+import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.processor.AbstractRMLProcessorTrans;
+import be.ugent.mmlab.rml.processor.RMLProcessor;
+import be.ugent.mmlab.rml.processor.RMLProcessorFactory;
+import be.ugent.mmlab.rml.xml.XOMBuilder;
 
 /**
  *
@@ -203,7 +203,34 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
         log.debug("[AbstractRMLProcessorProcessor] expression " + expression);
         
         Node node2 = (Node) node; 
-        Nodes nodes = node2.query(expression, nsContext);
+        Nodes nodes=null;
+        try{
+        nodes = node2.query(expression, nsContext);
+        }
+        catch(XPathTypeException e)
+        {
+        	Object o=null;
+        	XPath bxp = null;
+			try {
+				bxp = new XOMXPath(expression);
+			} catch (org.jaxen.JaxenException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//bxp.setFunctionContext(new SimpleFunctionContext());
+			//SimpleNamespaceContext nc = new SimpleNamespaceContext();
+			//nc.addNamespace("fn", "http://www.w3.org/2005/xpath-functions");
+			//bxp.setNamespaceContext(nc);
+			try {
+				o=bxp.stringValueOf(node2);
+			} catch (org.jaxen.JaxenException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			System.out.println(o);
+        	Text t=new Text(o.toString());
+        	nodes=new Nodes(t);
+        }
         log.debug("[AbstractRMLProcessorProcessor:node] " + "nodes' size " + nodes.size());
         
         for (int i = 0; i < nodes.size(); i++) {
@@ -248,9 +275,48 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
                 list.add(Integer.toString(enumerator++));
                 return list;
             }
-            Nodes nodes = node.query(expression, nsContext);
-
+            Nodes nodes =null;
+            try{
+            nodes=node.query(expression, nsContext);
+            }
+            catch(XPathTypeException e)
+            {
+            	Object o=null;
+            	XPath bxp = null;
+				try {
+					bxp = new XOMXPath(expression);
+				} catch (org.jaxen.JaxenException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//bxp.setFunctionContext(new SimpleFunctionContext());
+				//SimpleNamespaceContext nc = new SimpleNamespaceContext();
+				//nc.addNamespace("fn", "http://www.w3.org/2005/xpath-functions");
+				//bxp.setNamespaceContext(nc);
+				try {
+					o=bxp.stringValueOf(node);
+				} catch (org.jaxen.JaxenException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				System.out.println(o);
+				System.out.println("here");
+            	Text t=new Text(o.toString());
+            	t.setValue(o.toString());
+            	nodes=new Nodes(t);
+            	System.out.println(t.getValue().isEmpty());
+            	System.out.println("Thes size is : "+nodes.size());
+            	System.out.println("The value is : "+t.getValue().toString());
+            	try {
+					System.in.read();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            
             for (int i = 0; i < nodes.size(); i++) {
+            	
                 Node n = nodes.get(i);
 
                 //checks if the node has a value or children

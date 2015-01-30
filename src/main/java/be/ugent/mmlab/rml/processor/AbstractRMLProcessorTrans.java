@@ -4,6 +4,33 @@ package be.ugent.mmlab.rml.processor;
 * @author: dimis (dimis@di.uoa.gr)
 * 
 ****************************************************************************/
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
+import org.xml.sax.SAXException;
+
 import be.ugent.mmlab.rml.core.ConditionalJoinRMLPerformer;
 import be.ugent.mmlab.rml.core.JoinRMLPerformer;
 import be.ugent.mmlab.rml.core.RMLEngine;
@@ -12,69 +39,20 @@ import be.ugent.mmlab.rml.core.SimpleReferencePerformer;
 import be.ugent.mmlab.rml.model.ArgumentMap;
 import be.ugent.mmlab.rml.model.GraphMap;
 import be.ugent.mmlab.rml.model.JoinCondition;
-import be.ugent.mmlab.rml.model.LogicalSource;
 import be.ugent.mmlab.rml.model.ObjectMap;
 import be.ugent.mmlab.rml.model.PredicateMap;
 import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.PredicateObjectMapTrans;
 import be.ugent.mmlab.rml.model.ReferencingObjectMap;
-import be.ugent.mmlab.rml.model.SubjectMap;
-import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.Transformation;
 import be.ugent.mmlab.rml.model.TransformationObjectMap;
-import static be.ugent.mmlab.rml.model.TermType.BLANK_NODE;
-import static be.ugent.mmlab.rml.model.TermType.IRI;
 import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.model.transformation.GTransormationFunctions;
-import be.ugent.mmlab.rml.model.transformation.TransformationFunction;
-import be.ugent.mmlab.rml.processor.concrete.CSVProcessorTrans;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactoryTrans;
-import be.ugent.mmlab.rml.processor.concrete.JSONPathProcessorTrans;
-import be.ugent.mmlab.rml.processor.concrete.XPathProcessorTrans;
 import be.ugent.mmlab.rml.vocabulary.GEOMETRY_FUNCTIONS;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import jena.qtest;
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.core.R2RMLEngine;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.d2rq.db.types.UnsupportedDataType;
-import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.BNodeImpl;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.vocabulary.RDF;
-import org.xml.sax.SAXException;
-
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.gml2.GMLReader;
 
 /**
@@ -257,9 +235,11 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
                 }
                 //process the objectmaps
                 Set<ObjectMap> objectMaps = pom.getObjectMaps();
+                
                 for (ObjectMap objectMap : objectMaps) {
                     //Get the one or more objects returned by the object map
                     List<Value> objects = processObjectMap(objectMap, node);
+                    System.out.println(objects);
                     for (Value object : objects) {
                         if (object.stringValue() != null) {
                             Set<GraphMap> graphs = pom.getGraphMaps();

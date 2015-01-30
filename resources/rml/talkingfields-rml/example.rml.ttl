@@ -65,10 +65,10 @@ rr:subjectMap [
 		];
     ] ;
 	rr:predicateObjectMap [
-                     rr:predicate tfo:hasSubPeriod;
+                     rr:predicate tfo:dimis;
                      rr:objectMap [
-                        rr:template "{fn:concat(@FM_area,'ff')}";
-                        rr:datatype xsd:integer;
+                        rml:reference "fn:concat(@FM_area,'ff')";
+                        rr:datatype xsd:string;
                 ];
     ] ;
     rr:predicateObjectMap [
@@ -113,14 +113,14 @@ rr:subjectMap [
                      rr:predicate tfo:hasGeometry;
 			        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}";];
     ] ;
-    #rr:predicateObjectMap [
-    #                 rr:predicate tfo:hasGeo;
-    #                 rr:objectMap 
-#					[
-#                     rr:transformation [ rr:function rrxf:asWKT; rr:argumentMap [
-#                    rml:reference "gml:Polygon"
-#                ]; ];
-#                ]
-#    ] 
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasGeo;
+                     rr:objectMap 
+					[
+ #                    rr:transformation [ rr:function rrxf:asWKT; rr:argumentMap [
+                    rml:reference "gml:Polygon"
+                ]; #];
+                #]
+    ] 
     .
     
