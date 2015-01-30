@@ -227,7 +227,7 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			System.out.println(o);
+			//System.out.println(o);
         	Text t=new Text(o.toString());
         	nodes=new Nodes(t);
         }
@@ -299,20 +299,20 @@ public class XPathProcessorTrans extends AbstractRMLProcessorTrans {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				System.out.println(o);
-				System.out.println("here");
+				//System.out.println(o);
+				//System.out.println("here");
             	Text t=new Text(o.toString());
             	t.setValue(o.toString());
             	nodes=new Nodes(t);
-            	System.out.println(t.getValue().isEmpty());
-            	System.out.println("Thes size is : "+nodes.size());
-            	System.out.println("The value is : "+t.getValue().toString());
-            	try {
+            	//System.out.println(t.getValue().isEmpty());
+            	//System.out.println("Thes size is : "+nodes.size());
+            	//System.out.println("The value is : "+t.getValue().toString());
+            	/*try {
 					System.in.read();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
             }
             
             for (int i = 0; i < nodes.size(); i++) {

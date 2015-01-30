@@ -48,9 +48,10 @@ import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.vocabulary.Vocab;
 import be.ugent.mmlab.rml.vocabulary.VocabTrans;
 //import be.ugent.mmlab.rml.vocabulary.Vocab;
-import be.ugent.mmlab.rml.vocabulary.VocabTrans.R2RMLTerm;
+import be.ugent.mmlab.rml.vocabulary.Vocab.R2RMLTerm;
 //import be.ugent.mmlab.rml.vocabulary.Vocab.R2RMLTerm;
 import be.ugent.mmlab.rml.vocabulary.Vocab.RMLTerm;
+import be.ugent.mmlab.rml.vocabulary.VocabTrans.RRXTerm;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -614,8 +615,8 @@ public abstract class RMLMappingFactoryTrans {
         log.debug("[RMLMappingFactory:extractTransformations] Extract transformations..");
         Set<Transformation> result = new HashSet<Transformation>();
         // Extract predicate-object maps
-        URI p = r2rmlMappingGraph.URIref(Vocab.R2RML_NAMESPACE
-                + R2RMLTerm.TRANSFORMATION);
+        URI p = r2rmlMappingGraph.URIref(VocabTrans.RRX_NAMESPACE
+                + RRXTerm.TRANSFORMATION);
         
         //System.out.println(object.toString());
         List<Statement> statements = r2rmlMappingGraph.tuplePattern(object, p,
@@ -631,10 +632,10 @@ public abstract class RMLMappingFactoryTrans {
             for (Statement statement : statements) {
                 Resource trans = (Resource) statement.getObject();
                 String function = extractLiteralFromTermMap(r2rmlMappingGraph, trans,
-                        R2RMLTerm.FUNCTION);
+                		RRXTerm.FUNCTION);
                 // Extract argument maps
-                URI arg = r2rmlMappingGraph.URIref(Vocab.R2RML_NAMESPACE
-                        + R2RMLTerm.ARGUMENTMAP);
+                URI arg = r2rmlMappingGraph.URIref(VocabTrans.RRX_NAMESPACE
+                        + RRXTerm.ARGUMENTMAP);
                 List<Statement> argumentstatements = r2rmlMappingGraph.tuplePattern(trans, arg, null);
                 Resource argumentmap=(Resource)argumentstatements.get(0).getObject();
                 ArgumentMap argument = extractArgumentMap(r2rmlMappingGraph, argumentmap);
@@ -1044,7 +1045,13 @@ public abstract class RMLMappingFactoryTrans {
 
         if (term instanceof Vocab.RMLTerm) {
             namespace = Vocab.RML_NAMESPACE;
-        } else if (!(term instanceof R2RMLTerm)) {
+        }
+        
+        else if(term instanceof VocabTrans.RRXTerm)
+        {
+        	namespace = VocabTrans.RRX_NAMESPACE;
+        }
+        	else if (!(term instanceof R2RMLTerm)) {
             throw new InvalidR2RMLStructureException(
                     "[RMLMappingFactory:extractValueFromTermMap] " + term + " is not valid.");
         }
@@ -1052,6 +1059,8 @@ public abstract class RMLMappingFactoryTrans {
         return r2rmlMappingGraph
                 .URIref(namespace + term);
     }
+    
+    
 
     /**
      * Extract logicalSource contents.
