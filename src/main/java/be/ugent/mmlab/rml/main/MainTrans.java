@@ -9,6 +9,7 @@ import be.ugent.mmlab.rml.core.RMLEngineTrans;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.core.RMLMappingFactoryTrans;
 import be.ugent.mmlab.rml.model.RMLMapping;
+import be.ugent.mmlab.rml.model.transformation.Config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +52,7 @@ public class MainTrans {
             // add options
             options.addOption("sp", true, "source properties file");
             options.addOption("g", true, "Graph name");
+            options.addOption("epsg", true, "EPSG code");
             //should be new DefaultParser() but requires cli 1.3 instead of clli 1.2
             CommandLineParser parser = new BasicParser();
             CommandLine cmd = parser.parse( options, args);
@@ -59,7 +61,10 @@ public class MainTrans {
             RMLMapping mapping = RMLMappingFactoryTrans.extractRMLMapping(args[0]);
             RMLEngine engine = new RMLEngineTrans();
             System.out.println("mapping document " + args[0]);
-            
+            if(cmd.hasOption("epsg"))
+            {
+            	Config.EPSG_CODE=cmd.getOptionValue("epsg");
+            }
             FileInputStream source_properties = null;    
             if(cmd.hasOption("sp")) {
                 source_properties = new FileInputStream(cmd.getOptionValue("sp"));

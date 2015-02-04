@@ -124,7 +124,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:integer;
             rrx:transformation [ rrx:function rrxf:coordinateDimension; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -133,7 +133,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:boolean;
             rrx:transformation [ rrx:function rrxf:isSimple; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -142,7 +142,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:boolean;
             rrx:transformation [ rrx:function rrxf:is3D; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -151,7 +151,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
             rrx:transformation [ rrx:function rrxf:asGML; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -160,7 +160,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:integer;
             rrx:transformation [ rrx:function rrxf:dimension; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -169,7 +169,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:boolean;
             rrx:transformation [ rrx:function rrxf:isEmpty; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -178,7 +178,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype xsd:integer;
             rrx:transformation [ rrx:function rrxf:spatialDimension; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -187,7 +187,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype ogc:wktLiteral;
             rrx:transformation [ rrx:function rrxf:hasSerialization; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];
@@ -196,7 +196,7 @@ rr:subjectMap [
         rr:objectMap [
             rr:datatype ogc:wktLiteral;
             rrx:transformation [ rrx:function rrxf:asWKT; rrx:argumentMap [
-                    rr:template "{fn:concat('Polygon ((' , @x - 5, ' ' , @y -5 , ' , ' , @x + 5, ' ' , @y -5 , ' , ' ,  @x + 5, ' ' , @y + 5 , ' , '  ,  @x - 5, ' ' , @y +5 , ' , ' ,  @x - 5, ' ' , @y - 5  , ' ))' )}";
+                    rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";
                 ]; ];
         ];
     ];

@@ -370,7 +370,7 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
 		if (transformationFunction.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
 			Geometry geometry = computeGeometry(values.get(0), termkind);
 			valueList.add(new LiteralImpl(GTransormationFunctions.asWKT(
-					(Geometry) geometry, CRS.decode("EPSG:4326")), datatype));
+					(Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE)), datatype));
 		} else if (transformationFunction.equals(GEOMETRY_FUNCTIONS.isSimple
 				.toString())) {
 			Geometry geometry = computeGeometry(values.get(0), termkind);
@@ -381,12 +381,12 @@ public abstract class AbstractRMLProcessorTrans extends AbstractRMLProcessor {
 			Geometry geometry = computeGeometry(values.get(0), termkind);
 			valueList.add(new LiteralImpl(GTransormationFunctions
 					.hasSerialization((Geometry) geometry,
-							CRS.decode("EPSG:4326")), datatype));
+							CRS.decode("EPSG:"+Config.EPSG_CODE)), datatype));
 		} else if (transformationFunction.equals(GEOMETRY_FUNCTIONS.asGML
 				.toString())) {
 			Geometry geometry = computeGeometry(values.get(0), termkind);
 			valueList.add(new LiteralImpl(GTransormationFunctions.asGML(
-					(Geometry) geometry, CRS.decode("EPSG:4326")), datatype));
+					(Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE)), datatype));
 		} else if (transformationFunction.equals(GEOMETRY_FUNCTIONS.isEmpty
 				.toString())) {
 			Geometry geometry = computeGeometry(values.get(0), termkind);
