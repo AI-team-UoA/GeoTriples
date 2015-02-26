@@ -1,9 +1,14 @@
 package eu.linkedeodata.geotriples;
 
+import jena.cmdline.ArgDecl;
+import jena.cmdline.CommandLine;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.SystemLoader;
 import org.d2rq.mapgen.MappingGenerator;
+
+import be.ugent.mmlab.rml.main.MainTrans;
 
 
 /**
@@ -29,6 +34,61 @@ public class dump_rdf {
 	}
 	public void process(String [] args) throws Exception {
 		boolean shFound = false;
+		boolean rmlFound=false;
+		for (int i=0 ; i<args.length ; i++) {
+			if (args[i].equals("-rml")) {
+				rmlFound = true;
+			}
+		}
+		if(rmlFound)
+		{
+			log.info("RML processor selected.");
+			
+			/*Trasfer correct argument to RML processor*/
+			final ArgDecl rmlArg = new ArgDecl(false, "rml", "rmlprocessor");
+			final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
+			final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
+			final CommandLine cmd = new CommandLine();
+			cmd.add(rmlArg);
+			cmd.add(epsgArg);
+			cmd.add(outfileArg);
+			
+			try {
+				cmd.process(args);
+			} catch (IllegalArgumentException ex) {
+				if (ex.getMessage() == null) {
+					ex.printStackTrace(System.err);
+				} else {
+					System.err.println(ex.getMessage());
+				}
+				log.info("Command line tool exception", ex);
+				System.exit(1);
+			}
+			
+			if (cmd.numItems() == 0) {
+				usage();
+				System.exit(1);
+			}
+			String[] pipeargs;
+			if(!cmd.contains(outfileArg))
+			{
+				usage();
+				System.exit(1);
+			}
+			if(cmd.contains(epsgArg))
+			{
+				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
+			}
+			else
+			{
+				pipeargs=new String[]{cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
+			}
+			
+			MainTrans.main(pipeargs);
+			
+			return;
+		}
+		
 		for (int i=0 ; i<args.length ; i++) {
 			if (args[i].equals("-sh")) {
 				shFound = true;
@@ -37,9 +97,15 @@ public class dump_rdf {
 				}
 				else {
 					String inputFile = args[i+1];
-					if (inputFile.endsWith(".kml")) {
-						log.info("KML detected for processing");
-						System.out.println("Currently KML is not implemented within WP2 (soon)");
+					if (inputFile.endsWith(".kml") || inputFile.endsWith(".xml") || inputFile.endsWith(".gml")) {
+						log.info("XML-like file detected for processing");
+						log.info("RML processor selected.");
+						
+						/*Trasfer correct argument to RML processor*/
+						final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
+						final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
+						final CommandLine cmd = new CommandLine();
+						
 						//(new eu.linkedeodata.geotriples.kml.dump_rdf()).process(args);
 					}
 					else if (inputFile.endsWith(".shp")) {
@@ -82,6 +148,7 @@ public class dump_rdf {
 		System.err.println("    -f format       One of N-TRIPLE (default), RDF/XML, RDF/XML-ABBREV, TURTLE");
 		System.err.println("    -o outfile      Output file name (default: stdout)");
 		System.err.println("    --verbose       Print debug information");
+		System.err.println("    -rml            Use the RML processor(XML,JSON,csv files), IMPORTANT: -o option is necessary(for now)");
 		System.err.println();
 		System.err.println("  Database connection options (only with jdbcURL):");
 		System.err.println();

@@ -1,2 +1,81 @@
 # GeoTriples
  Publishing geospatial data as Linked Open Geospatial Data 
+
+## RML Processor##
+[RML](http://rml.io/) is a mapping language, very similar to [R2RML](http://www.w3.org/TR/r2rml/). The main difference is that RML is designed to allow the process of data that *do not necessarily* rely in tables and thus not having an explicit iteration pattern.
+
+For example, the books.xml (see below) cannot be iterated in a row by row fashion, because it has nested elements.
+```xml
+<Books>
+    <Book>
+        <Name>The Global Minotaur: America, the True Causes of the Financial Crisis and the Future of the World Economy</Name>
+        <Pages>700</Pages>
+        <Author id="1">
+            <Name>Yanis</Name>
+            <Surname>Varoufakis</Surname>
+            <Address>
+                <Street>Unknown</Street>
+                <Country>Greece</Country>
+            </Address>
+        </Author>
+    </Book>
+</Books>
+```
+
+R2RML uses <code>rr:tableName</code> to define the table from the input file or the relational database as the source table for the mappings. RML has the equivalent rml:source to define the source file as the source for the mappings.
+The iterator property <code>rml:iterator</code> defines the iterating pattern in order to process non-relational structured files. For the above example the iterator should be an XPath query.
+
+<p>An example RML mapping can be the following</p>
+```
+<#Authors>
+    rml:logicalSource [
+        rml:source "books.xml";
+        rml:referenceFormulation ql:XPath;
+        rml:iterator "/Books/Book" ];
+
+    rr:subjectMap [ 
+        rr:template "http://example.com/Author/{@id}" ];
+
+    rr:predicateObjectMap [ 
+        rr:predicate ex:location;
+        rr:objectMap [ 
+        rml:reference "Pages" ] ].
+
+    rr:predicateObjectMap [ 
+        rr:predicate ex:location;
+        rr:objectMap [ 
+        rml:reference "Author/Name" ] ].
+```
+
+This mapping  uses an XPath iterator denoted by `rml:referenceFormulation` as the base iterator pattern for the processor. The `rml:reference` is used instead of `rr:column` R2RML's property . It extends the iterator in order to point at an element.
+
+##Transformation of TalkingFields XML files ([Project LEO](http://linkedeodata.eu))##
+You can transform any talkingfields xml file into RDF using the custom [mapping file](https://github.com/LinkedEOData/GeoTriples/blob/master/mapping.ttl) that we developed for the talkingfields project. In GeoTriple's command line interface you have to only use the -rml option to enable the RML processor.
+
+<p>A typical rml-execution is the following</p>
+<pre>
+<code>
+geotriples-cmd dump_rdf -rml -o output.txt talkingfields.mapping.ttl
+</code>
+</pre>
+
+- Note that there is *no input file* as you might expect using the previous GeoTriples versions, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
+For example a mapping for the example-tf.xml talkingfields file should have triples maps starting with 
+```
+rml:logicalSource [
+rml:source "example-tf.xml";
+\end{verbatim}
+```
+- It's better to use the full path of source file because relative paths are evaluated against the working direcotry; not the mapping file's directory.
+
+
+
+
+
+
+
+
+
+
+
+
