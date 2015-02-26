@@ -1,7 +1,42 @@
 # GeoTriples
  Publishing geospatial data as Linked Open Geospatial Data 
 
-## RML Processor##
+## Quickstart ##
+Assuming git, [Maven](http://maven.apache.org/download.cgi) and [Java](https://www.java.com/en/download/) installed:
+```bash
+$ git clone https://github.com/LinkedEOData/GeoTriples.git
+$ cd GeoTriples
+$ mvn initialize
+$ mvn package
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar [Options] [Argument]
+```
+
+### GeoTriples Modes ###
+GeoTriples consists of two modules. The Mapping Generator which automatically produces an R2RML mapping file according to the input source, 
+and the R2RML processor which processes an R2RML mapping and exports the RDF graph.
+
+#### Automatic generation of R2RML mapping ####
+- Relational Database
+```bash
+java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-u user] [-p password] [-d driver] [-b baseURI] [-o r2rmloutfile] [-r2rml] jdbcURL
+```
+- Shapefile
+```bash
+java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-b baseURI] [-o r2rmloutfile] fileURL
+```
+
+#### Transformation into RDF ####
+- Relational Database
+```bash
+java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -u user -p password -d driver -j jdbcURL inputmappingfile
+```
+- Shapefile
+```bash
+java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile
+```
+
+### RML Processor ###
+GeoTriples now supports the [RML](http://rml.io/) mapping language by extending the [RML processor](https://github.com/mmlab/RMLProcessor) to support transformation functions.
 [RML](http://rml.io/) is a mapping language, very similar to [R2RML](http://www.w3.org/TR/r2rml/). The main difference is that RML is designed to allow the process of data that *do not necessarily* rely in tables and thus not having an explicit iteration pattern.
 
 For example, the books.xml (see below) cannot be iterated in a row by row fashion, because it has nested elements.
@@ -54,11 +89,9 @@ You can transform any talkingfields xml file into RDF using the custom [mapping 
 This mapping can transform into RDF the talkingfield XML files that have been given to us and does not cover the complete ontology.
 
 <p>A typical rml-execution is the following</p>
-<pre>
-<code>
-geotriples-cmd dump_rdf -rml -o output.txt talkingfields.mapping.ttl
-</code>
-</pre>
+```bash
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt talkingfields.mapping.ttl
+```
 
 - Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
 For example a mapping for the example-tf.xml talkingfields file should have triples maps starting with 
