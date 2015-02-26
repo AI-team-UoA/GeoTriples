@@ -50,7 +50,8 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
 This mapping  uses an XPath iterator denoted by `rml:referenceFormulation` as the base iterator pattern for the processor. The `rml:reference` is used instead of `rr:column` R2RML's property . It extends the iterator in order to point at an element.
 
 ##Transformation of TalkingFields XML files ([Project LEO](http://linkedeodata.eu))##
-You can transform any talkingfields xml file into RDF using the custom [mapping file](https://github.com/LinkedEOData/GeoTriples/blob/master/mapping.ttl) that we developed for the talkingfields project. In GeoTriple's command line interface you have to only use the -rml option to enable the RML processor.
+You can transform any talkingfields xml file into RDF using the custom [mapping file](https://github.com/LinkedEOData/GeoTriples/blob/master/resources/rml/talkingfields-rml/example.rml.ttl) that we developed for the talkingfields project. In GeoTriple's command line interface you have to only use the -rml option to enable the RML processor.
+This mapping can transform into RDF the talkingfield XML files that have been given to us and does not cover the complete ontology.
 
 <p>A typical rml-execution is the following</p>
 <pre>
