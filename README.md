@@ -60,7 +60,7 @@ geotriples-cmd dump_rdf -rml -o output.txt talkingfields.mapping.ttl
 </code>
 </pre>
 
-- Note that there is *no input file* as you might expect using the previous GeoTriples versions, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
+- Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
 For example a mapping for the example-tf.xml talkingfields file should have triples maps starting with 
 ```
 rml:logicalSource [
