@@ -98,7 +98,6 @@ For example a mapping for the example-tf.xml talkingfields file should have trip
 ```
 rml:logicalSource [
 rml:source "example-tf.xml";
-\end{verbatim}
 ```
 - It's better to use the full path of source file because relative paths are evaluated against the working direcotry; not the mapping file's directory.
 
