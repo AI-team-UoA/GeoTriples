@@ -18,21 +18,21 @@ and the R2RML processor which processes an R2RML mapping and exports the RDF gra
 #### Automatic generation of R2RML mapping ####
 - Relational Database
 ```bash
-java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-u user] [-p password] [-d driver] [-b baseURI] [-o r2rmloutfile] [-r2rml] jdbcURL
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-u user] [-p password] [-d driver] [-b baseURI] [-o r2rmloutfile] [-r2rml] jdbcURL
 ```
 - Shapefile
 ```bash
-java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-b baseURI] [-o r2rmloutfile] fileURL
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-b baseURI] [-o r2rmloutfile] fileURL
 ```
 
 #### Transformation into RDF ####
 - Relational Database
 ```bash
-java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -u user -p password -d driver -j jdbcURL inputmappingfile
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -u user -p password -d driver -j jdbcURL inputmappingfile
 ```
 - Shapefile
 ```bash
-java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile
 ```
 
 ### GeoTriples Architecture ###
@@ -105,7 +105,7 @@ This mapping can transform into RDF the talkingfield XML files that have been gi
 
 <p>A typical rml-execution is the following</p>
 ```bash
-java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt talkingfields.mapping.ttl
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt talkingfields.mapping.ttl
 ```
 
 - Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
@@ -120,13 +120,13 @@ rml:source "example-tf.xml";
 Go to directory that contains the RML mapping and talkingfields XML files
 
 ```bash
-cd resources/rml/talkingfields-rml/
+$ cd resources/rml/talkingfields-rml/
 ```
 
 Then invoke the RML processor with the RML mapping 
 
 ```bash
-java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt tf.rml.ttl
+$ java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt tf.rml.ttl
 ```
 
 That's it! The RDF graph is in the output.txt file, in the same directory.
