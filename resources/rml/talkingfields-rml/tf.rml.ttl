@@ -14,7 +14,7 @@
 
 <#FieldAttributes>
 rml:logicalSource [ 
-	rml:source "../resources/rml/talkingfields-rml/Intern_Schallermayer_TFB_TFZ.xml";
+	rml:source "tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field";
 ];
@@ -81,7 +81,7 @@ rr:subjectMap [
     
 <#RasterCellAtrributes>
 rml:logicalSource [ 
-	rml:source "../resources/rml/talkingfields-rml/Intern_Schallermayer_TFB_TFZ.xml";
+	rml:source "tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];
@@ -110,7 +110,7 @@ rr:subjectMap [
     
 <#RasterCellGeometry>
 rml:logicalSource [ 
-	rml:source "../resources/rml/talkingfields-rml/Intern_Schallermayer_TFB_TFZ.xml";
+	rml:source "tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];
