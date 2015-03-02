@@ -1,1 +1,6 @@
 target
+resources/rml/talkingfields-rml/example.rml.ttl
+resources/rml/talkingfields-rml/output.txt
+*.txt
+*.nt
+*.n3

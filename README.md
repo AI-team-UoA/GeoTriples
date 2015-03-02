@@ -35,6 +35,21 @@ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-
 java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile
 ```
 
+### GeoTriples Architecture ###
+GeoTriples comprises two main
+components: the mapping generator and the R2RML processor. The mapping
+generator takes as input a data source and creates automatically an R2RML
+mapping that transforms it into an RDF graph. The generated mapping is
+enriched with subject and predicate-object maps, in order to take into account
+the specifities of geospatial data and cater for all transformations that are
+needed to produce an RDF graph that is compliant with the GeoSPARQL
+vocabulary. To accomplish this task, we extend R2RML mappings to allow
+the representation of a transformation function over input data. Afterwards,
+the user may edit the generated R2RML mapping document to comply with
+her requirements (e.g., use a different vocabulary).
+
+![Architecture](http://drive.google.com/uc?export=view&id=0ByyHFR-5IXfpX3ZyNF9rMTgxcHc "The architecture of GeoTriples")
+
 ### RML Processor ###
 GeoTriples now supports the [RML](http://rml.io/) mapping language by extending the [RML processor](https://github.com/mmlab/RMLProcessor) to support transformation functions.
 [RML](http://rml.io/) is a mapping language, very similar to [R2RML](http://www.w3.org/TR/r2rml/). The main difference is that RML is designed to allow the process of data that *do not necessarily* rely in tables and thus not having an explicit iteration pattern.
@@ -90,7 +105,7 @@ This mapping can transform into RDF the talkingfield XML files that have been gi
 
 <p>A typical rml-execution is the following</p>
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt talkingfields.mapping.ttl
+java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt talkingfields.mapping.ttl
 ```
 
 - Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
@@ -101,7 +116,20 @@ rml:source "example-tf.xml";
 ```
 - It's better to use the full path of source file because relative paths are evaluated against the working direcotry; not the mapping file's directory.
 
+### Test an example ###
+Go to directory that contains the RML mapping and talkingfields XML files
 
+```bash
+cd resources/rml/talkingfields-rml/
+```
+
+Then invoke the RML processor with the RML mapping 
+
+```bash
+java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt tf.rml.ttl
+```
+
+That's it! The RDF graph is in the output.txt file, in the same directory.
 
 
 

@@ -78,25 +78,25 @@ public class MainTrans {
             if(cmd.hasOption("g")) 
                     graphName = cmd.getOptionValue("g");           
             
-            System.out.println("--------------------------------------------------------------------------------");
-            System.out.println("RML Processor");
-            System.out.println("--------------------------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("Usage: mvn exec:java -Dexec.args=\"<mapping_file> <output_file> [-sp source.properties] [-g <graph>]\"");
-            System.out.println("");
-            System.out.println("With");
-            System.out.println("    <mapping_file> = The RML mapping document conform with the RML specification (http://semweb.mmlab.be/rml/spec.html)");
-            System.out.println("    <output_file> = The file where the output RDF triples are stored; default in Turtle (http://www.w3.org/TR/turtle/) syntax.");
-            System.out.println("    <sources_properties> = Java properties file containing key-value pairs which configure the data sources used in the mapping file.");
-            System.out.println("    <graph> (optional) = The named graph in which the output RDF triples are stored.");
-            System.out.println("");
-            System.out.println("    An example '<sources_properties>' file 'sources.properties' could contain:");
-            System.out.println("");
-            System.out.println("    #File: sources.properties");
-            System.out.println("    file1=/path/to/file1.csv");
-            System.out.println("    file2=/path/to/file2.json");
-            System.out.println("    file3=/path/to/file3.xml");
-            System.out.println("--------------------------------------------------------------------------------");
+//            System.out.println("--------------------------------------------------------------------------------");
+//            System.out.println("RML Processor");
+//            System.out.println("--------------------------------------------------------------------------------");
+//            System.out.println("");
+//            System.out.println("Usage: mvn exec:java -Dexec.args=\"<mapping_file> <output_file> [-sp source.properties] [-g <graph>]\"");
+//            System.out.println("");
+//            System.out.println("With");
+//            System.out.println("    <mapping_file> = The RML mapping document conform with the RML specification (http://semweb.mmlab.be/rml/spec.html)");
+//            System.out.println("    <output_file> = The file where the output RDF triples are stored; default in Turtle (http://www.w3.org/TR/turtle/) syntax.");
+//            System.out.println("    <sources_properties> = Java properties file containing key-value pairs which configure the data sources used in the mapping file.");
+//            System.out.println("    <graph> (optional) = The named graph in which the output RDF triples are stored.");
+//            System.out.println("");
+//            System.out.println("    An example '<sources_properties>' file 'sources.properties' could contain:");
+//            System.out.println("");
+//            System.out.println("    #File: sources.properties");
+//            System.out.println("    file1=/path/to/file1.csv");
+//            System.out.println("    file2=/path/to/file2.json");
+//            System.out.println("    file3=/path/to/file3.xml");
+//            System.out.println("--------------------------------------------------------------------------------");
             //}
         } catch (IOException | InvalidR2RMLStructureException | InvalidR2RMLSyntaxException | R2RMLDataError | RepositoryException | RDFParseException | SQLException ex) {
             System.out.println(ex.getMessage());
