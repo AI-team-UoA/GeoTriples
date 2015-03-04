@@ -46,6 +46,7 @@ public class MainTrans {
      */
     public static void main(String[] args) {
         try {
+        	String file, outfile;
             String graphName = "";
             // create Options object
             Options options = new Options();            
@@ -58,23 +59,28 @@ public class MainTrans {
             CommandLine cmd = parser.parse( options, args);
             //execute(args[0],args[1]);
             //System.exit(0);
-            RMLMapping mapping = RMLMappingFactoryTrans.extractRMLMapping(args[0]);
+            file = args[args.length-2];
+            outfile = args[args.length - 1];
+            RMLMapping mapping = RMLMappingFactoryTrans.extractRMLMapping(file);
             RMLEngine engine = new RMLEngineTrans();
-            System.out.println("mapping document " + args[0]);
+            //but hack-fix but important
+            
+            System.out.println("mapping document " + file);
             if(cmd.hasOption("epsg"))
             {
             	Config.EPSG_CODE=cmd.getOptionValue("epsg");
             }
+            System.out.println(Config.EPSG_CODE);
             FileInputStream source_properties = null;    
             if(cmd.hasOption("sp")) {
                 source_properties = new FileInputStream(cmd.getOptionValue("sp"));
                 System.out.println("source properties parameter is equal to " + cmd.getOptionValue("sp"));
                 //load the properties
                 RMLEngine.getFileMap().load(source_properties);
-                engine.runRMLMapping(mapping, graphName, args[1], true, true);
+                engine.runRMLMapping(mapping, graphName, outfile, true, true);
             }
             else
-                engine.runRMLMapping(mapping, graphName, args[1], true, false);
+                engine.runRMLMapping(mapping, graphName, outfile, true, false);
             if(cmd.hasOption("g")) 
                     graphName = cmd.getOptionValue("g");           
             

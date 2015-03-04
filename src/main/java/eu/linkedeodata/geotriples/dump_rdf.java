@@ -78,10 +78,12 @@ public class dump_rdf {
 			if(cmd.contains(epsgArg))
 			{
 				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
+				//log.info(pipeargs.length);
 			}
 			else
 			{
 				pipeargs=new String[]{cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
+				//log.info("DERP");
 			}
 			
 			MainTrans.main(pipeargs);
