@@ -42,6 +42,7 @@ public class OpenConnection extends Prompt implements Bindable {
 	
 	@BXML private Button sqlChoice;
 	@BXML private Button shapeFileChoice;
+	@BXML private Button rmlChoice;
 	
 	private boolean isConnected=false;
 	public boolean isConnected() {
@@ -84,12 +85,69 @@ public class OpenConnection extends Prompt implements Bindable {
             	   contype=ConnectionType.SQL;
             	   openSQLconnection();
                }
+               else if (connectiontype.getSelection() == rmlChoice) {
+            	   contype=ConnectionType.RML;
+            	   openRMLMapping();
+               }
             }
         });
     }
 	
 	
-	
+	protected void openRMLMapping() {
+		final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
+		fileBrowserSheet.setName("Select an RML document");
+		fileBrowserSheet.setDisabledFileFilter(new Filter<File>() {                     
+        @Override 
+        public boolean include(File file) { 
+            return (file.isFile() 
+                && !file.getName().endsWith(".ttl")); 
+        } 
+    }); 
+		fileBrowserSheet.setMode(org.apache.pivot.wtk.FileBrowserSheet.Mode.OPEN);
+		fileBrowserSheet.open(OpenConnection.this, new SheetCloseListener() {
+			@Override
+			public void sheetClosed(Sheet sheet) {
+				if (sheet.getResult()) {
+					Sequence<File> selectedFiles = fileBrowserSheet
+							.getSelectedFiles();
+
+					ListView listView = new ListView();
+					listView.setListData(new ArrayList<File>(selectedFiles));
+					listView.setSelectMode(ListView.SelectMode.NONE);
+					listView.getStyles().put("backgroundColor", null);
+					/*Alert.alert(MessageType.INFO,
+							"You selected the shapefile:","Successfully Load", listView,
+							OpenConnection.this,null);*/
+					try {
+						url = selectedFiles.get(0).getCanonicalPath();
+					} catch (IOException e) {
+						System.out.println(e.getMessage());
+						e.printStackTrace();
+						System.exit(13);
+					}
+					// connection=con; //set connection
+					
+					isConnected=true;
+					close(true);
+					con = null;
+					
+				} else {
+					/*Alert.alert(MessageType.ERROR,
+							"You didn't select any shapefile.",
+							OpenConnection.this, new DialogCloseListener() {
+
+								@Override
+								public void dialogClosed(Dialog dialog,
+										boolean modal) {
+									//System.exit(13);
+								}
+							});*/
+					close(false);
+				}
+			}
+		});
+	}
 	
 	protected void openSQLconnection() {
 		BXMLSerializer bxmlSerializer = new BXMLSerializer(); 

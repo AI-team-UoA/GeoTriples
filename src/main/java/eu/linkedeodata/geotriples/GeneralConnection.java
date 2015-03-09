@@ -58,6 +58,7 @@ public interface GeneralConnection {
 	public enum ConnectionType{
 		SQL,
 		SHAPEFILE,
-		KML
+		KML,
+		RML
 	}
 }

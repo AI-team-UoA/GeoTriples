@@ -104,7 +104,7 @@ rr:subjectMap [
 		];
     ] ;
     rr:predicateObjectMap [
-                     rr:predicate tfo:hasGeometry;
+                     rr:predicate ogc:hasGeometry;
 			        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}";];
     ] .
     

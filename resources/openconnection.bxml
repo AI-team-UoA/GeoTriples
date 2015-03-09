@@ -29,6 +29,7 @@ limitations under the License.
             <RadioButton bxml:id="sqlChoice" buttonData="Database" buttonGroup="$connectiontype" selected="true"/>
             <RadioButton bxml:id="shapeFileChoice" buttonData="ESRI Shapefile" buttonGroup="$connectiontype"/>
             <RadioButton bxml:id="kmlChoice" buttonData="KML" buttonGroup="$connectiontype"/>
+            <RadioButton bxml:id="rmlChoice" buttonData="RML" buttonGroup="$connectiontype"/>
             <PushButton bxml:id="selectChoice" buttonData="Select"/>
         </BoxPane>
     </Border>

@@ -17,14 +17,18 @@
 package eu.linkedeodata.geotriples.gui;
 
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Locale;
@@ -74,6 +78,7 @@ import org.d2rq.db.SQLConnection;
 import org.d2rq.db.op.TableOp;
 import org.d2rq.db.schema.ColumnName;
 import org.d2rq.db.schema.TableName;
+import org.geotools.gml2.SrsSyntax;
 
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -308,12 +313,17 @@ public class GeoTriplesWindow extends Window implements Bindable {
 						    System.err.println("Error: " + e.getMessage());
 						}
 						
-						
+						String srid = epsgCode.getText();
+						if (srid == null || srid == "") {
+							srid = "4326";
+						}
+						File file = new File("mapping.ttl");
 						try {
 							if(connectiontype==ConnectionType.SHAPEFILE)
 							{
 								String[] yourArray = { "-b", baseIri.getText() , "-o",outputurl, "-sh" , datasourceurl,"-f",(String) dbRDFFormat.getSelectedItem(), "mapping.ttl"};
 								new eu.linkedeodata.geotriples.dump_rdf(inputmapping).process(yourArray);
+								file.delete();
 							}
 							else if(connectiontype==ConnectionType.SQL)
 							{
@@ -322,6 +332,13 @@ public class GeoTriplesWindow extends Window implements Bindable {
 										((SQLConnection)connection).getJdbcURL(), "mapping.ttl"};
 							
 								new d2rq.dump_rdf(inputmapping, (String) dbRDFFormat.getSelectedItem()).process(yourArray);
+								file.delete();
+							}
+							else if (connectiontype == ConnectionType.RML) {
+								//invoke rml processor
+								String yourArray[] = {"-rml", "-s", srid, "-o", outputurl, "mapping.ttl"};
+								new eu.linkedeodata.geotriples.dump_rdf().process(yourArray);
+								file.delete();
 							}
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
@@ -342,7 +359,7 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				            }
 						
 							final Prompt pprompt = new Prompt(MessageType.QUESTION,
-				                    "Please select your favorite icon:", options);
+				                    "Conversion completed. You may now open the generated file:", options);
 				                pprompt.setTitle("Select Icon");
 				                pprompt.setSelectedOptionIndex(0);
 				                pprompt.getDecorators().update(0, new ReflectionDecorator());
@@ -396,7 +413,7 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				BXMLSerializer bxmlSerializer = new BXMLSerializer(); 
 				try {
 					Locale locale = Locale.getDefault();
-			        System.out.println(locale);
+			        //System.out.println(locale);
 			        //Resources resources = new Resources(GeoTriplesWindow.class.getName(),locale);
 			        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			        @SuppressWarnings("unused")
@@ -423,10 +440,36 @@ public class GeoTriplesWindow extends Window implements Bindable {
 								
 								datasourceurl=((OpenConnection)sheet).getUrl();
 								connectiontype=((OpenConnection)sheet).getContype();
-								refreshTables(null);
-								if(connectiontype==ConnectionType.SHAPEFILE)
-								{
-									refreshGeometryTable(null);
+								if (connection != null) {
+									refreshTables(null);
+									if(connectiontype==ConnectionType.SHAPEFILE)
+									{
+										refreshGeometryTable(null);
+									}
+								}
+								else {
+									if (connectiontype==connectiontype.RML) {
+										Action.getNamedActions().get("generateMapping").setEnabled(false);
+										generateMappingAction.setEnabled(false);
+										Action.getNamedActions().get("dumpRDF").setEnabled(true); //enable dumpRDF functionality - button - menu
+										dumpRDFAction.setEnabled(true);
+										try {
+											BufferedReader reader = new BufferedReader( new FileReader (datasourceurl));
+										    String         line = null;
+										    StringBuilder  stringBuilder = new StringBuilder();
+										    String         ls = System.getProperty("line.separator");
+
+										    while( ( line = reader.readLine() ) != null ) {
+										        stringBuilder.append( line );
+										        stringBuilder.append( ls );
+										    }
+
+										    String rmlMapping = stringBuilder.toString();
+										    r2rmlPreview.setText(rmlMapping);
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+									}
 								}
 							}
 							}
