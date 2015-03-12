@@ -70,11 +70,10 @@ public class MainTrans {
             {
             	Config.EPSG_CODE=cmd.getOptionValue("epsg");
             }
-            System.out.println(Config.EPSG_CODE);
             FileInputStream source_properties = null;    
             if(cmd.hasOption("sp")) {
                 source_properties = new FileInputStream(cmd.getOptionValue("sp"));
-                System.out.println("source properties parameter is equal to " + cmd.getOptionValue("sp"));
+                //System.out.println("source properties parameter is equal to " + cmd.getOptionValue("sp"));
                 //load the properties
                 RMLEngine.getFileMap().load(source_properties);
                 engine.runRMLMapping(mapping, graphName, outfile, true, true);
