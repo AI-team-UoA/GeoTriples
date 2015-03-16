@@ -382,35 +382,29 @@
 			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.5</version>
+				<version>1.4.4</version>
 				<executions>
 					<execution>
-						<id>build-gui</id>
+						<id>onejar-gui</id>
 						<configuration>
-							<onejarVersion>	0.97</onejarVersion>
 							<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass>
-							<attachToBuild>	true</attachToBuild>
-							<classifier>onejar</classifier>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>gui</classifier>
 							<filename>${project.build.finalName}-gui.jar</filename>
-							<files>
-								<file>${basedir}/src/main/resources/one-jar.properties</file>
-							</files>
 						</configuration>
 						<goals>
 							<goal>one-jar</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>build-cmd</id>
+						<id>onejar-cmd</id>
 						<configuration>
-							<onejarVersion>0.97</onejarVersion>
 							<mainClass>eu.linkedeodata.geotriples.TempLayer</mainClass>
+							<onejarVersion>0.97</onejarVersion>
 							<attachToBuild>true</attachToBuild>
-							<classifier>onejar</classifier>
+							<classifier>cmd</classifier>
 							<filename>${project.build.finalName}-cmd.jar</filename>
-							<files>
-								<file>${basedir}/src/main/resources/one-jar.properties</file>
-							</files>
 						</configuration>
 						<goals>
 							<goal>one-jar</goal>
@@ -640,26 +634,63 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.1</version>
 				<configuration>
-					<altDeploymentRepository>geotriples.internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+					<altReleaseDeploymentRepository>geotriples.internal.repo::default::file://${project.build.directory}/mvn-repo</altReleaseDeploymentRepository>
+					<altSnapshotDeploymentRepository>geotriples.internal.repo::default::file://${project.build.directory}/mvn-repo-snapshots</altSnapshotDeploymentRepository>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
 				<version>0.11</version>
-				<configuration>
-					<message>Maven artifacts for ${project.version}</message>
-					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-					<branch>refs/heads/mvn-repo</branch>
-					<excludes><exclude>**/*.deb*</exclude></excludes>
-					<!--<merge>true</merge>-->
-				</configuration>
 				<executions>
 					<execution>
+						<id>deploy-release</id>
+						<configuration>
+							<message>Maven artifacts for ${project.version} (release)</message>
+							<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+							<branch>refs/heads/mvn-repo</branch>
+							<excludes><exclude>**/*.deb*</exclude></excludes>
+							<merge>true</merge>
+						</configuration>
 						<goals>
 							<goal>site</goal>
 						</goals>
 						<phase>deploy</phase>
+					</execution>
+					<execution>
+						<id>deploy-snapshot</id>
+						<configuration>
+							<message>Maven artifacts for ${project.version} (snapshots)</message>
+							<outputDirectory>${project.build.directory}/mvn-repo-snapshots</outputDirectory>
+							<branch>refs/heads/mvn-repo-snapshots</branch>
+							<excludes><exclude>**/*.deb*</exclude></excludes>
+						</configuration>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>generate-test-resources</phase>
+						<configuration>
+							<target>
+								<echo message="Creating staging directories"/>
+								<mkdir dir="${project.build.directory}/mvn-repo"/>
+								<echo output="${project.build.directory}/mvn-repo/README.md" message="This branch is intented to be the maven repository for the releases of GeoTriples"/>
+								<mkdir dir="${project.build.directory}/mvn-repo-snapshots"/>
+								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md" message="This branch is intented to be the maven repository for the snapshots of GeoTriples"/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -716,6 +747,19 @@
 		<repository>
 			<id>geotriples.repo</id>
 			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>geotriples.repo.snapshots</id>
+			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -724,10 +768,15 @@
 	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>geotriples.internal.repo</id>
-			<name>Temporary Staging Repository</name>
+			<id>geotriples.internal.repo.release</id>
+			<name>Temporary Staging Repository for releases</name>
 			<url>file://${project.build.directory}/mvn-repo</url>
 		</repository>
+		<snapshotRepository>
+			<id>geotriples.internal.repo.snapshot</id>
+			<name>Temporary Staging Repository for snapshots</name>
+			<url>file://${project.build.directory}/mvn-repo-snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 	<pluginRepositories>
 		<pluginRepository>
