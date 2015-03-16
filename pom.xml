@@ -1,12 +1,9 @@
-<project 
-		xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	
@@ -559,8 +556,7 @@
 								<preCp>anything</preCp>
 							</classPath>
 							comment start
-							icon>src/main/resources/icon/application.ico</icon
-							comment end
+							icon>src/main/resources/icon/application.ico</icon comment end
 							<jre>
 								<minVersion>1.6.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
@@ -681,11 +677,11 @@
 						<phase>generate-test-resources</phase>
 						<configuration>
 							<target>
-								<echo message="Creating staging directories"/>
-								<mkdir dir="${project.build.directory}/mvn-repo"/>
-								<echo output="${project.build.directory}/mvn-repo/README.md" message="This branch is intented to be the maven repository for the releases of GeoTriples"/>
-								<mkdir dir="${project.build.directory}/mvn-repo-snapshots"/>
-								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md" message="This branch is intented to be the maven repository for the snapshots of GeoTriples"/>
+								<echo message="Creating staging directories" />
+								<mkdir dir="${project.build.directory}/mvn-repo" />
+								<echo output="${project.build.directory}/mvn-repo/README.md" message="This branch is intented to be the maven repository for the releases of GeoTriples" />
+								<mkdir dir="${project.build.directory}/mvn-repo-snapshots" />
+								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md" message="This branch is intented to be the maven repository for the snapshots of GeoTriples" />
 							</target>
 						</configuration>
 						<goals>
@@ -708,7 +704,8 @@
 		<url>https://github.com/LinkedEOData/GeoTriples</url>
 		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-	</scm>
+	  <tag>v1.0.0</tag>
+  </scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
 		<repository>
