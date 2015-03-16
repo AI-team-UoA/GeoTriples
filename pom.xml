@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	
@@ -711,7 +711,7 @@
 		<url>https://github.com/LinkedEOData/GeoTriples</url>
 		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-		<tag>v1.0.1</tag>
+		<tag>v1.0.2</tag>
 	</scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
