@@ -41,7 +41,8 @@ public class WP2NTripleWriter extends NTripleWriter {
             }
             pw.flush();
         } catch (Exception e) {
-            //errorHandler.error(e);
+        	System.out.println(e.getMessage());
+           e.printStackTrace();
         }
     }
 }

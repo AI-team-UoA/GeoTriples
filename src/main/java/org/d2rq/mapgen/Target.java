@@ -8,6 +8,7 @@ import org.d2rq.db.schema.Identifier;
 import org.d2rq.db.schema.TableName;
 import org.d2rq.db.types.DataType;
 import org.d2rq.r2rml.ConstantIRI;
+import org.d2rq.r2rml.TermMap;
 import org.d2rq.values.TemplateValueMaker;
 
 import com.hp.hpl.jena.rdf.model.Property;
@@ -67,6 +68,13 @@ public interface Target {
 	 */
 	void generateEntityLabels(TemplateValueMaker labelTemplate, TableName table);
 
+	
+	
+	public void generateTransformationProperty(Property property, TableName tableName, ConstantIRI function ,
+			List<TermMap> argumentMap, DataType datatype);
+	
+	
+	
 	/**
 	 * Generates a mapping from one column to a property. 
 	 * @param property The target property
@@ -78,6 +86,7 @@ public interface Target {
 			TableName table, Identifier column, DataType datatype);
 
 	//d2.1
+	@Deprecated
 	void generateGeometryColumnProperty(Property propertyname,
 			TableName table, Identifier column, DataType datatype,ConstantIRI functionname);
 	/**

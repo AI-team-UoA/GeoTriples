@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.model.ObjectMap;
+
 import org.d2rq.db.SQLConnection;
 import org.d2rq.db.schema.ColumnName;
 import org.d2rq.db.schema.ForeignKey;
@@ -34,6 +36,7 @@ import org.d2rq.r2rml.TermMap;
 import org.d2rq.r2rml.TermMap.ColumnValuedTermMap;
 import org.d2rq.r2rml.TermMap.TemplateValuedTermMap;
 import org.d2rq.r2rml.TermMap.TermType;
+import org.d2rq.r2rml.TermMap.TransformationValuedTermMap;
 import org.d2rq.r2rml.TriplesMap;
 import org.d2rq.values.TemplateValueMaker;
 
@@ -109,6 +112,15 @@ public class GeneralR2RMLTarget implements Target {
 		PredicateObjectMap objMap = createPredicateObjectMap(property, createTermMap(column, datatype));
 		addPredicateObjectMap(tableName, objMap);
 	}
+	
+	
+	public void generateTransformationProperty(Property property, TableName tableName, ConstantIRI function ,
+			List<TermMap> argumentMap, DataType datatype) {
+		PredicateObjectMap objMap = createPredicateObjectMap(property, createTermMap(function, argumentMap, datatype));
+		addPredicateObjectMap(tableName, objMap);
+	}
+	
+	
 	@Override
 	public void generateHasGeometryPropertyWithTemplateTrick(Property property,
 			TableName tableName, TemplateValueMaker iriTemplate) {
@@ -198,6 +210,14 @@ public class GeneralR2RMLTarget implements Target {
 	private TermMap createTermMap(Identifier column, DataType dType) {
 		ColumnValuedTermMap result = new ColumnValuedTermMap();
 		result.setColumnName(ColumnNameR2RML.create(column, vendor));
+		result.setDatatype(ConstantIRI.create(dType.rdfType()));
+		return result;
+	}
+	
+	private TermMap createTermMap(ConstantIRI function, List<TermMap> termMaps,DataType dType) {
+		TransformationValuedTermMap result = new TransformationValuedTermMap();
+		result.setFunction(function);
+		result.setTermMaps(termMaps);
 		result.setDatatype(ConstantIRI.create(dType.rdfType()));
 		return result;
 	}

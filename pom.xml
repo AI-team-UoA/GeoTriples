@@ -32,11 +32,74 @@
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 	</properties>
 	<dependencies>
-		<dependency>
+	<!--	<dependency>
 			<groupId>be.ugent.mmlab</groupId>
 			<artifactId>RMLMapper</artifactId>
 			<version>0.1</version>
-		</dependency>
+		</dependency> -->
+		
+		<!-- Dependencies of RML MAPPER -->
+        <dependency>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>jlibs</groupId>
+            <artifactId>jlibs-xmldog</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>0.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <version>0.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.antidot</groupId>
+            <artifactId>db2triples</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.org.apache</groupId>
+            <artifactId>jaxp-ri</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.javacsv</groupId>
+            <artifactId>javacsv</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.0.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.5.1-4</version>
+            <classifier>compressed</classifier>
+        </dependency>
+		<!-- END Dependencies of RML MAPPER -->
+		
+		
+		
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -382,7 +445,7 @@
 				</executions>
 			</plugin>
 			-->
-			<plugin>
+	<!--		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.5.2</version>
@@ -403,7 +466,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>   -->
 			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
@@ -675,6 +738,21 @@
 			<name>OpenGeo Maven Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
+		
+		
+		<!-- RML repositories -->
+		<repository>
+            <id>repository.jboss.org</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+        </repository>
+        <repository>
+            <id>jlibs-repository</id>
+            <name>JLibs Repository</name>
+            <url>https://github.com/santhosh-tekuri/maven-repository/raw/master/</url>
+            <layout>default</layout>
+        </repository>
+        
+        
 	</repositories>
 	<distributionManagement>
 		<repository>

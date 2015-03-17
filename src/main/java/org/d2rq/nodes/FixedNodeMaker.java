@@ -8,6 +8,7 @@ import org.d2rq.db.ResultRow;
 import org.d2rq.db.op.OrderOp.OrderSpec;
 import org.d2rq.db.op.ProjectionSpec;
 import org.d2rq.pp.PrettyPrinter;
+import org.d2rq.values.ValueMaker;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -45,5 +46,10 @@ public class FixedNodeMaker implements NodeMaker {
 
 	public void accept(NodeMakerVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public ValueMaker getValueMaker() {
+		return null;
 	}
 }

@@ -21,6 +21,7 @@ import org.d2rq.lang.Mapping;
 import org.d2rq.lang.Microsyntax;
 import org.d2rq.lang.PropertyBridge;
 import org.d2rq.r2rml.ConstantIRI;
+import org.d2rq.r2rml.TermMap;
 import org.d2rq.values.TemplateValueMaker;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -257,6 +258,14 @@ public class D2RQTarget implements Target {
 			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
 			String sqlQuery) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateTransformationProperty(Property property,
+			TableName tableName, ConstantIRI function,
+			List<TermMap> argumentMap, DataType datatype) {
+		throw new UnsupportedOperationException();
 		
 	}
 }

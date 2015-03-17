@@ -27,12 +27,14 @@ import org.d2rq.db.schema.Identifier.IdentifierParseException;
 import org.d2rq.db.schema.Key;
 import org.d2rq.db.types.DataType;
 import org.d2rq.db.types.DataType.GenericType;
+import org.d2rq.db.types.SQLCharacterString;
 import org.d2rq.db.vendor.Vendor;
 import org.d2rq.nodes.FixedNodeMaker;
 import org.d2rq.nodes.NodeMaker;
 import org.d2rq.nodes.TypedNodeMaker;
 import org.d2rq.nodes.TypedNodeMaker.NodeType;
 import org.d2rq.nodes.TypedNodeTransformationMaker;
+import org.d2rq.nodes.TypedNodeTransformationMakerList;
 import org.d2rq.r2rml.ConstantIRI;
 import org.d2rq.r2rml.ConstantShortcut;
 import org.d2rq.r2rml.GeometryFunction;
@@ -54,12 +56,15 @@ import org.d2rq.r2rml.TermMap.ConstantValuedTermMap;
 import org.d2rq.r2rml.TermMap.Position;
 import org.d2rq.r2rml.TermMap.TemplateValuedTermMap;
 import org.d2rq.r2rml.TermMap.TermType;
+import org.d2rq.r2rml.TermMap.TransformationValuedTermMap;
 import org.d2rq.r2rml.TriplesMap;
 import org.d2rq.values.BaseIRIValueMaker;
 import org.d2rq.values.ColumnValueMaker;
 import org.d2rq.values.TemplateValueMaker;
 import org.d2rq.values.TemplateValueMaker.ColumnFunction;
+import org.d2rq.values.TransformationValueMaker;
 import org.d2rq.values.ValueMaker;
+import org.hamcrest.core.IsInstanceOf;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Graph;
@@ -531,9 +536,38 @@ public class GeneralR2RMLCompiler implements GeneralCompiledMapping{
 			this.table = table;
 		}
 		@Override
+		public void visitComponent(TermMap termMap, Position position) {
+			if(termMap instanceof ConstantValuedTermMap)
+			{
+				TermMap.ConstantValuedTermMap t=(ConstantValuedTermMap) termMap;
+				visitComponent(t,position);
+			}
+			else if(termMap instanceof TemplateValuedTermMap)
+			{
+				TermMap.TemplateValuedTermMap t=(TemplateValuedTermMap) termMap;
+				visitComponent(t,position);
+			}
+			else if(termMap instanceof ColumnValuedTermMap)
+			{
+				TermMap.ColumnValuedTermMap t=(ColumnValuedTermMap) termMap;
+				visitComponent(t,position);
+			}
+			else if(termMap instanceof TransformationValuedTermMap)
+			{
+				TermMap.TransformationValuedTermMap t=(TransformationValuedTermMap) termMap;
+				visitComponent(t,position);
+			}
+			else if(termMap instanceof ColumnOrTemplateValuedTermMap)
+			{
+				TermMap.ColumnOrTemplateValuedTermMap t=(ColumnOrTemplateValuedTermMap) termMap;
+				visitComponent(t,position);
+			}
+		}
+		@Override
 		public void visitComponent(ConstantValuedTermMap termMap, Position position) {
 			result = new FixedNodeMaker(termMap.getConstant().asNode());
 		}
+		@Override
 		public void visitComponent(ColumnValuedTermMap termMap, Position position) {
 			ColumnName qualified = ColumnName.create(table.getTableName(), 
 					termMap.getColumnName().asIdentifier(Vendor.MySQL));
@@ -544,6 +578,26 @@ public class GeneralR2RMLCompiler implements GeneralCompiledMapping{
 			}
 			result = new TypedNodeMaker(nodeType, baseValueMaker);
 		}
+		
+		@Override
+		public void visitComponent(TransformationValuedTermMap termMap, Position position) {
+			List<TermMap> list=termMap.getTermMaps();
+			List<NodeMaker>argumentsNodeMaker = new ArrayList<NodeMaker>();
+			List<ValueMaker> argumentsValueMaker =new ArrayList<ValueMaker>();
+			for(int i=0;i<list.size();++i)
+			{
+				visitComponent(list.get(i), position);
+				argumentsNodeMaker.add(result);
+				argumentsValueMaker.add(result.getValueMaker());
+			}
+			NodeType nodeType = getNodeType(termMap, position, new SQLCharacterString("text", true));
+			ValueMaker baseValueMaker = new TransformationValueMaker(nodeType,argumentsValueMaker,termMap.getFunction(), connection);
+			/*if (nodeType == TypedNodeMaker.URI) {
+				baseValueMaker = new BaseIRIValueMaker(mapping.getBaseIRI(), baseValueMaker);
+			}*/
+			result = new TypedNodeTransformationMakerList(nodeType, baseValueMaker);
+		}
+		
 		
 		
 		//TODO need all the same but like GeometryParametersTerms.ColumnValuedTermMap

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.d2rq.db.ResultRow;
 import org.d2rq.db.op.OrderOp.OrderSpec;
 import org.d2rq.db.op.ProjectionSpec;
+import org.d2rq.values.ValueMaker;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -26,7 +27,7 @@ public interface NodeMaker {
 	void describeSelf(NodeSetFilter c);
 	
 	Node makeNode(ResultRow tuple);
-
+	ValueMaker getValueMaker();
 	/**
 	 * Returns expressions (with possible ASC/DESC marker) that re necessary
 	 * for ordering a relation by the nodes in this NodeMaker. Uses SPARQL
@@ -44,5 +45,8 @@ public interface NodeMaker {
 		public Set<ProjectionSpec> projectionSpecs() { return Collections.<ProjectionSpec>emptySet(); }
 		public List<OrderSpec> orderSpecs(boolean ascending) { return Collections.<OrderSpec>emptyList(); }
 		public void accept(NodeMakerVisitor visitor) { visitor.visit(this); }
+		public ValueMaker getValueMaker() {
+			return null;
+		}
 	};
 }
