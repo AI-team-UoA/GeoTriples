@@ -63,12 +63,14 @@ public class MainTrans {
         try {
         	String file, outfile;
             String graphName = "";
+            RDFFormat format = RDFFormat.N3;
             // create Options object
             Options options = new Options();            
             // add options
             options.addOption("sp", true, "source properties file");
             options.addOption("g", true, "Graph name");
             options.addOption("epsg", true, "EPSG code");
+            options.addOption("f", true, "output RDF Format");
             //should be new DefaultParser() but requires cli 1.3 instead of clli 1.2
             CommandLineParser parser = new BasicParser();
             CommandLine cmd = parser.parse( options, args);
@@ -86,17 +88,41 @@ public class MainTrans {
             {
             	Config.EPSG_CODE=cmd.getOptionValue("epsg");
             }
-            System.out.println(Config.EPSG_CODE);
+            if (cmd.hasOption("f")) {
+            	String formatValue = cmd.getOptionValue("f");
+            	if (formatValue.equalsIgnoreCase("N3")) {
+            		format = RDFFormat.N3;
+            	}
+            	else if (formatValue.equalsIgnoreCase("RDF/XML")) {
+            		format = RDFFormat.RDFXML;
+            	}
+            	else if (formatValue.equalsIgnoreCase("N-TRIPLE") || formatValue.equalsIgnoreCase("N-TRIPLES") || formatValue.equalsIgnoreCase("NTRIPLE") || formatValue.equalsIgnoreCase("NTRIPLES")) {
+            		format = RDFFormat.NTRIPLES;
+            	}
+            	else if (formatValue.equalsIgnoreCase("TURTLE")) {
+            		format = RDFFormat.TURTLE;
+            	}
+            	else if (formatValue.equalsIgnoreCase("BIN")) {
+            		format = RDFFormat.BINARY;
+            	}
+            	else {
+            		format = RDFFormat.N3;
+            	}
+            }
             FileInputStream source_properties = null;    
             if(cmd.hasOption("sp")) {
                 source_properties = new FileInputStream(cmd.getOptionValue("sp"));
-                System.out.println("source properties parameter is equal to " + cmd.getOptionValue("sp"));
+                //System.out.println("source properties parameter is equal to " + cmd.getOptionValue("sp"));
                 //load the properties
                 RMLEngine.getFileMap().load(source_properties);
                 engine.runRMLMapping(mapping, graphName, outfile, true, true);
             }
-            else
-                engine.runRMLMapping(mapping, graphName, outfile, true, false);
+            else {
+            	engine.runRMLMapping(mapping, graphName, outfile, true, false);
+            	//TODO: replace the above line with the two lines below:
+                /*SesameDataSet output = engine.runRMLMapping(mapping, "");
+                output.dumpRDF(new PrintStream(new File(outfile)), RDFFormat.RDFXML);*/
+            }
             if(cmd.hasOption("g")) 
                     graphName = cmd.getOptionValue("g");           
             

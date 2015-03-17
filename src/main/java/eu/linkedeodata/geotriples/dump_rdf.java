@@ -48,10 +48,12 @@ public class dump_rdf {
 			final ArgDecl rmlArg = new ArgDecl(false, "rml", "rmlprocessor");
 			final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
 			final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
+			final ArgDecl formatArg = new ArgDecl(true, "f", "format", "output RDF Fromat");
 			final CommandLine cmd = new CommandLine();
 			cmd.add(rmlArg);
 			cmd.add(epsgArg);
 			cmd.add(outfileArg);
+			cmd.add(formatArg);
 			
 			try {
 				cmd.process(args);
@@ -75,10 +77,14 @@ public class dump_rdf {
 				usage();
 				System.exit(1);
 			}
-			if(cmd.contains(epsgArg))
+			if(cmd.contains(epsgArg) && !cmd.contains(formatArg))
 			{
 				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 				//log.info(pipeargs.length);
+			}
+			if(cmd.contains(epsgArg) && cmd.contains(formatArg))
+			{
+				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),"-f", cmd.getArg(formatArg).getValue(), cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 			}
 			else
 			{

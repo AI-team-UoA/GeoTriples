@@ -1,27 +1,20 @@
-<project 
-		xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
-	
 	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
-	
 	<url>http://projects.cwi.nl/LEO/Geotriples</url>
 	<inceptionYear>2014</inceptionYear>
-	
 	<licenses>
 		<license>
 			<name>Mozilla Public License, v. 2.0</name>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
 	<properties>
 		<slf4j.version>1.6.4</slf4j.version>
 		<geotools.version>11.0</geotools.version>
@@ -30,76 +23,73 @@
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+		<github.global.server>github-geotriples</github.global.server>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 	<dependencies>
-	<!--	<dependency>
-			<groupId>be.ugent.mmlab</groupId>
-			<artifactId>RMLMapper</artifactId>
-			<version>0.1</version>
-		</dependency> -->
-		
 		<!-- Dependencies of RML MAPPER -->
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jlibs</groupId>
-            <artifactId>jlibs-xmldog</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <version>0.8.1</version>
-        </dependency>
+		<dependency>
+			<groupId>xom</groupId>
+			<artifactId>xom</artifactId>
+			<version>1.2.5</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>jlibs</groupId>
+			<artifactId>jlibs-xmldog</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>0.8.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path-assert</artifactId>
-            <version>0.9.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.antidot</groupId>
-            <artifactId>db2triples</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.org.apache</groupId>
-            <artifactId>jaxp-ri</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.javacsv</groupId>
-            <artifactId>javacsv</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.0.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>9.5.1-4</version>
-            <classifier>compressed</classifier>
-        </dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path-assert</artifactId>
+			<version>0.9.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.antidot</groupId>
+			<artifactId>db2triples</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.org.apache</groupId>
+			<artifactId>jaxp-ri</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.javacsv</groupId>
+			<artifactId>javacsv</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.5.1-4</version>
+			<classifier>compressed</classifier>
+		</dependency>
 		<!-- END Dependencies of RML MAPPER -->
-		
-		
-		
-		
+
+
+
+		<!-- <dependency> <groupId>be.ugent.mmlab</groupId> <artifactId>RMLMapper</artifactId> 
+			<version>0.1</version> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -209,13 +199,13 @@
 		</dependency>
 		<dependency>
 			<groupId>
-			org.apache.httpcomponents</groupId>
+org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>
-			org.apache.httpcomponents</groupId>
+org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.1.2</version>
 		</dependency>
@@ -249,7 +239,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>
-			mysql-connector-java</artifactId>
+mysql-connector-java</artifactId>
 			<version>5.1.22</version>
 		</dependency>
 		<dependency>
@@ -355,7 +345,7 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>
-			gt-process-geometry</artifactId>
+gt-process-geometry</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
@@ -419,86 +409,39 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-	<!--		<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
-				<executions>
-					<execution>
-						<id>InitializePhaseInstallRML</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<groupId>be.ugent.mmlab</groupId>
-							<artifactId>RMLMapper</artifactId>
-							<version>0.1</version>
-							<packaging>jar</packaging>
-							<file>${basedir}/libs/RMLMapper-0.1.jar</file>
-							<pomFile>${basedir}/libs/RMLMapper-0.1.pom.xml</pomFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>   -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-install-plugin</artifactId> 
+				<version>2.5.2</version> <executions> <execution> <id>InitializePhaseInstallRML</id> 
+				<phase>validate</phase> <goals> <goal>install-file</goal> </goals> <configuration> 
+				<groupId>be.ugent.mmlab</groupId> <artifactId>RMLMapper</artifactId> <version>0.1</version> 
+				<packaging>jar</packaging> <file>${basedir}/libs/RMLMapper-0.1.jar</file> 
+				<pomFile>${basedir}/libs/RMLMapper-0.1.pom.xml</pomFile> </configuration> 
+				</execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.5</version>
+				<version>1.4.4</version>
 				<executions>
 					<execution>
-						<id>build-gui</id>
+						<id>onejar-gui</id>
 						<configuration>
-							<onejarVersion>	0.97</onejarVersion>
 							<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass>
-							<attachToBuild>	true</attachToBuild>
-							<classifier>onejar</classifier>
+							<onejarVersion>0.97</onejarVersion>
+							<attachToBuild>true</attachToBuild>
+							<classifier>gui</classifier>
 							<filename>${project.build.finalName}-gui.jar</filename>
-							<files>
-								<file>${basedir}/src/main/resources/one-jar.properties</file>
-							</files>
 						</configuration>
 						<goals>
 							<goal>one-jar</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>build-cmd</id>
+						<id>onejar-cmd</id>
 						<configuration>
-							<onejarVersion>0.97</onejarVersion>
 							<mainClass>eu.linkedeodata.geotriples.TempLayer</mainClass>
+							<onejarVersion>0.97</onejarVersion>
 							<attachToBuild>true</attachToBuild>
-							<classifier>onejar</classifier>
+							<classifier>cmd</classifier>
 							<filename>${project.build.finalName}-cmd.jar</filename>
-							<files>
-								<file>${basedir}/src/main/resources/one-jar.properties</file>
-							</files>
 						</configuration>
 						<goals>
 							<goal>one-jar</goal>
@@ -516,28 +459,6 @@
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.8</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			-->
 			<!-- The following plugin is to enable skipTest (see also properties) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -554,7 +475,7 @@
 				<version>1.3</version>
 				<executions>
 					<execution>
-						<phase>	package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>jdeb</goal>
 						</goals>
@@ -603,92 +524,131 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>				
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<shadedClassifierName>shaded</shadedClassifierName>
-					<transformers>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass>
-						</transformer>
-					</transformers>
-					<minimizeJar>true</minimizeJar>
-					<exclude>commons-logging:commons-logging</exclude>
-					<exclude>jaxen:jaxen</exclude>
-					<exclude>javax.xml.parsers:jaxp-api</exclude>
-					<exclude>postgresql-9.2-1002-jdbc4.jar</exclude>
-					<exclude>org.slf4j:slf4j-log4j12</exclude>
-					<exclude>xml-apis:xml-apis</exclude>
-					<filters>
-						<filter>
-						<artifact>*:*</artifact>
-						<excludes>
-							<exclude>META-INF/*.SF</exclude>
-							<exclude>META-INF/*.DSA</exclude>
-							<exclude>META-INF/*.RSA</exclude>
-						</excludes>
-						</filter>
-					</filters>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
-			-->
-			<!--
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+				<version>2.3</version> <executions> <execution> <phase>package</phase> <goals> 
+				<goal>shade</goal> </goals> </execution> </executions> <configuration> <shadedArtifactAttached>true</shadedArtifactAttached> 
+				<shadedClassifierName>shaded</shadedClassifierName> <transformers> <transformer 
+				implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
+				<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> </transformer> 
+				</transformers> <minimizeJar>true</minimizeJar> <exclude>commons-logging:commons-logging</exclude> 
+				<exclude>jaxen:jaxen</exclude> <exclude>javax.xml.parsers:jaxp-api</exclude> 
+				<exclude>postgresql-9.2-1002-jdbc4.jar</exclude> <exclude>org.slf4j:slf4j-log4j12</exclude> 
+				<exclude>xml-apis:xml-apis</exclude> <filters> <filter> <artifact>*:*</artifact> 
+				<excludes> <exclude>META-INF/*.SF</exclude> <exclude>META-INF/*.DSA</exclude> 
+				<exclude>META-INF/*.RSA</exclude> </excludes> </filter> </filters> </configuration> 
+				</plugin> -->
+			<!-- <plugin> <groupId>com.akathist.maven.plugins.launch4j</groupId> <artifactId>launch4j-maven-plugin</artifactId> 
+				<version>1.7.4</version> <executions> <execution> <id>l4j-clui</id> <phase>package</phase> 
+				<goals> <goal>launch4j</goal> </goals> <configuration> <headerType>gui</headerType> 
+				<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar> 
+				<outfile>${project.build.directory}/Geotriples.exe</outfile> <downloadUrl>http://java.com/download</downloadUrl> 
+				<classPath> <mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> 
+				<preCp>anything</preCp> </classPath> comment start icon>src/main/resources/icon/application.ico</icon 
+				comment end <jre> <minVersion>1.6.0</minVersion> <jdkPreference>preferJre</jdkPreference> 
+				</jre> <versionInfo> <fileVersion>1.0.0.0</fileVersion> <txtFileVersion>${project.version}</txtFileVersion> 
+				<fileDescription>${project.name}</fileDescription> <copyright>2014</copyright> 
+				<productVersion>1.0.0.0</productVersion> <txtProductVersion>1.0.0.0</txtProductVersion> 
+				<productName>${project.name}</productName> <companyName>CWI/UoA</companyName> 
+				<internalName>Geotriples</internalName> <originalFilename>Geotriples.exe</originalFilename> 
+				</versionInfo> </configuration> </execution> </executions> </plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
+				<version>2.5.3</version> <configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
+				</descriptorRefs> <archive> <manifest> <mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> 
+				</manifest> </archive> </configuration> <executions> <execution> <id>make-assembly</id> 
+				<phase>package</phase> <goals> <goal>single</goal> </goals> </execution> 
+				</executions> </plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
+				<version>2.8</version> <executions> <execution> <id>copy-dependencies</id> 
+				<phase>package</phase> <goals> <goal>copy-dependencies</goal> </goals> <configuration> 
+				<outputDirectory>${project.build.directory}</outputDirectory> <overWriteReleases>false</overWriteReleases> 
+				<overWriteSnapshots>false</overWriteSnapshots> <overWriteIfNewer>true</overWriteIfNewer> 
+				</configuration> </execution> </executions> </plugin> -->
 			<plugin>
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.7.4</version>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<altReleaseDeploymentRepository>geotriples.internal.repo::default::file://${project.build.directory}/mvn-repo</altReleaseDeploymentRepository>
+					<altSnapshotDeploymentRepository>geotriples.internal.repo::default::file://${project.build.directory}/mvn-repo-snapshots</altSnapshotDeploymentRepository>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.11</version>
 				<executions>
 					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
+						<id>deploy-release</id>
 						<configuration>
-							<headerType>gui</headerType>
-							<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar>
-							<outfile>${project.build.directory}/Geotriples.exe</outfile>
-							<downloadUrl>http://java.com/download</downloadUrl>
-							<classPath>
-								<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass>
-								<preCp>anything</preCp>
-							</classPath>
-							comment start
-							icon>src/main/resources/icon/application.ico</icon
-							comment end
-							<jre>
-								<minVersion>1.6.0</minVersion>
-								<jdkPreference>preferJre</jdkPreference>
-							</jre>
-							<versionInfo>
-								<fileVersion>1.0.0.0</fileVersion>
-								<txtFileVersion>${project.version}</txtFileVersion>
-								<fileDescription>${project.name}</fileDescription>
-								<copyright>2014</copyright>
-								<productVersion>1.0.0.0</productVersion>
-								<txtProductVersion>1.0.0.0</txtProductVersion>
-								<productName>${project.name}</productName>
-								<companyName>CWI/UoA</companyName>
-								<internalName>Geotriples</internalName>
-								<originalFilename>Geotriples.exe</originalFilename>
-							</versionInfo>
+							<message>Maven artifacts for ${project.version} (release)</message>
+							<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+							<branch>refs/heads/mvn-repo</branch>
+							<excludes>
+								<exclude>**/*.deb*</exclude>
+							</excludes>
+							<merge>true</merge>
 						</configuration>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+					<execution>
+						<id>deploy-snapshot</id>
+						<configuration>
+							<message>Maven artifacts for ${project.version} (snapshots)</message>
+							<outputDirectory>${project.build.directory}/mvn-repo-snapshots</outputDirectory>
+							<branch>refs/heads/mvn-repo-snapshots</branch>
+							<excludes>
+								<exclude>**/*.deb*</exclude>
+							</excludes>
+						</configuration>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
 					</execution>
 				</executions>
 			</plugin>
-			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>generate-test-resources</phase>
+						<configuration>
+							<target>
+								<echo message="Creating staging directories" />
+								<mkdir dir="${project.build.directory}/mvn-repo" />
+								<echo output="${project.build.directory}/mvn-repo/README.md"
+									message="This branch is intented to be the maven repository for the releases of GeoTriples" />
+								<mkdir dir="${project.build.directory}/mvn-repo-snapshots" />
+								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md"
+									message="This branch is intented to be the maven repository for the snapshots of GeoTriples" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -700,9 +660,10 @@
 		</resources>
 	</build>
 	<scm>
-		<connection>scm:git:http://github.com/LinkedEOData/GeoTriples.git</connection>
+		<url>https://github.com/LinkedEOData/GeoTriples</url>
+		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-		<url>http://github.com/LinkedEOData/GeoTriples</url>
+		<tag>v1.0.1</tag>
 	</scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
@@ -719,15 +680,15 @@
 		</repository>
 		<!-- Temporary: Joseki dependencies -->
 		<repository>
+			<id>geotriples.dependencies</id>
+			<name>GeoTriples - maven repository - dependencies</name>
+			<url>http://maven.strabon.di.uoa.gr/content/repositories/geotriples.dependencies/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-			<id>geotriples.dependencies</id>
-			<name>GeoTriples - maven repository - dependencies</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/geotriples.dependencies/</url>
 		</repository>
 		<!-- Geotools -->
 		<repository>
@@ -738,7 +699,28 @@
 			<name>OpenGeo Maven Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
-		
+		<!-- GeoTriples repo -->
+		<repository>
+			<id>geotriples.repo</id>
+			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>geotriples.repo.snapshots</id>
+			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 		
 		<!-- RML repositories -->
 		<repository>
@@ -751,27 +733,18 @@
             <url>https://github.com/santhosh-tekuri/maven-repository/raw/master/</url>
             <layout>default</layout>
         </repository>
-        
-        
 	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>geotriples.internal</id>
-			<name>Temporary Staging Repository</name>
+			<id>geotriples.internal.repo.release</id>
+			<name>Temporary Staging Repository for releases</name>
 			<url>file://${project.build.directory}/mvn-repo</url>
 		</repository>
-		<!--
-		<repository>
-			<id>geotriples.releases</id>
-			<name>GeoTriples maven repo</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/geotriples.releases</url>
-		</repository>
 		<snapshotRepository>
-			<id>geotriples.snapshots</id>
-			<name>GeoTriples maven repo</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/geotriples.snapshots</url>
+			<id>geotriples.internal.repo.snapshot</id>
+			<name>Temporary Staging Repository for snapshots</name>
+			<url>file://${project.build.directory}/mvn-repo-snapshots</url>
 		</snapshotRepository>
-		-->
 	</distributionManagement>
 	<pluginRepositories>
 		<pluginRepository>

@@ -336,7 +336,7 @@ public class GeoTriplesWindow extends Window implements Bindable {
 							}
 							else if (connectiontype == ConnectionType.RML) {
 								//invoke rml processor
-								String yourArray[] = {"-rml", "-s", srid, "-o", outputurl, "mapping.ttl"};
+								String yourArray[] = {"-rml", "-s", srid, "-f", (String) dbRDFFormat.getSelectedItem(), "-o", outputurl, "mapping.ttl"};
 								new eu.linkedeodata.geotriples.dump_rdf().process(yourArray);
 								file.delete();
 							}
