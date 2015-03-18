@@ -1,4 +1,4 @@
 #!/bin/bash
 
-java -jar /usr/share/jdeb/lib/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar "$@"
+java -jar /usr/share/jdeb/lib/geotriples-*-cmd.jar "$@"
 

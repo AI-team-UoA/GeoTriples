@@ -1,4 +1,4 @@
 #!/bin/bash
 
-java -jar /usr/share/jdeb/lib/geotriples-1.0-SNAPSHOT-gui.one-jar.jar
+java -jar /usr/share/jdeb/lib/geotriples-*-gui.jar
 
