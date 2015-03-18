@@ -19,6 +19,7 @@ import org.d2rq.r2rml.TermMap.ColumnValuedTermMap;
 import org.d2rq.r2rml.TermMap.ConstantValuedTermMap;
 import org.d2rq.r2rml.TermMap.TemplateValuedTermMap;
 import org.d2rq.r2rml.TermMap.TermType;
+import org.d2rq.r2rml.TermMap.TransformationValuedTermMap;
 import org.d2rq.validation.Message.Problem;
 import org.d2rq.validation.Report;
 import org.d2rq.vocab.RR;
@@ -29,12 +30,15 @@ import org.d2rq.vocab.VocabularySummarizer;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFList;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -185,6 +189,10 @@ public class R2RMLReader {
 			termMapConflictChecker.add(r, RR.column);
 			mapping.termMaps().put(r, createColumnValuedTermMap(r));
 		}
+		for (Resource r: listResourcesWith(RRX.function)) {
+			termMapConflictChecker.add(r, RRX.function);
+			mapping.termMaps().put(r, createTransformationValuedTermMap(r));
+		}
 		for (Resource r: listResourcesWith(RR.template)) {
 			termMapConflictChecker.add(r, RR.template);
 			mapping.termMaps().put(r, createTemplateValuedTermMap(r));
@@ -268,10 +276,58 @@ public class R2RMLReader {
 		readTermMap(result, r);
 		return result;
 	}
-
+	//d
 	private TermMap createColumnValuedTermMap(Resource r) {
+		return createColumnValuedTermMap(r,false);
+	}
+	private TermMap createColumnValuedTermMap(Resource r,boolean only) {
 		ColumnValuedTermMap result = new ColumnValuedTermMap();
-		result.setColumnName(ColumnNameR2RML.create(getString(r, RR.column)));
+		result.setColumnName(ColumnNameR2RML.create(getString(r, RR.column,only)));
+		readColumnOrTemplateValuedTermMap(result, r);
+		return result;
+	}
+	
+	private TermMap createTransformationValuedTermMap(Resource r) {
+		TransformationValuedTermMap result = new TransformationValuedTermMap();
+		result.setFunction(ConstantIRI.create(getString(r, RRX.function)));
+		
+		
+		List<TermMap> arguments=new ArrayList<TermMap>();
+		//Resource list = getResource(r, RRX.argumentMap);
+		
+		RDFNode list2 = r.getProperty(RRX.argumentMap).getObject();;
+		
+		
+		
+		RDFList rdfList = list2.as( RDFList.class );
+        ExtendedIterator<RDFNode> items = rdfList.iterator();
+        while ( items.hasNext() ) {
+            Resource item = items.next().asResource();            
+            if(item.getProperty(RR.constant)!=null)
+            {
+    			arguments.add(createConstantValuedTermMap(item));
+    		}
+            if(item.getProperty(RR.column)!=null) {
+				arguments.add(createColumnValuedTermMap(item));
+			}
+			if(item.getProperty(RRX.function)!=null) {
+				arguments.add(createTransformationValuedTermMap(item));
+			}
+			if(item.getProperty(RR.template)!=null) {
+				arguments.add(createTemplateValuedTermMap(item));
+			}
+            
+        }
+		
+		
+		
+		
+		
+		
+		
+		
+        
+		result.setTermMaps(arguments);
 		readColumnOrTemplateValuedTermMap(result, r);
 		return result;
 	}
@@ -443,7 +499,7 @@ public class R2RMLReader {
 			report.report(Problem.SPURIOUS_TRIPLE, stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
 		}
 	}
-	
+
 	public List<RDFNode> getRDFNodes(Resource r, Property p, NodeType acceptableNodes) {
 		List<RDFNode> result = new ArrayList<RDFNode>();
 		StmtIterator it = r.listProperties(p);
@@ -470,6 +526,14 @@ public class R2RMLReader {
 			report.report(Problem.DUPLICATE_VALUE, r, p, all.toArray(new RDFNode[all.size()]));
 		}
 		return all.iterator().next();
+	}
+	
+	//d
+	public RDFNode getOnlyRDFNode(Resource r, Property p, NodeType acceptableNodes) {
+		if (acceptableNodes.isTypeOf(r.getProperty(p).getObject())) {
+			return r.getProperty(p).getObject();
+		} 
+		return null;
 	}
 	
 	public List<RDFNode> getRDFNodes(Resource r, Property p) {
@@ -517,7 +581,18 @@ public class R2RMLReader {
 	}
 	
 	public String getString(Resource r, Property p) {
-		RDFNode node = getRDFNode(r, p, NodeType.STRING_LITERAL);
+		return getString(r, p,false);
+	}
+	
+	public String getString(Resource r, Property p,boolean only) {
+		RDFNode node=null;
+		if(only)
+		{
+			node = getOnlyRDFNode(r, p, NodeType.STRING_LITERAL);
+		}
+		else {
+			node = getRDFNode(r, p, NodeType.STRING_LITERAL);
+		}
 		if (node == null) return null;
 		return node.asLiteral().getLexicalForm();
 	}

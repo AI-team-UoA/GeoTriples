@@ -43,6 +43,7 @@ import org.d2rq.r2rml.TermMap.ConstantValuedTermMap;
 import org.d2rq.r2rml.TermMap.Position;
 import org.d2rq.r2rml.TermMap.TemplateValuedTermMap;
 import org.d2rq.r2rml.TermMap.TermType;
+import org.d2rq.r2rml.TermMap.TransformationValuedTermMap;
 import org.d2rq.values.BaseIRIValueMaker;
 import org.d2rq.values.ColumnValueMaker;
 import org.d2rq.values.TemplateValueMaker;

@@ -218,13 +218,7 @@ public class TemplateValueMaker implements ValueMaker {
 		return result.toString();
 	}
 	public Object makeValueObject(ResultRow row) {
-		try {
-			throw new Exception("mple TemplateValueMaker not supposed to return Object:p");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return NULL; 
+		return makeValue(row);
 	}
 	
 	public List<OrderSpec> orderSpecs(boolean ascending) {

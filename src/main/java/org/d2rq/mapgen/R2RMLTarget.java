@@ -325,4 +325,11 @@ public class R2RMLTarget implements Target {
 		
 	}
 
+	@Override
+	public void generateTransformationProperty(Property property,
+			TableName tableName, ConstantIRI function,
+			List<TermMap> argumentMap, DataType datatype) {
+		throw new UnsupportedOperationException();
+	}
+
 }

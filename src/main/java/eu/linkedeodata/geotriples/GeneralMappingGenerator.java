@@ -16,9 +16,14 @@ import org.d2rq.db.schema.Key;
 import org.d2rq.db.schema.TableDef;
 import org.d2rq.db.schema.TableName;
 import org.d2rq.db.types.DataType;
+import org.d2rq.db.vendor.Vendor;
 import org.d2rq.lang.Microsyntax;
 import org.d2rq.mapgen.Filter;
 import org.d2rq.mapgen.Target;
+import org.d2rq.r2rml.ColumnNameR2RML;
+import org.d2rq.r2rml.ConstantIRI;
+import org.d2rq.r2rml.TermMap;
+import org.d2rq.r2rml.TermMap.ColumnValuedTermMap;
 import org.d2rq.values.TemplateValueMaker;
 import org.d2rq.vocab.GEOMETRY_FUNCTIONS;
 import org.d2rq.vocab.GEOMETRY_FUNCTIONS.GEOMETRY_FUNCTIONS_DATATYPES;
@@ -271,10 +276,17 @@ public class GeneralMappingGenerator {
 							
 						property = style.getCustomColumnProperty(tableName,
 								Identifier.createDelimited(column.getPredicate()),true);
-						target.generateGeometryColumnProperty(property, tableName,
-								Identifier.createDelimited(column.getColumnName()),
-								GEOMETRY_FUNCTIONS_DATATYPES.getDataTypeOf(column.getTransformation()),
-								GEOMETRY_FUNCTIONS.getGeometryFunctionOf(column.getTransformation()));
+						
+						
+						ArrayList<TermMap> argumentMap=new ArrayList<TermMap>();
+						argumentMap.add(createTermMap(Identifier.createDelimited(column.getColumnName())));
+						target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.getGeometryFunctionOf(column.getTransformation()), argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.getDataTypeOf(column.getTransformation()));
+						
+						
+//						target.generateGeometryColumnProperty(property, tableName,
+//								Identifier.createDelimited(column.getColumnName()),
+//								GEOMETRY_FUNCTIONS_DATATYPES.getDataTypeOf(column.getTransformation()),
+//								GEOMETRY_FUNCTIONS.getGeometryFunctionOf(column.getTransformation()));
 
 						tryRegisterPrefix(tableName.getTable().getName()
 								.toLowerCase(), property.getNameSpace());
@@ -293,65 +305,93 @@ public class GeneralMappingGenerator {
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("asWKT"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.asWKT,
-					GEOMETRY_FUNCTIONS.asWKT);
+			ArrayList<TermMap> argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.asWKT, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.asWKT);
+			
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.asWKT,
+//					GEOMETRY_FUNCTIONS.asWKT);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("hasSerialization"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization,
-					GEOMETRY_FUNCTIONS.hasSerialization);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.hasSerialization, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization,
+//					GEOMETRY_FUNCTIONS.hasSerialization);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("asGML"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.asGML,
-					GEOMETRY_FUNCTIONS.asGML);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.asGML, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.asGML);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.asGML,
+//					GEOMETRY_FUNCTIONS.asGML);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("isSimple"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.isSimple,
-					GEOMETRY_FUNCTIONS.isSimple);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.isSimple, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.isSimple);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.isSimple,
+//					GEOMETRY_FUNCTIONS.isSimple);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("isEmpty"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.isEmpty,
-					GEOMETRY_FUNCTIONS.isEmpty);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.isEmpty, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.isEmpty);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.isEmpty,
+//					GEOMETRY_FUNCTIONS.isEmpty);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("is3D"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.is3D, GEOMETRY_FUNCTIONS.is3D);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.is3D, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.is3D);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.is3D, GEOMETRY_FUNCTIONS.is3D);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("spatialDimension"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.spatialDimension,
-					GEOMETRY_FUNCTIONS.spatialDimension);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.spatialDimension, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.spatialDimension);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.spatialDimension,
+//					GEOMETRY_FUNCTIONS.spatialDimension);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("dimension"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.dimension,
-					GEOMETRY_FUNCTIONS.dimension);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.dimension, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.dimension);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.dimension,
+//					GEOMETRY_FUNCTIONS.dimension);
 
 			property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("coordinateDimension"),true);
-			target.generateGeometryColumnProperty(property, tableName,
-					Identifier.createDelimited("the_geom"),
-					GEOMETRY_FUNCTIONS_DATATYPES.coordinateDimension,
-					GEOMETRY_FUNCTIONS.coordinateDimension);
+			argumentMap=new ArrayList<TermMap>();
+			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.coordinateDimension, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.coordinateDimension);
+//			target.generateGeometryColumnProperty(property, tableName,
+//					Identifier.createDelimited("the_geom"),
+//					GEOMETRY_FUNCTIONS_DATATYPES.coordinateDimension,
+//					GEOMETRY_FUNCTIONS.coordinateDimension);
 			}
 			for (ForeignKey fk : table.getForeignKeys()) {
 				if (!filter.matches(fk.getReferencedTable())
@@ -672,5 +712,12 @@ public class GeneralMappingGenerator {
 			return uri;
 		}
 		return uri.substring(0, uri.length() - 1);
+	}
+	
+	private TermMap createTermMap(Identifier column) {
+		ColumnValuedTermMap result = new ColumnValuedTermMap();
+		result.setColumnName(ColumnNameR2RML.create(column, Vendor.MySQL));
+		//result.setDatatype(ConstantIRI.create(dType.rdfType()));
+		return result;
 	}
 }

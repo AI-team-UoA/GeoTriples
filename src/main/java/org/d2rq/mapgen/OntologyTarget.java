@@ -11,6 +11,7 @@ import org.d2rq.db.schema.Key;
 import org.d2rq.db.schema.TableName;
 import org.d2rq.db.types.DataType;
 import org.d2rq.r2rml.ConstantIRI;
+import org.d2rq.r2rml.TermMap;
 import org.d2rq.values.TemplateValueMaker;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -183,5 +184,12 @@ public class OntologyTarget implements Target {
 			String sqlQuery) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void generateTransformationProperty(Property property,
+			TableName tableName, ConstantIRI function,
+			List<TermMap> argumentMap, DataType datatype) {
+			throw new UnsupportedOperationException();
 	}
 }

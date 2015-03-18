@@ -1,9 +1,14 @@
 package org.d2rq.r2rml;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.iri.IRI;
 import org.d2rq.vocab.RR;
+import org.d2rq.vocab.RRX;
+
+import be.ugent.mmlab.rml.vocabulary.Vocab.R2RMLTerm;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -143,6 +148,7 @@ public abstract class TermMap extends MappingComponent {
 			visitor.visitTermProperty(RR.language, languageTag);
 			visitor.visitTermProperty(RR.inverseExpression, inverseExpression);
 			visitor.visitSimpleProperty(RR.termType, termType);
+			
 		}
 	}
 	
@@ -167,6 +173,38 @@ public abstract class TermMap extends MappingComponent {
 			visitor.visitComponent(this, position);
 			visitor.visitTermProperty(RR.column, column);
 		}
+	}
+	
+	public static class TransformationValuedTermMap extends ColumnOrTemplateValuedTermMap {
+		private List<TermMap> termMaps = null;
+		private ConstantIRI function;
+		public ComponentType getType() {
+			return ComponentType.TRANSFORMATION_VALUED_TERM_MAP;
+		}
+		public void setTermMaps(List<TermMap> termMaps) {
+			this.termMaps = termMaps;
+		}
+		public List<TermMap> getTermMaps() {
+			return termMaps;
+		}
+		public ConstantIRI getFunction() {
+			return function;
+		}
+		public void setFunction(ConstantIRI function) {
+			this.function = function;
+		}
+		@Override
+		public TermType getDefaultObjectMapTermType() {
+			return TermType.LITERAL;
+		}
+		@Override
+		public void acceptAs(MappingVisitor visitor, Position position) {
+			super.acceptAs(visitor, position);
+			visitor.visitComponent(this, position);
+			visitor.visitTermProperty(RRX.function, function);
+			visitor.visitTermProperty(RRX.argumentMap, termMaps);
+		}
+		
 	}
 	
 	public static class TemplateValuedTermMap extends ColumnOrTemplateValuedTermMap {

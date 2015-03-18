@@ -20,6 +20,8 @@ public class RRExtra {
 		RR.SubjectMap.getModel().createResource(RR.getURI() + "ColumnValuedTermMap");
 	public static Resource TemplateValuedTermMap = 
 		RR.SubjectMap.getModel().createResource(RR.getURI() + "TemplateValuedTermMap");
+	public static Resource TransformationValuedTermMap = 
+		RR.SubjectMap.getModel().createResource(RR.getURI() + "TransformationValuedTermMap");
 
 	public static Resource SQL2008 = 
 			RR.SubjectMap.getModel().createResource(RR.getURI() + "SQL2008");

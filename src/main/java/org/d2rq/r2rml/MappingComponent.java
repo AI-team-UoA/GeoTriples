@@ -27,7 +27,7 @@ public abstract class MappingComponent {
 		PREDICATE_OBJECT_MAP(RR.PredicateObjectMap, "predicate-object map"),
 		REF_OBJECT_MAP(RR.RefObjectMap, "referencing object map"),
 		JOIN(RR.Join, "join"),
-		
+		TRANSFORMATION_VALUED_TERM_MAP(RRExtra.ColumnValuedTermMap, "transformation-valued term map"),
 		//d2.1
 		FUNCTION(RRX.function,"function"),
 		PARAMETERS(RRX.argumentMap ,"argumentmap" );

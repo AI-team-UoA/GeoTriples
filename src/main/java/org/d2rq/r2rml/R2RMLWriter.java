@@ -6,9 +6,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.d2rq.r2rml.MappingComponent.ComponentType;
+import org.d2rq.r2rml.TermMap.Position;
 import org.d2rq.r2rml.TermMap.TermType;
 import org.d2rq.vocab.RR;
 import org.d2rq.vocab.RRX;
@@ -115,6 +117,24 @@ public class R2RMLWriter extends MappingVisitor.TreeWalkerImplementation impleme
 			out.printProperty(property, term.toString());
 		}
 	}
+	
+	@Override
+	public void visitTermProperty(Property property, List<TermMap> termMaps) {
+		out.printProperty(property);
+		out.printListStart();
+		for(int i =0 ; i<termMaps.size(); ++i)
+		{
+			out.printPropertyStart();
+			termMaps.get(i).accept(this);
+			if(i<(termMaps.size()-1))
+			{
+				out.printComma();
+			}
+			out.printPropertyEndWithoutSemicolon();
+		}
+		out.printListEnd();
+	}
+	
 
 	@Override
 	public void visitSimpleProperty(Property property, Object value) {

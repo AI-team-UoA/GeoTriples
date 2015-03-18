@@ -116,6 +116,22 @@ public class PrettyTurtleWriter {
 		indent -= 4;
 	}
 	
+	
+	public void printListStart() {
+		printIndent();
+		out.print("(");
+		indent += 4;
+	}
+	public void printListEnd() {
+		indent -= 4;
+		printIndent();
+		out.print(")");
+		
+	}
+	public void printComma() {
+		out.print(",");
+	}
+	
 	/**
 	 * Opens a blank node.
 	 */
@@ -134,6 +150,22 @@ public class PrettyTurtleWriter {
 		compactStack.push(compact);
 	}
 	
+	/**
+	 * Opens a blank node.
+	 */
+	public void printPropertyStart() {
+		printIndent();
+		out.print(" [");
+		indent += 4;
+		compactStack.push(true);
+	}
+	
+	public void printPropertyEndWithoutSemicolon() {
+		indent -= 4;
+		printIndent();
+		out.print("]");
+		compactStack.pop();
+	}
 	public void printPropertyEnd() {
 		indent -= 4;
 		printIndent();
@@ -154,6 +186,10 @@ public class PrettyTurtleWriter {
 		if (!writeIt) return;
 		printPropertyTurtle(writeIt, property, value ? "true" : "false");
 	}
+	public void printProperty(boolean writeIt, Property property) {
+		if (!writeIt) return;
+		printPropertyTurtle(writeIt, property);
+	}
 	
 	public void printProperty(boolean writeIt, Property property, int value) {
 		if (!writeIt) return;
@@ -168,7 +204,9 @@ public class PrettyTurtleWriter {
 	public void printProperty(Property property, String value) {
 		printProperty(value != null, property, value);
 	}
-	
+	public void printProperty(Property property) {
+		printProperty(true, property);
+	}
 	public void printLongStringProperty(Property property, String value) {
 		printPropertyTurtle(value != null, property, quoteLong(value));
 	}
@@ -231,6 +269,12 @@ public class PrettyTurtleWriter {
 		out.print(" ");
 		out.print(turtleSnippet);
 		out.print(";");
+	}
+	public void printPropertyTurtle(boolean writeIt, Property property) {
+		if (!writeIt) return;
+		printIndent();
+		out.print(toTurtle(property));
+		out.print(" ");
 	}
 
 	private String quote(String s) {

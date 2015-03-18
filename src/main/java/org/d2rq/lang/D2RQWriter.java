@@ -14,6 +14,7 @@ import java.util.Map;
 import org.d2rq.db.op.LimitOp;
 import org.d2rq.db.schema.ColumnName;
 import org.d2rq.lang.TranslationTable.Translation;
+import org.d2rq.r2rml.TermMap;
 import org.d2rq.vocab.D2RQ;
 import org.d2rq.vocab.JDBC;
 import org.d2rq.writer.MappingWriter;
@@ -248,5 +249,11 @@ public class D2RQWriter implements MappingWriter {
 			}
 		}
 		out.printResourceStart(object.resource(), class_);
+	}
+
+	@Override
+	public void visitTermProperty(Property property, List<TermMap> termMaps) {
+		// TODO Auto-generated method stub
+		
 	}
 }

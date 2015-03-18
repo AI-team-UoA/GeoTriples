@@ -29,10 +29,10 @@ package be.ugent.mmlab.rml.model;
 
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
-import be.ugent.mmlab.rml.model.transformation.TransformationFunction;
 import be.ugent.mmlab.rml.tools.CustomRDFDataValidator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.antidot.semantic.rdf.model.tools.RDFDataValidator;
@@ -55,8 +55,23 @@ public abstract class AbstractTermMapTrans extends AbstractTermMap {
         // Log
         private static Log log = LogFactory.getLog(AbstractTermMapTrans.class);
 
-        private TransformationFunction transformationFunction;
+        private URI function = null;
+        public URI getFunction() {
+			return function;
+		}
 
+		public void setFunction(URI function) {
+			this.function = function;
+		}
+
+		public List<TermMap> getArgumentMap() {
+			return argumentMap;
+		}
+
+		public void setArgumentMap(List<TermMap> argumentMap) {
+			this.argumentMap = argumentMap;
+		}
+		private List<TermMap> argumentMap =null;
         protected AbstractTermMapTrans(Value constantValue, URI dataType,
                 String languageTag, String stringTemplate, URI termType,
                 String inverseExpression, ReferenceIdentifier referenceValue)
@@ -67,11 +82,12 @@ public abstract class AbstractTermMapTrans extends AbstractTermMap {
         
         protected AbstractTermMapTrans(Value constantValue, URI dataType,
                 String languageTag, String stringTemplate, URI termType,
-                String inverseExpression, ReferenceIdentifier referenceValue , TransformationFunction transformationFunction)
+                String inverseExpression, ReferenceIdentifier referenceValue ,URI function,List<TermMap> argumentMap )
                 throws R2RMLDataError, InvalidR2RMLStructureException,
                 InvalidR2RMLSyntaxException {
     			super(constantValue, dataType, languageTag, stringTemplate, termType, inverseExpression, referenceValue);
-                this.transformationFunction=transformationFunction;
+                this.function=function;
+                this.argumentMap=argumentMap;
                 //checkGlobalConsistency();
         }
         @Override
@@ -82,12 +98,14 @@ public abstract class AbstractTermMapTrans extends AbstractTermMap {
                 return TermMapType.REFERENCE_VALUED;
         } else if (stringTemplate != null) {
                 return TermMapType.TEMPLATE_VALUED;
-        } else if (termType == TermType.BLANK_NODE) {
-                return TermMapType.NO_VALUE_FOR_BNODE;
+        } else if (function != null)
+        {
+        	return TermMapType.TRANSFORMATION_VALUED;
         }
-        else if(transformationFunction !=null) {
-                    	return TermMapType.NO_VALUE_FOR_BNODE;
-                    }
+        
+        else if (termType == TermType.BLANK_NODE) {
+                return TermMapType.NO_VALUE_FOR_BNODE;
+        } 
                 
                 return null;
         }

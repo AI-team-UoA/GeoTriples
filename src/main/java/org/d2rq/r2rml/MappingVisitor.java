@@ -1,5 +1,7 @@
 package org.d2rq.r2rml;
 
+import java.util.List;
+
 import org.d2rq.r2rml.GeometryParametersTerms.ColumnOrTemplateValuedTermMap;
 import org.d2rq.r2rml.GeometryParametersTerms.ColumnValuedTermMap;
 import org.d2rq.r2rml.GeometryParametersTerms.TemplateValuedTermMap;
@@ -15,6 +17,7 @@ public interface MappingVisitor {
 
 	void visitComponentProperty(Property property, Resource resource, ComponentType... types);
 	void visitTermProperty(Property property, MappingTerm term);
+	void visitTermProperty(Property property, List<TermMap> term);
 	void visitSimpleProperty(Property property, Object value);
 	
 	void visitComponent(Mapping mapping);
@@ -26,6 +29,7 @@ public interface MappingVisitor {
 	void visitComponent(TermMap.ConstantValuedTermMap termMap, Position position);
 	void visitComponent(TermMap.ColumnOrTemplateValuedTermMap termMap, Position position);
 	void visitComponent(TermMap.ColumnValuedTermMap termMap, Position position);
+	void visitComponent(TermMap.TransformationValuedTermMap termMap, Position position);
 	void visitComponent(TermMap.TemplateValuedTermMap termMap, Position position);
 	void visitComponent(PredicateObjectMap predicateObjectMap);
 	void visitComponent(ReferencingObjectMap referencingObjectMap);
@@ -59,6 +63,7 @@ public interface MappingVisitor {
 		public void visitComponentProperty(Property property, Resource resource, 
 				ComponentType... types) {}
 		public void visitTermProperty(Property property, MappingTerm term) {}
+		public void visitTermProperty(Property property, List<TermMap> term) {}
 		public void visitSimpleProperty(Property property, Object value) {}
 		public void visitComponent(Mapping mapping) {}
 		public void visitComponent(TriplesMap triplesMap) {}
@@ -68,6 +73,7 @@ public interface MappingVisitor {
 		public void visitComponent(TermMap termMap, Position position) {}
 		public void visitComponent(TermMap.ConstantValuedTermMap termMap, Position position) {}
 		public void visitComponent(TermMap.ColumnOrTemplateValuedTermMap termMap, Position position) {}
+		public void visitComponent(TermMap.TransformationValuedTermMap termMap, Position position) {}
 		public void visitComponent(TermMap.ColumnValuedTermMap termMap, Position position) {}
 		public void visitComponent(TermMap.TemplateValuedTermMap termMap, Position position) {}
 		public void visitComponent(PredicateObjectMap predicateObjectMap) {}
@@ -141,6 +147,8 @@ public interface MappingVisitor {
 				term.accept(this);
 			}
 		}
+		
+		
 	}
 	
 	

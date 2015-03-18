@@ -55,6 +55,7 @@ public class TypedNodeMaker implements NodeMaker {
 	protected NodeType nodeType;
 	protected ValueMaker valueMaker;
 	
+	
 	public TypedNodeMaker(NodeType nodeType, ValueMaker valueMaker) {
 		this.nodeType = nodeType;
 		this.valueMaker = valueMaker;
@@ -63,6 +64,7 @@ public class TypedNodeMaker implements NodeMaker {
 	public NodeType getNodeType() {
 		return nodeType;
 	}
+	
 	
 	public ValueMaker getValueMaker() {
 		return valueMaker;

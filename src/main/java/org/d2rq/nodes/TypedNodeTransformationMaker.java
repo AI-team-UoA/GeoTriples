@@ -1,5 +1,7 @@
 package org.d2rq.nodes;
 
+import java.util.List;
+
 import org.d2rq.db.ResultRow;
 import org.d2rq.r2rml.ConstantIRI;
 import org.d2rq.values.ValueMaker;
@@ -18,13 +20,13 @@ import eu.linkedeodata.geotriples.GeneralConnection;
  * 
  * TODO: isUnique() should probably not be stored here, but derived from unique key information in the underlying table(s). d2rq:containsDuplicates should be treated as asserting a unique key.
  * 
- * @author Richard Cyganiak (richard@cyganiak.de)
  * @author Dimitrianos Savva (dimis@di.uoa.gr)
  */
 public class TypedNodeTransformationMaker extends TypedNodeMaker {
 	
 	private ConstantIRI gfunction;
 	private GeneralConnection connection;
+	
 	public TypedNodeTransformationMaker(NodeType nodeType, ValueMaker valueMaker,ConstantIRI function,GeneralConnection con) {
 		super(nodeType, valueMaker);
 		gfunction=function;
