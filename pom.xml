@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
@@ -535,8 +534,7 @@ gt-process-geometry</artifactId>
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
 				<version>2.3</version> <executions> <execution> <phase>package</phase> <goals> 
 				<goal>shade</goal> </goals> </execution> </executions> <configuration> <shadedArtifactAttached>true</shadedArtifactAttached> 
-				<shadedClassifierName>shaded</shadedClassifierName> <transformers> <transformer 
-				implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
+				<shadedClassifierName>shaded</shadedClassifierName> <transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
 				<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> </transformer> 
 				</transformers> <minimizeJar>true</minimizeJar> <exclude>commons-logging:commons-logging</exclude> 
 				<exclude>jaxen:jaxen</exclude> <exclude>javax.xml.parsers:jaxp-api</exclude> 
@@ -551,8 +549,7 @@ gt-process-geometry</artifactId>
 				<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar> 
 				<outfile>${project.build.directory}/Geotriples.exe</outfile> <downloadUrl>http://java.com/download</downloadUrl> 
 				<classPath> <mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> 
-				<preCp>anything</preCp> </classPath> comment start icon>src/main/resources/icon/application.ico</icon 
-				comment end <jre> <minVersion>1.6.0</minVersion> <jdkPreference>preferJre</jdkPreference> 
+				<preCp>anything</preCp> </classPath> comment start icon>src/main/resources/icon/application.ico</icon comment end <jre> <minVersion>1.6.0</minVersion> <jdkPreference>preferJre</jdkPreference> 
 				</jre> <versionInfo> <fileVersion>1.0.0.0</fileVersion> <txtFileVersion>${project.version}</txtFileVersion> 
 				<fileDescription>${project.name}</fileDescription> <copyright>2014</copyright> 
 				<productVersion>1.0.0.0</productVersion> <txtProductVersion>1.0.0.0</txtProductVersion> 
@@ -628,11 +625,9 @@ gt-process-geometry</artifactId>
 							<target>
 								<echo message="Creating staging directories" />
 								<mkdir dir="${project.build.directory}/mvn-repo" />
-								<echo output="${project.build.directory}/mvn-repo/README.md"
-									message="This branch is intented to be the maven repository for the releases of GeoTriples" />
+								<echo output="${project.build.directory}/mvn-repo/README.md" message="This branch is intented to be the maven repository for the releases of GeoTriples" />
 								<mkdir dir="${project.build.directory}/mvn-repo-snapshots" />
-								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md"
-									message="This branch is intented to be the maven repository for the snapshots of GeoTriples" />
+								<echo output="${project.build.directory}/mvn-repo-snapshots/README.md" message="This branch is intented to be the maven repository for the snapshots of GeoTriples" />
 							</target>
 						</configuration>
 						<goals>
@@ -663,7 +658,7 @@ gt-process-geometry</artifactId>
 		<url>https://github.com/LinkedEOData/GeoTriples</url>
 		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-		<tag>v1.0.1</tag>
+		<tag>v1.0.3</tag>
 	</scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
