@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
@@ -658,7 +658,7 @@ gt-process-geometry</artifactId>
 		<url>https://github.com/LinkedEOData/GeoTriples</url>
 		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-		<tag>v1.0.4</tag>
+		<tag>v1.0.3</tag>
 	</scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
