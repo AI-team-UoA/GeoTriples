@@ -437,7 +437,7 @@ gt-process-geometry</artifactId>
 					<execution>
 						<id>onejar-cmd</id>
 						<configuration>
-							<mainClass>eu.linkedeodata.geotriples.TempLayer</mainClass>
+							<mainClass>eu.linkedeodata.geotriples.GeoTriplesCMD</mainClass>
 							<onejarVersion>0.97</onejarVersion>
 							<attachToBuild>true</attachToBuild>
 							<classifier>cmd</classifier>

@@ -2,7 +2,7 @@ package eu.linkedeodata.geotriples;
 
 import java.util.Arrays;
 
-public class TempLayer {
+public class GeoTriplesCMD {
 	
 	public static void main(String [] args) throws Exception {
 		if (args.length == 0) {
