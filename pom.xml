@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
