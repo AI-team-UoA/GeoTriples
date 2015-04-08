@@ -1,5 +1,8 @@
 package eu.linkedeodata.geotriples;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
 
@@ -49,11 +52,13 @@ public class dump_rdf {
 			final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
 			final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 			final ArgDecl formatArg = new ArgDecl(true, "f", "format", "output RDF Fromat");
+			final ArgDecl namespacesArg = new ArgDecl(true, "ns", "namespace", "input file of namespaces");
 			final CommandLine cmd = new CommandLine();
 			cmd.add(rmlArg);
 			cmd.add(epsgArg);
 			cmd.add(outfileArg);
 			cmd.add(formatArg);
+			cmd.add(namespacesArg);
 			
 			try {
 				cmd.process(args);
@@ -77,20 +82,42 @@ public class dump_rdf {
 				usage();
 				System.exit(1);
 			}
-			if(cmd.contains(epsgArg) && !cmd.contains(formatArg))
+			List<String> arglist=new ArrayList<>();
+			if(cmd.contains(epsgArg)){
+				arglist.add("-epsg");
+				arglist.add(cmd.getArg(epsgArg).getValue());
+			}
+			if(cmd.contains(formatArg)){
+				arglist.add("-f");
+				arglist.add(cmd.getArg(formatArg).getValue());
+			}
+			if(cmd.contains(namespacesArg)){
+				arglist.add("-ns");
+				arglist.add(cmd.getArg(namespacesArg).getValue());
+			}
+			arglist.add(cmd.getItem(0));
+			arglist.add(cmd.getArg(outfileArg).getValue());
+			
+			pipeargs=arglist.toArray(new String[arglist.size()]);
+			
+			/*if(cmd.contains(epsgArg) && !cmd.contains(formatArg))
 			{
 				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 				//log.info(pipeargs.length);
 			}
-			if(cmd.contains(epsgArg) && cmd.contains(formatArg))
+			
+			if(cmd.contains(epsgArg) && cmd.contains(formatArg) && cmd.contains(namespacesArg))
 			{
+				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),"-f", cmd.getArg(formatArg).getValue(),"-ns",cmd.getArg(namespacesArg).getValue(), cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
+			}
+			else if(cmd.contains(epsgArg) && cmd.contains(formatArg) && !cmd.contains(namespacesArg)){
 				pipeargs=new String[]{"-epsg",cmd.getArg(epsgArg).getValue(),"-f", cmd.getArg(formatArg).getValue(), cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 			}
 			else
 			{
 				pipeargs=new String[]{cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 				//log.info("DERP");
-			}
+			}*/
 			
 			MainTrans.main(pipeargs);
 			

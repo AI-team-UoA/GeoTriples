@@ -25,6 +25,7 @@ import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import nu.xom.Attribute;
+import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.Text;
@@ -42,6 +43,7 @@ import org.xml.sax.InputSource;
 import be.ugent.mmlab.rml.core.NodeRMLPerformer;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.function.Config;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
@@ -64,7 +66,10 @@ public class XPathProcessor extends AbstractRMLProcessor {
     private DefaultNamespaceContext get_namespaces (){
         //Get the namespaces from xml file?
         DefaultNamespaceContext dnc = new DefaultNamespaceContext();
-        
+        for(String key:Config.user_namespaces.keySet()){
+        	 this.nsContext.addNamespace(key, Config.user_namespaces.get(key));
+             dnc.declarePrefix(key, Config.user_namespaces.get(key));
+        }
         this.nsContext.addNamespace("xsd", Namespaces.URI_XSD);
         dnc.declarePrefix("xsd", Namespaces.URI_XSD);
         this.nsContext.addNamespace("gml", "http://www.opengis.net/gml");
@@ -87,10 +92,6 @@ public class XPathProcessor extends AbstractRMLProcessor {
         this.nsContext.addNamespace("simmodel", "http://www.lbl.gov/namespaces/Sim/Model");
         dnc.declarePrefix("simmodel", "http://www.lbl.gov/namespaces/Sim/Model");
         
-        this.nsContext.addNamespace("aaa", "http://www.myphotos.org");
-        dnc.declarePrefix("aaa", "http://www.myphotos.org");
-        this.nsContext.addNamespace("gml", "http://www.opengis.net/gml");
-        dnc.declarePrefix("gml", "http://www.opengis.net/gml");
         
        //spc
        this.nsContext.addNamespace("mml","http://www.w3.org/1998/Math/MathML");
@@ -322,12 +323,22 @@ public class XPathProcessor extends AbstractRMLProcessor {
                 //checks if the node has a value or children
                 if(!n.getValue().isEmpty() || (n.getChildCount()!=0))
                     //MVS's for extracting elements and not the string
+                	
                     /*if (!(n instanceof Attribute) && n.getChild(0) instanceof Element) {
                         list.add(n.toXML());
+                        continue;
                     } 
                     else {
                         list.add(n.getValue());
                     }*/
+                	
+                	for(int child=0;child<n.getChildCount();++child)
+                	{
+                		if(n.getChild(child) instanceof Element){
+                			list.add(n.toXML());
+                			return list;
+                		}
+                	}
                     
                     //checks if the node has children, then cleans up new lines and extra spaces
                     if (!(n instanceof Attribute) && n.getChildCount()>1)

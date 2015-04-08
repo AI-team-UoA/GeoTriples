@@ -24,8 +24,10 @@ import be.ugent.mmlab.rml.function.FunctionSpatialDimension;
 import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -58,8 +60,9 @@ public class MainTrans {
 
     /**
      * @param args the command line arguments
+     * @throws Exception 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         try {
         	String file, outfile;
             String graphName = "";
@@ -71,6 +74,7 @@ public class MainTrans {
             options.addOption("g", true, "Graph name");
             options.addOption("epsg", true, "EPSG code");
             options.addOption("f", true, "output RDF Format");
+            options.addOption("ns",true,"file with namespaces for XML use only");
             //should be new DefaultParser() but requires cli 1.3 instead of clli 1.2
             CommandLineParser parser = new BasicParser();
             CommandLine cmd = parser.parse( options, args);
@@ -87,6 +91,10 @@ public class MainTrans {
             if(cmd.hasOption("epsg"))
             {
             	Config.EPSG_CODE=cmd.getOptionValue("epsg");
+            }
+            if(cmd.hasOption("ns"))
+            {
+            	readNamespaces(cmd.getOptionValue("ns"));
             }
             if (cmd.hasOption("f")) {
             	String formatValue = cmd.getOptionValue("f");
@@ -176,6 +184,18 @@ public class MainTrans {
         }
 
         return false;
+    }
+    private static void readNamespaces(String filename) throws Exception {
+    	try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
+    	    for(String line; (line = br.readLine()) != null; ) {
+    	        String [] tokens=line.split(" +|\t|,|;");
+    	        if(tokens.length!=2){
+    	        	throw new Exception("File with namespaces contains a bad line");
+    	        }
+    	        Config.user_namespaces.put(tokens[0], tokens[1]);
+    	    }
+    	    br.close();
+    	}
     }
     private static void registerFunctions() {
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT(QLTerm.XPATH_CLASS));

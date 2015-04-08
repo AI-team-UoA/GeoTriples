@@ -16,6 +16,7 @@ import be.ugent.mmlab.rml.core.MalformedGeometryException;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.gml2.GMLReader;
@@ -27,7 +28,8 @@ public abstract class AbstractFunction {
 		WKTReader wktReader = new WKTReader();
 		try {
 			geometry = wktReader.read(value);
-			return geometry;
+			if(geometry!=null)
+				return geometry;
 		} catch (ParseException e1) {
 			//just continue
 		}
@@ -35,7 +37,7 @@ public abstract class AbstractFunction {
 		switch (term) {
 		case XPATH_CLASS:
 			GMLReader gmlreader = new GMLReader();
-			geometry = gmlreader.read(value, null);
+			geometry = gmlreader.read(value,null );
 			return geometry;
 		case CSV_CLASS:
 			throw new UnsupportedOperationException(
