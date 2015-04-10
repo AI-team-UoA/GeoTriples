@@ -402,6 +402,8 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
         List<String> values = processTermMap(objectMap, node);
 
         List<Value> valueList = new ArrayList<>();
+        if (values == null)
+            return valueList;
         for (String value : values) {
             switch (objectMap.getTermType()) {
                 case IRI:
