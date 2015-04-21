@@ -252,6 +252,7 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				try {
 					java.util.Map<TableName, java.util.List<ColumnReceipt>> juTablesAndColumns = new java.util.HashMap<TableName, java.util.List<ColumnReceipt>>();
 					java.util.Map<TableName, String> juTablesAndClasses = new java.util.HashMap<TableName, String>();
+					
 					for(SourceTable st:sourceTables){
 						TableName tName = st.getTablemame();
 						java.util.List<ColumnReceipt> juColumns = st.getActiveColumns();
@@ -430,6 +431,7 @@ public class GeoTriplesWindow extends Window implements Bindable {
 						
 						@Override
 						public void sheetClosed(Sheet sheet) {
+							
 							if (sheet.getResult() && ((OpenConnection)sheet).isConnected())
 							{
 								connection=((OpenConnection)sheet).getCon();
@@ -441,7 +443,9 @@ public class GeoTriplesWindow extends Window implements Bindable {
 								datasourceurl=((OpenConnection)sheet).getUrl();
 								connectiontype=((OpenConnection)sheet).getContype();
 								if (connection != null) {
+									System.out.println("Connection established!");
 									refreshTables(null);
+									System.out.println("Refreshed tables done");
 									if(connectiontype==ConnectionType.SHAPEFILE)
 									{
 										refreshGeometryTable(null);

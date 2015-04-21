@@ -167,6 +167,7 @@ public class OpenConnection extends Prompt implements Bindable {
 				
 				@Override
 				public void sheetClosed(Sheet sheet) {
+					System.out.println(sheet.getResult() + " " + ((SqlForm)sheet).IsLoaded());
 					if(sheet.getResult() && ((SqlForm)sheet).IsLoaded())
 					{
 						con=((SqlForm)sheet).getSqlConnection();
