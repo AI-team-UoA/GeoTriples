@@ -60,6 +60,7 @@ import org.apache.pivot.wtk.MenuHandler;
 import org.apache.pivot.wtk.MessageType;
 import org.apache.pivot.wtk.Platform;
 import org.apache.pivot.wtk.Prompt;
+import org.apache.pivot.wtk.RadioButton;
 import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.SplitPane;
@@ -126,6 +127,9 @@ public class GeoTriplesWindow extends Window implements Bindable {
 	 */
 	@BXML private ListButton dbRDFFormat = null;
 	@BXML private SplitPane splitPane = null;
+	
+	@BXML private ListButton geoVoc = null;
+	
 	private ArrayList<String> symbols;
 	//private GetQuery getQuery = null;
 
@@ -176,6 +180,8 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				args.add(baseIri.getText());
 				args.add("-o");
 				args.add("mapping.ttl");
+				args.add("-geov");
+				args.add((String) geoVoc.getSelectedItem());
 				if (epsgCode.getText() != null) {
 					String a = epsgCode.getText();
 					boolean flag = true;
@@ -221,6 +227,8 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				args.add("--r2rml");
 				args.add("-o");
 				args.add("mapping.ttl");
+				args.add("-geov");
+				args.add((String) geoVoc.getSelectedItem());
 				if (epsgCode.getText() != null) {
 					String a = epsgCode.getText();
 					boolean flag = true;
@@ -883,10 +891,10 @@ public class GeoTriplesWindow extends Window implements Bindable {
 				System.exit(13);
 			}
 			for (ColumnName column : tableop.getColumns()) {
-				if( column.getColumn().getCanonicalName().equals("the_geom")) //column.getColumn().getCanonicalName().equals("gid") ||
+				/*if( column.getColumn().getCanonicalName().equals("the_geom")) //column.getColumn().getCanonicalName().equals("gid") ||
 				{
 					continue;
-				}
+				}*/
 				ColumnReceipt columnshp = new ColumnReceipt();
 				columnshp.setColumnName(column.getColumn().getName());
 				columnshp.setDataType(tableop.getColumnType(column).name());

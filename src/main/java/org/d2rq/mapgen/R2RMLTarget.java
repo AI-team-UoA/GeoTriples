@@ -58,6 +58,7 @@ public class R2RMLTarget implements Target {
 			boolean serveVocabulary, boolean generateDefinitionLabels) {
 		mapping = new Mapping(baseIRI);
 		addPrefix("map", baseIRI + "#");
+		addPrefix("strdf", "http://strdf.di.uoa.gr/ontology#");
 	}
 
 	public void addPrefix(String prefix, String uri) {

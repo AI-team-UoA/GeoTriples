@@ -75,6 +75,7 @@ public class generate_mapping {
 		System.err.println("    -v              Generate RDFS+OWL vocabulary instead of mapping file");
 		System.err.println("    --verbose       Print debug information");
 		System.err.println("    -b <baseIR> e.g. http://geo.linkedopendata.gr/natura");
+		System.err.println("	-geov			Use target geospatial vocabulary (GeoSPARQL/stRDF)");
 		System.err.println();
 		System.exit(1);
 	}

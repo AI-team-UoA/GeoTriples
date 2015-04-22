@@ -88,6 +88,9 @@ public class TransformationValueMaker implements ValueMaker {
 			else if(function.equals(GEOMETRY_FUNCTIONS.centroidy.toString())) {
 				return GTransormationFunctions.centroidy((Geometry)values.get(0));
 			}
+			else if(function.equals(GEOMETRY_FUNCTIONS.strdfWKT.toString())) {
+				return GTransormationFunctions.strdfWKT((Geometry)values.get(0), connection.getCRS());
+			}
 			else if(function.equals(STRING_FUNCTIONS.asCAPITAL.toString()))
 			{
 				return values.get(0).toString().toUpperCase();

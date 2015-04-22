@@ -100,4 +100,21 @@ public final class GTransormationFunctions {
 		String crs = coordinatereferencesystem;
 		return String.valueOf("<http://www.opengis.net/def/crs/EPSG/0/"+crs+ "> "+wkt_writer.write(the_geom));
 	}
+	
+	//strdf WKT transformation function
+	public static String strdfWKT(Geometry the_geom, CoordinateReferenceSystem coordinatereferencesystem)
+	{
+		String crs = org.geotools.gml2.bindings.GML2EncodingUtils
+				.epsgCode(coordinatereferencesystem);
+		if (crs == null) {
+			crs = "" + Config.EPSG_CODE + "";
+		}
+		return String.valueOf(wkt_writer.write(the_geom) + "; <http://www.opengis.net/def/crs/EPSG/0/"+crs+ ">");
+	}
+	
+	public static String strdfWKT(Geometry the_geom,String coordinatereferencesystem)
+	{
+		String crs = coordinatereferencesystem;
+		return String.valueOf(wkt_writer.write(the_geom) + "; <http://www.opengis.net/def/crs/EPSG/0/"+crs+ ">");
+	}
 }

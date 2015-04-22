@@ -19,6 +19,7 @@ import org.d2rq.db.schema.TableName;
 import org.d2rq.db.types.DataType;
 import org.d2rq.db.types.SQLBoolean;
 import org.d2rq.db.types.SQLExactNumeric;
+import org.d2rq.db.types.StrdfWKT;
 import org.d2rq.lang.Microsyntax;
 import org.d2rq.values.TemplateValueMaker;
 
@@ -173,6 +174,7 @@ public class MappingGenerator {
 				if (cols != null) {
 					boolean found = false;
 					for (int i=0 ; i<cols.size() ; i++) {
+						System.out.println(cols.get(i).getDataType());
 						if(cols.get(i).getDataType().equalsIgnoreCase("geometry")){
 						//if (cols.get(i).getColumnName().contains("geom")) {
 							//TODO: check the recognition of geocolumn
@@ -185,10 +187,16 @@ public class MappingGenerator {
 					}
 				}
 			}
-			if (hasGeom) {
+			//System.out.println(hasGeom + " " + Config.VOCABULARY);
+			if (hasGeom && Config.VOCABULARY.equals("GeoSPARQL")) {
 				processGeometry(tableName, geoColumn);
 			}
-			processTable(tableName, hasGeom, tablesAndColumns, tablesAndClasses);
+			if (hasGeom && Config.VOCABULARY.equals("stRDF")) {
+				processAtOnce(tableName, hasGeom, tablesAndColumns, tablesAndClasses, geoColumn);
+			}
+			else {
+				processTable(tableName, hasGeom, tablesAndColumns, tablesAndClasses);
+			}
 		}
 		if (!tablesWithoutUniqueKey.isEmpty()) {
 			StringBuilder s = new StringBuilder();
@@ -207,6 +215,180 @@ public class MappingGenerator {
 			}
 		}
 		target.close();
+	}
+	
+	private void processAtOnce(TableName tableName, boolean hasGeom, 
+			java.util.Map<TableName, java.util.List<ColumnReceipt>> tablesAndColumns, 
+			java.util.Map<TableName, String> tablesAndClasses, String geoColumn) {
+		TableDef table = sqlConnection.getTable(tableName).getTableDefinition();
+		ColumnDef additionalColumn = new ColumnDef(Identifier.createDelimited("hasGeometry"), new StrdfWKT("WKT"), true);
+		table.getColumns().add(additionalColumn);
+		table.getColumnNames().add(additionalColumn.getName());
+		boolean hasprimarykey=table.getPrimaryKey()!=null;
+
+		//SQLOp op = sqlConnection.getSelectStatement("");
+		//but first create its geometry view?
+		if (handleLinkTables && isLinkTable(table)) {
+			Iterator<ForeignKey> it = table.getForeignKeys().iterator();
+			ForeignKey fk1 = it.next();
+			ForeignKey fk2 = it.next();
+			TableName referencedTable1 = fk1.getReferencedTable();
+			TableName referencedTable2 = fk2.getReferencedTable();
+			if (!filter.matches(referencedTable1) || 
+					!filter.matchesAll(referencedTable1, fk1.getLocalColumns()) || 
+					!filter.matchesAll(referencedTable1, fk1.getReferencedColumns()) ||
+					!filter.matches(referencedTable2) || 
+					!filter.matchesAll(referencedTable2, fk2.getLocalColumns()) || 
+					!filter.matchesAll(referencedTable2, fk2.getReferencedColumns())) {
+				log.info("Skipping link table " + tableName);
+				return;
+			}
+			target.generateLinkProperty(
+					style.getLinkProperty(tableName), tableName, fk1, fk2);
+		} else {
+			Resource class_ = null;
+			if (tablesAndClasses==null || tablesAndClasses.get(tableName) == null) {
+				class_ = generateClasses ? 
+						style.getTableClass(tableName) : null;
+			}
+			else {
+				class_ = generateClasses ? style.getStringClass(tablesAndClasses.get(tableName)) : null;
+			}
+					
+					
+			TemplateValueMaker iriTemplate = null;
+			List<Identifier> blankNodeColumns = null;
+			Key key = findBestKey(table);
+			if (key == null) {
+				/*
+				List<ColumnDef> filteredColumns = new ArrayList<ColumnDef>();
+				for (ColumnDef columnDef: table.getColumns()) {
+					if (filter.matches(tableName, columnDef.getName())) {
+						filteredColumns.add(columnDef);
+					}
+				}
+				if (style.getEntityPseudoKeyColumns(filteredColumns) == null) {
+					tablesWithoutUniqueKey.add(tableName);
+					iriTemplate = style.getEntityIRITemplate(table, null);
+				} else {
+					blankNodeColumns = style.getEntityPseudoKeyColumns(filteredColumns);
+				}*/
+				key=makeKey(table);
+			} /*else {*/
+				iriTemplate = style.getEntityIRITemplate(table, key);
+			/*}*/
+			String query = "SELECT *," + "CONCAT(st_astext(" + geoColumn + "), \'; <http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'>') as \"hasGeometry\" FROM " + tableName.toString();
+			if (sqlConnection.getJdbcURL().contains("monetdb")) {
+				query = "SELECT *," + " CONCAT(REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', ''); \'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +">\') as \"hasGeometry\" FROM " + tableName.toString();
+			}
+			target.generateGeoEntities(class_, table.getName(), 
+					iriTemplate, blankNodeColumns, query);
+			if (class_ != null) {
+				if (tableName.getSchema() != null) {
+					tryRegisterPrefix(tableName.getSchema().getName().toLowerCase(),
+							class_.getNameSpace());
+				}
+				if (tableName.getCatalog() != null) {
+					tryRegisterPrefix(tableName.getCatalog().getName().toLowerCase(),
+							class_.getNameSpace());
+				}
+			}
+			if (generateLabelBridges && key != null) {
+				target.generateEntityLabels(
+						style.getEntityLabelTemplate(tableName, key), tableName);
+			}
+			/*else if (generateLabelBridges && key == null) { //key is never null //
+				Key themkey = null;
+				if (table.getColumnNames().contains(Identifier.createDelimited("id"))) {
+					themkey = Key.create(ColumnName.create(table.getName(), Identifier.createDelimited("id")));
+				}
+				else if (table.getColumnNames().contains(Identifier.createDelimited("gid"))) {
+					themkey = Key.create(Identifier.createDelimited("gid"));
+				}
+				
+				if (themkey == null) {
+//					target.generateEntityLabels(
+//							style.getEntityLabelTemplate(tableName, themkey), tableName);
+				}
+			}*/
+			for (Identifier column: table.getColumnNames()) {
+				ColumnReceipt colReceipt = null;
+				if (tablesAndColumns != null) {
+					java.util.List<ColumnReceipt> cols = tablesAndColumns.get(tableName);
+					if (cols != null) {
+						boolean found = false;
+						for (int i=0 ; i<cols.size() ; i++) {
+							if (cols.get(i).getColumnName().equals(column.getCanonicalName())) {
+								colReceipt = cols.get(i);
+								found = true;
+								break;
+							}
+						}
+						if (!found && !column.getCanonicalName().equals("hasGeometry")) {
+							continue;
+						}
+					}
+				}
+				if (key != null && hasprimarykey) { //need hasprimarykay because if has not, then must not get in this if
+					if (key.contains(column)) {
+						continue;
+					}
+				}
+				else {
+					if (column.getCanonicalName().equals("gid")) {
+						continue;
+					}
+				}
+				if (skipForeignKeyTargetColumns && isInForeignKey(column, table)) continue;
+				if (!filter.matches(tableName, column)) {
+					log.info("Skipping filtered column " + column);
+					continue;
+				}
+				DataType type = table.getColumnDef(column).getDataType();
+				if (type == null) {
+					String message = "The datatype is unknown to D2RQ.\n";
+					message += "You can override the column's datatype using d2rq:xxxColumn and add a property bridge.";
+					if (!suppressWarnings) {
+						log.warn(message);
+					}
+					target.skipColumn(tableName, column, message);
+					continue;
+				}
+				if (type.name().equalsIgnoreCase("GEOMETRY")) {
+					continue;
+				}
+				if (type.isUnsupported()) {
+					String message = "The datatype " + type + " cannot be mapped to RDF.";
+					if (!suppressWarnings) {
+						log.warn(message);
+					}
+					target.skipColumn(tableName, column, message);
+					continue;
+				}
+				Property property = null;
+				if (colReceipt == null) {
+					property = style.getColumnProperty(tableName, column);
+				}
+				else {
+					property = style.getTargetProperty(Identifier.createDelimited(colReceipt.getPredicate()));
+				}
+				target.generateColumnProperty(property, tableName, column, type);
+				tryRegisterPrefix(
+						tableName.getTable().getName().toLowerCase(), 
+						property.getNameSpace());
+			}
+			for (ForeignKey fk: table.getForeignKeys()) {
+				if (!filter.matches(fk.getReferencedTable()) || 
+						!filter.matchesAll(tableName, fk.getLocalColumns()) || 
+						!filter.matchesAll(fk.getReferencedTable(), fk.getReferencedColumns())) {
+					log.info("Skipping foreign key: " + fk);
+					continue;
+				}
+				target.generateRefProperty(
+						style.getForeignKeyProperty(tableName, fk), 
+						tableName, fk);
+			}
+		}
 	}
 	
 	private void processTable(TableName tableName, boolean hasGeom, 
@@ -401,6 +583,8 @@ public class MappingGenerator {
 			}
 		}
 	}
+	
+	
 	
 	private void processGeometry(TableName tableName, String geoColumn) {
 		TableDef auxTable = sqlConnection.getTable(tableName).getTableDefinition();

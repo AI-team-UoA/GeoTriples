@@ -115,6 +115,8 @@ limitations under the License.
                         <LinkButton bxml:id="generateMapping" enabled="true" tooltipText="%generatemapping">
                             <content:ButtonData icon="@generatemapping.gif" />
                         </LinkButton>
+                        <Label text="Target Geo-Vocabulary" styles="{font:{bold:true}}" />
+                        <ListButton bxml:id="geoVoc" enabled="true" listData="['GeoSPARQL', 'stRDF' ]" />
                     </BoxPane>
                     <BoxPane>
                         <Label text="Input the EPSG code of the geometries" styles="{font:{bold:true}}" />

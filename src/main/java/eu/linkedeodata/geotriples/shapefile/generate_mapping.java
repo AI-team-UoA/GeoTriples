@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.d2rq.mapgen.MappingGenerator;
 import org.d2rq.mapgen.OntologyTarget;
 
+import eu.linkedeodata.geotriples.Config;
 import eu.linkedeodata.geotriples.GeneralMappingGenerator;
 import eu.linkedeodata.geotriples.gui.RecipeMapping;
 
@@ -67,12 +68,14 @@ public class generate_mapping extends ShapefileCommandLineTool {
 
 	private ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 	private ArgDecl vocabAsOutput = new ArgDecl(false, "v", "vocab");
+	private ArgDecl geoVocabulary = new ArgDecl(true, "geov", "geoVocabulary");
 	private ArgDecl baseIri = new ArgDecl(true, "b", "baseIRI");
 	
 	public void initArgs(CommandLine cmd) {
 		cmd.add(outfileArg);
 		cmd.add(vocabAsOutput);
 		cmd.add(baseIri);
+		cmd.add(geoVocabulary);
 	}
 
 	public void run(CommandLine cmd, ShapefileSystemLoader loader) throws Exception {
@@ -98,6 +101,14 @@ public class generate_mapping extends ShapefileCommandLineTool {
 		}
 		
 		GeneralMappingGenerator generator = null;
+		if (cmd.contains(geoVocabulary)) {
+			String voc = cmd.getArg(geoVocabulary).getValue();
+			if (voc != null) {
+				if (voc.equals("GeoSPARQL") || voc.equals("stRDF")) {
+					Config.VOCABULARY = voc;
+				}
+			}
+		}
 		if (cmd.contains(baseIri)) {
 			String fileName = cmd.getItem(0);
 			File file = new File(fileName);
