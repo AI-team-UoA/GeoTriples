@@ -6,21 +6,7 @@ package be.ugent.mmlab.rml.main;
 ****************************************************************************/
 import be.ugent.mmlab.rml.core.RMLEngine;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
-import be.ugent.mmlab.rml.function.Config;
-import be.ugent.mmlab.rml.function.FunctionArea;
-import be.ugent.mmlab.rml.function.FunctionAsGML;
-import be.ugent.mmlab.rml.function.FunctionAsWKT;
-import be.ugent.mmlab.rml.function.FunctionCentroidX;
-import be.ugent.mmlab.rml.function.FunctionCentroidY;
-import be.ugent.mmlab.rml.function.FunctionCoordinateDimension;
-import be.ugent.mmlab.rml.function.FunctionDimension;
-import be.ugent.mmlab.rml.function.FunctionFactory;
-import be.ugent.mmlab.rml.function.FunctionHasSerialization;
-import be.ugent.mmlab.rml.function.FunctionIs3D;
-import be.ugent.mmlab.rml.function.FunctionIsEmpty;
-import be.ugent.mmlab.rml.function.FunctionIsSimple;
-import be.ugent.mmlab.rml.function.FunctionLength;
-import be.ugent.mmlab.rml.function.FunctionSpatialDimension;
+import be.ugent.mmlab.rml.function.*;
 import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
@@ -211,5 +197,7 @@ public class MainTrans {
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY(QLTerm.XPATH_CLASS));
+
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/epochToISO"), new FunctionEpochToISO(QLTerm.JSONPATH_CLASS));
     }
 }
