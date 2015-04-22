@@ -71,7 +71,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
             return new ArrayList<>();
         } catch (Exception ex) {
             log.debug("[JSONPathProcessor:extractValueFromNode]. Error: " + ex);
-            return null;
+            return new ArrayList<>();
         }
         
     }
