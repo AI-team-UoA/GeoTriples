@@ -121,4 +121,8 @@ public interface Target {
 
 	void generateHasGeometryPropertyWithTemplateTrick(Property property, TableName tableName,
 			TemplateValueMaker iriTemplate); //d2.1
+
+	void generateQueriedEntities(Resource class_, TableName name,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
+			String query);
 }

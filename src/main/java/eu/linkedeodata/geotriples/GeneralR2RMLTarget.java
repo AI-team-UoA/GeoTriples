@@ -400,4 +400,12 @@ public class GeneralR2RMLTarget implements Target {
 		
 	}
 
+	@Override
+	public void generateQueriedEntities(Resource class_, TableName name,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
+			String query) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

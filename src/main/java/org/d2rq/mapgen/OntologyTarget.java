@@ -192,4 +192,12 @@ public class OntologyTarget implements Target {
 			List<TermMap> argumentMap, DataType datatype) {
 			throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void generateQueriedEntities(Resource class_, TableName name,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
+			String query) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -174,7 +174,7 @@ public class MappingGenerator {
 				if (cols != null) {
 					boolean found = false;
 					for (int i=0 ; i<cols.size() ; i++) {
-						System.out.println(cols.get(i).getDataType());
+						//System.out.println(cols.get(i).getDataType());
 						if(cols.get(i).getDataType().equalsIgnoreCase("geometry")){
 						//if (cols.get(i).getColumnName().contains("geom")) {
 							//TODO: check the recognition of geocolumn
@@ -255,7 +255,7 @@ public class MappingGenerator {
 				class_ = generateClasses ? style.getStringClass(tablesAndClasses.get(tableName)) : null;
 			}
 					
-					
+			//System.out.println(class_.getLocalName());
 			TemplateValueMaker iriTemplate = null;
 			List<Identifier> blankNodeColumns = null;
 			Key key = findBestKey(table);
@@ -279,10 +279,11 @@ public class MappingGenerator {
 			/*}*/
 			String query = "SELECT *," + "CONCAT(st_astext(" + geoColumn + "), \'; <http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'>') as \"hasGeometry\" FROM " + tableName.toString();
 			if (sqlConnection.getJdbcURL().contains("monetdb")) {
-				query = "SELECT *," + " CONCAT(REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', ''); \'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +">\') as \"hasGeometry\" FROM " + tableName.toString();
+				query = "SELECT *," + " CONCAT(CONCAT(REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', ''), '; '), \'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +">\') as \"hasGeometry\" FROM " + tableName.toString();
 			}
-			target.generateGeoEntities(class_, table.getName(), 
+			target.generateQueriedEntities(class_, table.getName(), 
 					iriTemplate, blankNodeColumns, query);
+			//System.out.println(class_.getURI());
 			if (class_ != null) {
 				if (tableName.getSchema() != null) {
 					tryRegisterPrefix(tableName.getSchema().getName().toLowerCase(),

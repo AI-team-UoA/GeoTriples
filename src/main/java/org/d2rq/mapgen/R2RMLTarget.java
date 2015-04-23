@@ -102,6 +102,22 @@ public class R2RMLTarget implements Target {
 			iriTemplates.put(tableName, iriTemplate);
 		}
 	}
+	
+	public void generateQueriedEntities(Resource class_, TableName tableName,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns, String sqlQuery) {
+		TermMap subjectMap = (iriTemplate == null)
+				? createTermMap(toTemplate(tableName, blankNodeColumns), 
+						TermType.BLANK_NODE) 
+				: createTermMap(iriTemplate, null);
+		if (class_ != null) {
+			subjectMap.getClasses().add(ConstantIRI.create(class_));
+		}
+		addTriplesMap(tableName, createBaseR2RMLView(sqlQuery), subjectMap);
+		
+		if (iriTemplate != null) {
+			iriTemplates.put(tableName, iriTemplate);
+		}
+	}
 
 	public void generateEntityLabels(TemplateValueMaker labelTemplate,
 			TableName tableName) {
