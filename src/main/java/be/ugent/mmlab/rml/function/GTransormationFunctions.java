@@ -104,4 +104,20 @@ public final class GTransormationFunctions {
 		String crs = coordinatereferencesystem;
 		return String.valueOf("<http://www.opengis.net/def/crs/EPSG/0/"+crs+ "> "+wkt_writer.write(the_geom));
 	}
+	
+	public static String contains(Geometry the_geom1,Geometry the_geom2)
+	{
+		
+		return ((Boolean)the_geom1.contains(the_geom2)).toString() ;
+	}
+	public static String intersects(Geometry the_geom1,Geometry the_geom2)
+	{
+		
+		return ((Boolean)the_geom1.intersects(the_geom2)).toString() ;
+	}
+	public static String greaterThan(Integer arg1,Integer arg2)
+	{
+		
+		return ((Boolean)(arg1 >= arg2)).toString() ;
+	}
 }

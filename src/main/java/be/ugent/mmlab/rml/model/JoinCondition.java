@@ -29,6 +29,10 @@
  ****************************************************************************/
 package be.ugent.mmlab.rml.model;
 
+import java.util.List;
+
+import org.openrdf.model.URI;
+
 public interface JoinCondition {
 	
 	/**
@@ -42,4 +46,8 @@ public interface JoinCondition {
 	 */
 	public String getParent();
 
+	public List<TermMap> getArgumentMap();
+	public void setArgumentMap(List<TermMap> arguments);
+	public URI getFunction();
+	public void setFunction(URI function);
 }

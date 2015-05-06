@@ -31,7 +31,7 @@ public class FunctionCoordinateDimension extends AbstractFunction implements Fun
 		List<String> valueList = new ArrayList<>();
 		
 		Geometry geometry = computeGeometry(arguments.get(0), termkind);
-		valueList.add(GTransormationFunctions.dimension(
+		valueList.add(GTransormationFunctions.coordinateDimension(
 				(Geometry) geometry));
 		return valueList;
 	}

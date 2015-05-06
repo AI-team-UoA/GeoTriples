@@ -29,6 +29,10 @@
  ****************************************************************************/
 package be.ugent.mmlab.rml.model;
 
+import java.util.List;
+
+import org.openrdf.model.URI;
+
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
 import net.antidot.sql.model.tools.SQLDataValidator;
@@ -37,19 +41,34 @@ public class StdJoinCondition implements JoinCondition {
 
 	private String child;
 	private String parent;
+	private URI function = null;
+    private List<TermMap> argumentMap =null;
 
 	public StdJoinCondition(String child, String parent)
 			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
 		setChild(child);
 		setParent(parent);
 	}
+	public StdJoinCondition(String child, String parent,URI function,List<TermMap> argumentMap)
+			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
+		setFunction(function);
+		setArgumentMap(argumentMap);
+		setChild(child);
+		setParent(parent);
+	}
 
+	@Override
+	public String toString() {
+		return "StdJoinCondition [child=" + child + ", parent=" + parent
+				+ ", function=" + function + ", argumentMap=" + argumentMap
+				+ "]";
+	}
 	private void setParent(String parent)
 			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
-		if (parent == null)
+		if (parent == null && function==null)
 			throw new InvalidR2RMLStructureException(
 					"[StdJoinCondition:setParent] A join condition must "
-							+ "have a parent column name.");
+							+ "have a parent column name  or a function.");
 		// old code
 //		if (!SQLDataValidator.isValidSQLIdentifier(parent))
 //			throw new InvalidR2RMLSyntaxException(
@@ -63,10 +82,10 @@ public class StdJoinCondition implements JoinCondition {
 
 	private void setChild(String child) throws InvalidR2RMLStructureException,
 			InvalidR2RMLSyntaxException {
-		if (child == null)
+		if (child == null && function==null)
 			throw new InvalidR2RMLStructureException(
 					"[StdJoinCondition:construct] A join condition must "
-							+ "have a child column name.");
+							+ "have a child column name or a function.");
 		// old code
 //		if (!SQLDataValidator.isValidSQLIdentifier(child))
 //			throw new InvalidR2RMLSyntaxException(
@@ -85,6 +104,18 @@ public class StdJoinCondition implements JoinCondition {
 
 	public String getParent() {
 		return parent;
+	}
+	public URI getFunction() {
+		return function;
+	}
+	public void setFunction(URI function) {
+		this.function = function;
+	}
+	public List<TermMap> getArgumentMap() {
+		return argumentMap;
+	}
+	public void setArgumentMap(List<TermMap> argumentMap) {
+		this.argumentMap = argumentMap;
 	}
 
 }

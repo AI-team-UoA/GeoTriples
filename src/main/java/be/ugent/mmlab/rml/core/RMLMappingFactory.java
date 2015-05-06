@@ -407,7 +407,7 @@ public abstract class RMLMappingFactory {
 					continue;
 				}
 				ObjectMap objectMap = extractObjectMap(r2rmlMappingGraph,
-						(Resource) statement.getObject(), savedGraphMaps);
+						(Resource) statement.getObject(), savedGraphMaps,triplesMapResources);
 				if (objectMap != null) {
 					objectMaps.add(objectMap);
 				}
@@ -461,12 +461,17 @@ public abstract class RMLMappingFactory {
 			SesameDataSet r2rmlMappingGraph, Resource object,
 			Set<GraphMap> graphMaps,
 			Map<Resource, TriplesMap> triplesMapResources)
-			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
+			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException, R2RMLDataError {
 		log.debug("[RMLMappingFactory:extractReferencingObjectMap] Extract referencing object map..");
 		URI parentTriplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
 				object, R2RMLTerm.PARENT_TRIPLES_MAP);
 		Set<JoinCondition> joinConditions = extractJoinConditions(
-				r2rmlMappingGraph, object);
+				r2rmlMappingGraph, object, graphMaps, triplesMapResources);
+		
+		for(JoinCondition jc:joinConditions){ //PRINTLN
+			System.out.println(jc);
+		}
+		
 		if (parentTriplesMap == null && !joinConditions.isEmpty()) {
 			throw new InvalidR2RMLStructureException(
 					"[RMLMappingFactory:extractReferencingObjectMap] "
@@ -512,8 +517,8 @@ public abstract class RMLMappingFactory {
 	 */
 
 	protected static Set<JoinCondition> extractJoinConditions(
-			SesameDataSet r2rmlMappingGraph, Resource object)
-			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
+			SesameDataSet r2rmlMappingGraph, Resource object ,Set<GraphMap> graphMaps , Map<Resource, TriplesMap> triplesMapResources)
+			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException, R2RMLDataError {
 		log.debug("[RMLMappingFactory:extractJoinConditions] Extract join conditions..");
 		Set<JoinCondition> result = new HashSet<JoinCondition>();
 		// Extract predicate-object maps
@@ -524,17 +529,48 @@ public abstract class RMLMappingFactory {
 		try {
 			for (Statement statement : statements) {
 				Resource jc = (Resource) statement.getObject();
+				URI function= (URI) extractValueFromTermMap(r2rmlMappingGraph, jc,
+						RRXTerm.FUNCTION);
+				//start argumentMap
+				Resource argumentMap = (Resource) extractValueFromTermMap(
+						r2rmlMappingGraph, jc, RRXTerm.ARGUMENTMAP);
+				List<TermMap> arguments = new ArrayList<>();
+				if (argumentMap != null) {
+					List<Statement> first = null;
+					// System.out.println(firstnode);
+					// System.out.println(firstnode.getObject()); //we got the termmap
+
+					Resource it = (Resource) (argumentMap);
+					while (!RDF.NIL.equals(it)) {
+						first = r2rmlMappingGraph.tuplePattern(it, RDF.FIRST, null);
+						TermMap tm = extractObjectMap(r2rmlMappingGraph,
+								(Resource) first.get(0).getObject(), graphMaps,triplesMapResources);
+						arguments.add(tm);
+						List<Statement> next = r2rmlMappingGraph.tuplePattern(it,
+								RDF.REST, null);
+						it = (Resource) next.get(0).getObject();
+					}
+
+					Set<Value> valls = extractValuesFromResource(r2rmlMappingGraph,
+							argumentMap);
+					System.out.println(valls);
+				}
+				//end argumentMap
+				
+				
+				
+				
 				String child = extractLiteralFromTermMap(r2rmlMappingGraph, jc,
 						R2RMLTerm.CHILD);
 				String parent = extractLiteralFromTermMap(r2rmlMappingGraph,
 						jc, R2RMLTerm.PARENT);
-				if (parent == null || child == null) {
+				if ((parent == null || child == null) && function==null) {
 					throw new InvalidR2RMLStructureException(
 							"[RMLMappingFactory:extractReferencingObjectMap] "
 									+ object.stringValue()
-									+ " must have exactly two properties child and parent. ");
+									+ " must have exactly two properties child and parent or (function and argumentsMap). ");
 				}
-				result.add(new StdJoinCondition(child, parent));
+				result.add(new StdJoinCondition(child, parent,function,arguments));
 			}
 		} catch (ClassCastException e) {
 			throw new InvalidR2RMLStructureException(
@@ -552,7 +588,7 @@ public abstract class RMLMappingFactory {
 
 	protected static ObjectMap extractObjectMap(
 			SesameDataSet r2rmlMappingGraph, Resource object,
-			Set<GraphMap> graphMaps) throws InvalidR2RMLStructureException,
+			Set<GraphMap> graphMaps , Map<Resource, TriplesMap> triplesMapResources) throws InvalidR2RMLStructureException,
 			R2RMLDataError, InvalidR2RMLSyntaxException {
 		log.debug("[RMLMappingFactory:extractObjectMap] Extract object map..");
 		// Extract object maps properties
@@ -572,8 +608,23 @@ public abstract class RMLMappingFactory {
 				RRXTerm.FUNCTION);
 		Resource argumentMap = (Resource) extractValueFromTermMap(
 				r2rmlMappingGraph, object, RRXTerm.ARGUMENTMAP);
+		
 		System.out.println(function);
-
+		
+		URI triplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
+				object, R2RMLTerm.TRIPLES_MAP);
+		TriplesMap owner=null;
+		if(triplesMap!=null){
+			for (Resource triplesMapResource : triplesMapResources.keySet()) {
+				if (triplesMapResource.stringValue().equals(
+						triplesMap.stringValue())) {
+					owner=triplesMapResources.get(triplesMapResource);
+					break;
+				}
+			}
+		}
+		
+		
 		List<TermMap> arguments = new ArrayList<>();
 		if (argumentMap != null) {
 			List<Statement> first = null;
@@ -584,7 +635,7 @@ public abstract class RMLMappingFactory {
 			while (!RDF.NIL.equals(it)) {
 				first = r2rmlMappingGraph.tuplePattern(it, RDF.FIRST, null);
 				TermMap tm = extractObjectMap(r2rmlMappingGraph,
-						(Resource) first.get(0).getObject(), graphMaps);
+						(Resource) first.get(0).getObject(), graphMaps,triplesMapResources);
 				arguments.add(tm);
 				List<Statement> next = r2rmlMappingGraph.tuplePattern(it,
 						RDF.REST, null);
@@ -602,7 +653,7 @@ public abstract class RMLMappingFactory {
 
 		StdObjectMap result = new StdObjectMap(null, constantValue, dataType,
 				languageTag, stringTemplate, termType, inverseExpression,
-				referenceValue, function, arguments);
+				referenceValue, function, arguments,owner);
 		log.debug("[RMLMappingFactory:extractObjectMap] Extract object map done.");
 		// return null;
 		return result;
