@@ -46,6 +46,7 @@ public abstract class CommandLineTool {
 	private final ArgDecl skipColumnsArg = new ArgDecl(true, "skip-column", "skip-columns");
 	private final ArgDecl jdbcURLArg = new ArgDecl(true, "j", "jdbc");
 	private final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
+	private final ArgDecl geoVocabulary = new ArgDecl(true, "geov", "geoVocabulary");
 	private final SystemLoader loader = new SystemLoader();
 	private boolean supportImplicitJdbcURL = true;
 	private int minArguments = 0;
@@ -83,6 +84,7 @@ public abstract class CommandLineTool {
 		cmd.add(skipColumnsArg);
 		cmd.add(jdbcURLArg);
 		cmd.add(epsgArg);
+		cmd.add(geoVocabulary);
 		
 		initArgs(cmd);
 		
@@ -116,6 +118,14 @@ public abstract class CommandLineTool {
 		}
 		if (cmd.contains(epsgArg)) {
 			Config.EPSG_CODE = Integer.parseInt(cmd.getArg(epsgArg).getValue());
+		}
+		if (cmd.contains(geoVocabulary)) {
+			String voc = cmd.getArg(geoVocabulary).getValue();
+			if (voc != null) {
+				if (voc.equals("GeoSPARQL") || voc.equals("stRDF")) {
+					Config.VOCABULARY = voc;
+				}
+			}
 		}
 		if (cmd.contains(passArg)) {
 			loader.setPassword(cmd.getArg(passArg).getValue());

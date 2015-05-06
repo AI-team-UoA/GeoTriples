@@ -5,6 +5,7 @@ import java.sql.Types;
 import org.d2rq.db.types.DataType;
 import org.d2rq.db.types.SQLBoolean;
 import org.d2rq.db.types.SQLExactNumeric;
+import org.d2rq.db.types.StrdfWKT;
 import org.d2rq.r2rml.ConstantIRI;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -44,6 +45,10 @@ public class GEOMETRY_FUNCTIONS {
 		public static final DataType length = new SQLExactNumeric("Double", Types.DOUBLE, false);
 		public static final DataType centroidx = new SQLExactNumeric("Double", Types.DOUBLE, false);
 		public static final DataType centroidy = new SQLExactNumeric("Double", Types.DOUBLE, false);
+		
+		//strdf operations
+		public static final DataType strdfWKT = new StrdfWKT("WKT");
+		
 
 		
 		public static DataType getDataTypeOf(String type) {
@@ -74,6 +79,8 @@ public class GEOMETRY_FUNCTIONS {
 				return centroidx;
 			case "centroidy":
 				return centroidy;
+			case "strdfWKT":
+				return strdfWKT;
 			default:
 				break;
 			}
@@ -120,6 +127,8 @@ public class GEOMETRY_FUNCTIONS {
 			.getFunctionsURI() + "centroidx");
 	public static final ConstantIRI centroidy = ConstantIRI.create(RRX
 			.getFunctionsURI() + "centroidy");
+	public static final ConstantIRI strdfWKT = ConstantIRI.create(RRX
+			.getFunctionsURI() + "strdfWKT");
 	public static ConstantIRI getGeometryFunctionOf(String type) {
 		switch (type) {
 		case "asWKT":
@@ -148,6 +157,8 @@ public class GEOMETRY_FUNCTIONS {
 			return centroidx;
 		case "centroidy":
 			return centroidy;
+		case "strdfWKT":
+			return strdfWKT;
 		default:
 			break;
 		}

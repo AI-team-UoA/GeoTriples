@@ -65,6 +65,7 @@ public class GeneralR2RMLTarget implements Target {
 			boolean serveVocabulary, boolean generateDefinitionLabels) {
 		mapping = new Mapping(baseIRI);
 		addPrefix("map", baseIRI + "#");
+		addPrefix("strdf", "http://strdf.di.uoa.gr/ontology#");
 	}
 
 	public void addPrefix(String prefix, String uri) {
@@ -395,6 +396,14 @@ public class GeneralR2RMLTarget implements Target {
 	public void generateGeoEntities(Resource class_, TableName table,
 			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
 			String sqlQuery) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateQueriedEntities(Resource class_, TableName name,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
+			String query) {
 		// TODO Auto-generated method stub
 		
 	}

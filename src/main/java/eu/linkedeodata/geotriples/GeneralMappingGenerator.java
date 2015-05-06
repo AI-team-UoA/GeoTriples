@@ -193,6 +193,9 @@ public class GeneralMappingGenerator {
 	}
 
 	private void processGeometryTableD21(TableDef table, RecipeMapping recipe) {
+		if (Config.VOCABULARY.equals("stRDF")) {
+			return;
+		}
 		if(recipe!=null && ! recipe.existGeometryTable())
 		{
 			return; //no geometry table exist , maybe user deleted this from gui
@@ -530,6 +533,17 @@ public class GeneralMappingGenerator {
 						}
 						Property property = null;
 						if (column.getName().equals("gid")) {
+							if (Config.VOCABULARY.equals("stRDF")) {
+								property = style.getStRDFColumnProperty(tableName,
+										Identifier.createDelimited("hasGeometry"),true);
+								List<TermMap> argumentMap=new ArrayList<TermMap>();
+								argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+								target.generateTransformationProperty(property, tableName, 
+										GEOMETRY_FUNCTIONS.strdfWKT, argumentMap ,
+										GEOMETRY_FUNCTIONS_DATATYPES.strdfWKT);
+								continue;
+							}
+							//otherwise we want geosparql which means join conditions between the two virtual tables
 							Key geoKey = Key.create(Identifier
 									.createDelimited("gid"));
 							Key themKey = Key.create(Identifier
@@ -580,6 +594,17 @@ public class GeneralMappingGenerator {
 					}
 					Property property = null;
 					if (column.getName().equals("gid")) {
+						if (Config.VOCABULARY.equals("stRDF")) {
+							property = style.getStRDFColumnProperty(tableName,
+									Identifier.createDelimited("hasGeometry"),true);
+							List<TermMap> argumentMap=new ArrayList<TermMap>();
+							argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+							target.generateTransformationProperty(property, tableName, 
+									GEOMETRY_FUNCTIONS.strdfWKT, argumentMap ,
+									GEOMETRY_FUNCTIONS_DATATYPES.strdfWKT);
+							continue;
+						}
+						//otherwise we want geosparql which means join conditions between the two virtual tables
 						Key geoKey = Key.create(Identifier
 								.createDelimited("gid"));
 						Key themKey = Key.create(Identifier

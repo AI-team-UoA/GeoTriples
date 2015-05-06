@@ -268,4 +268,12 @@ public class D2RQTarget implements Target {
 		throw new UnsupportedOperationException();
 		
 	}
+
+	@Override
+	public void generateQueriedEntities(Resource class_, TableName name,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns,
+			String query) {
+		// TODO Auto-generated method stub
+		
+	}
 }

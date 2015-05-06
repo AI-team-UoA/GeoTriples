@@ -184,6 +184,16 @@ public class GeneralMappingStyle implements MappingStyle {
 				IRIEncoder.encode(column.getName()));
 	}
 	
+	public Property getStRDFColumnProperty(TableName tableName, Identifier column,boolean isgeosparql_property) { //d2.1
+//		if (tableName.getTable().getCanonicalName().toString().endsWith("geometry") || isgeosparql_property) {
+//			return model.createProperty("http://www.opengis.net/ont/geosparql#" + column.getName());
+//			
+//		}
+		//System.out.println(column.getName());
+		return model.createProperty(vocabBaseIRI + 
+				IRIEncoder.encode(column.getName()));
+	}
+	
 	public Property getForeignKeyProperty(TableName tableName, ForeignKey fk) {
 		return model.createProperty(vocabBaseIRI + 
 				IRIEncoder.encode(stringMaker.toString(tableName, fk.getLocalColumns())));

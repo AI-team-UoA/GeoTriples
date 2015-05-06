@@ -175,6 +175,7 @@ public class SqlForm extends Prompt implements Bindable {
 				} catch (Exception e) {
 					Alert.alert("Error connecting to database", SqlForm.this.getOwner());
 				}
+                        System.out.println("SQLForm: Going to close with success");
             	close(true);
 			}
 		});

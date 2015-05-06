@@ -14,7 +14,7 @@
 
 <#FieldAttributes>
 rml:logicalSource [ 
-	rml:source "/home/dimis/LEO/geotriples-git/GeoTriples/resources/rml/talkingfields-rml/tf.xml";
+	rml:source "/home/dimis/LEODemo/talkingfields-rml/tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field";
 ];
@@ -81,7 +81,7 @@ rr:subjectMap [
     
 <#RasterCellAtrributes>
 rml:logicalSource [ 
-	rml:source "/home/dimis/LEO/geotriples-git/GeoTriples/resources/rml/talkingfields-rml/tf.xml";
+	rml:source "/home/dimis/LEODemo/talkingfields-rml/tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];

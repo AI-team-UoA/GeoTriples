@@ -58,6 +58,7 @@ public class R2RMLTarget implements Target {
 			boolean serveVocabulary, boolean generateDefinitionLabels) {
 		mapping = new Mapping(baseIRI);
 		addPrefix("map", baseIRI + "#");
+		addPrefix("strdf", "http://strdf.di.uoa.gr/ontology#");
 	}
 
 	public void addPrefix(String prefix, String uri) {
@@ -94,6 +95,22 @@ public class R2RMLTarget implements Target {
 				: createTermMap(iriTemplate, null);
 		if (class_ != null) {
 			subjectMap.getClasses().add(ConstantIRI.create(model.createResource("http://www.opengis.net/ont/geosparql#Geometry")));
+		}
+		addTriplesMap(tableName, createBaseR2RMLView(sqlQuery), subjectMap);
+		
+		if (iriTemplate != null) {
+			iriTemplates.put(tableName, iriTemplate);
+		}
+	}
+	
+	public void generateQueriedEntities(Resource class_, TableName tableName,
+			TemplateValueMaker iriTemplate, List<Identifier> blankNodeColumns, String sqlQuery) {
+		TermMap subjectMap = (iriTemplate == null)
+				? createTermMap(toTemplate(tableName, blankNodeColumns), 
+						TermType.BLANK_NODE) 
+				: createTermMap(iriTemplate, null);
+		if (class_ != null) {
+			subjectMap.getClasses().add(ConstantIRI.create(class_));
 		}
 		addTriplesMap(tableName, createBaseR2RMLView(sqlQuery), subjectMap);
 		
