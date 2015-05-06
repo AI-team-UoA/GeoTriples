@@ -468,9 +468,6 @@ public abstract class RMLMappingFactory {
 		Set<JoinCondition> joinConditions = extractJoinConditions(
 				r2rmlMappingGraph, object, graphMaps, triplesMapResources);
 		
-		for(JoinCondition jc:joinConditions){ //PRINTLN
-			System.out.println(jc);
-		}
 		
 		if (parentTriplesMap == null && !joinConditions.isEmpty()) {
 			throw new InvalidR2RMLStructureException(
@@ -553,7 +550,7 @@ public abstract class RMLMappingFactory {
 
 					Set<Value> valls = extractValuesFromResource(r2rmlMappingGraph,
 							argumentMap);
-					System.out.println(valls);
+					//System.out.println(valls);
 				}
 				//end argumentMap
 				
@@ -609,7 +606,7 @@ public abstract class RMLMappingFactory {
 		Resource argumentMap = (Resource) extractValueFromTermMap(
 				r2rmlMappingGraph, object, RRXTerm.ARGUMENTMAP);
 		
-		System.out.println(function);
+		//System.out.println(function);
 		
 		URI triplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
 				object, R2RMLTerm.TRIPLES_MAP);
@@ -999,7 +996,7 @@ public abstract class RMLMappingFactory {
 	private static URI getTermURI(SesameDataSet r2rmlMappingGraph, Enum term)
 			throws InvalidR2RMLStructureException {
 		String namespace = Vocab.R2RML_NAMESPACE;
-		System.out.println(term.getClass());
+		//System.out.println(term.getClass());
 		if (term instanceof Vocab.RMLTerm) {
 			namespace = Vocab.RML_NAMESPACE;
 

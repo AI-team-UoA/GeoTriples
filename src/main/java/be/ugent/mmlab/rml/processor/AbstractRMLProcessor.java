@@ -391,7 +391,9 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                     	for (JoinCondition joinCondition : joinConditions) {
                     		++iterator;
                     		int position=0;
+                    		
                     		if(joinCondition.getFunction()==null){
+                    			//System.out.println(joinCondition.getFunction());
                     			List<TermMap> args=new ArrayList<>();
                     			try {
 									args.add(new StdObjectMap(null,null,null,null,null,null,null,ReferenceIdentifierImpl
@@ -403,6 +405,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 										| InvalidR2RMLSyntaxException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
+									System.exit(0);
 								}
                     			joinCondition.setArgumentMap(args);
                     			joinCondition.setFunction(new URIImpl(VocabTrans.RRXF_NAMESPACE+"equi"));
@@ -459,7 +462,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                                 fileName1 = getClass().getResource(trm.getLogicalSource().getIdentifier()).getFile();
                             else
                                 fileName1 = trm.getLogicalSource().getIdentifier();
-                            processor1 =factory.create(queryLanguage);
+                            processor1 =factory.create(queryLanguage1);
                             performer1 = new DependencyRMLPerformer(processor1,subject,predicate,parentTriplesMap,termmaps,clustersPositions.get(trm),(DependencyRMLPerformer)oldperformer1,oldprocessor1,processor,arguments,functions,trm,fileName1);
 
                     		oldperformer1=performer1;

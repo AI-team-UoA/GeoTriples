@@ -77,15 +77,16 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
     	List<String> objects;
     	for(int i=0;i<termMaps.size();++i){
     		TermMap tm=termMaps.get(i);
-    		
+    		//System.out.println(tm.getArgumentMap().get(0));
     		objects=processor.processTermMap(tm, node, null, null, null, null,true);
     		if (objects == null){
                 return; //handle this in sequence!!!!
+                //throw exception
             }
     		int argumentlist=positions.get(i).getArgumentList();
     		int actualpos=positions.get(i).getActualPosition();
     		arguments.get(argumentlist).remove(actualpos);
-        	arguments.get(argumentlist).add(actualpos,objects.get(0));
+        	arguments.get(argumentlist).add(actualpos,objects.size()==0?null:objects.get(0));
     	}
     	 
     	if(dependencyProcessor!=null){
@@ -97,28 +98,31 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
 	    		Function function = FunctionFactory.get(functionURI);
 	    		List<? extends String> results = null;
 				try {
-					System.out.println("argsssss " + functionURI + " function " + funi);
+					//System.out.println("argsssss " + functionURI + " function " + funi);
 					for(int i=0;i<arguments.get(funi).size();++i){
-						System.out.println(arguments.get(funi).get(i));
+						//System.out.println(arguments.get(funi).get(i));
 					}
 					results = function.execute(arguments.get(funi));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
+					//System.exit(0);
+					flag=false; //some node did not have the reference!! so the row is incomplete, never mind go ahead
+					break;
 				}
 	    		if(results.size()==1){
 	    			if(results.get(0).toString().equalsIgnoreCase("true")){
-	    				System.out.println("argsssss from true!!! RESULT="+flag);
+	    				//System.out.println("argsssss from true!!! RESULT="+flag);
 	    			}
 	    			else{
 	    				flag=false;
-	    				System.out.println("argsssss RESULT="+flag);
+	    				//System.out.println("argsssss RESULT="+flag);
 	    				break;
 	    			}
 	    		}
 	    		else{
 	    			flag=false;
-	    			System.out.println("argsssss RESULT="+flag);
+	    			//System.out.println("argsssss RESULT="+flag);
 	    			break;
 	    		}
     		}
