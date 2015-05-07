@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.geotools.geometry.iso.io.wkt.WKTReader;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -29,9 +30,18 @@ public class FunctionAsWKT extends AbstractFunction implements Function {
 	public List<? extends String> execute(
 			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
-		
-		Geometry geometry = computeGeometry(arguments.get(0), termkind);
-		valueList.add(GTransormationFunctions.asWKT(
+		Geometry geometry = null;
+			if (arguments.size() == 0) {
+				geometry = computeGeometry("POINT (1 1)", termkind);
+			}
+			else {
+				geometry = computeGeometry(arguments.get(0), termkind);
+			}
+//			System.out.println(geometry.getSRID());
+			if (geometry.getSRID() != 0) {
+				Config.EPSG_CODE = "" + geometry.getSRID() + "";
+			}
+			valueList.add(GTransormationFunctions.asWKT(
 				(Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE)));
 		return valueList;
 	}

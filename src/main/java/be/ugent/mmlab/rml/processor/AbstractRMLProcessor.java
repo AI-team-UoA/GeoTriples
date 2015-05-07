@@ -1,38 +1,12 @@
 package be.ugent.mmlab.rml.processor;
 
-import be.ugent.mmlab.rml.core.ConditionalJoinRMLPerformer;
-import be.ugent.mmlab.rml.core.JoinRMLPerformer;
-import be.ugent.mmlab.rml.core.RMLEngine;
-import be.ugent.mmlab.rml.core.RMLPerformer;
-import be.ugent.mmlab.rml.core.SimpleReferencePerformer;
-import be.ugent.mmlab.rml.function.Function;
-import be.ugent.mmlab.rml.function.FunctionFactory;
-import be.ugent.mmlab.rml.model.GraphMap;
-import be.ugent.mmlab.rml.model.JoinCondition;
-import be.ugent.mmlab.rml.model.LogicalSource;
-import be.ugent.mmlab.rml.model.ObjectMap;
-import be.ugent.mmlab.rml.model.PredicateMap;
-import be.ugent.mmlab.rml.model.PredicateObjectMap;
-import be.ugent.mmlab.rml.model.ReferencingObjectMap;
-import be.ugent.mmlab.rml.model.SubjectMap;
-import be.ugent.mmlab.rml.model.TermMap;
 import static be.ugent.mmlab.rml.model.TermType.BLANK_NODE;
-import static be.ugent.mmlab.rml.model.TermType.IRI;
-import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
-import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
-import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +23,27 @@ import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
+
+import be.ugent.mmlab.rml.core.ConditionalJoinRMLPerformer;
+import be.ugent.mmlab.rml.core.JoinRMLPerformer;
+import be.ugent.mmlab.rml.core.RMLEngine;
+import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.core.SimpleReferencePerformer;
+import be.ugent.mmlab.rml.function.Function;
+import be.ugent.mmlab.rml.function.FunctionFactory;
+import be.ugent.mmlab.rml.model.GraphMap;
+import be.ugent.mmlab.rml.model.JoinCondition;
+import be.ugent.mmlab.rml.model.LogicalSource;
+import be.ugent.mmlab.rml.model.ObjectMap;
+import be.ugent.mmlab.rml.model.PredicateMap;
+import be.ugent.mmlab.rml.model.PredicateObjectMap;
+import be.ugent.mmlab.rml.model.ReferencingObjectMap;
+import be.ugent.mmlab.rml.model.SubjectMap;
+import be.ugent.mmlab.rml.model.TermMap;
+import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
+import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 
 /**
@@ -240,7 +235,9 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     			}
     			Function function = FunctionFactory.get(map.getFunction());
     			try {
-    				value.addAll(function.execute(argumentsString));
+    				if (argumentsString.size() != 0) {
+    					value.addAll(function.execute(argumentsString));
+    				}
     			} catch (Exception e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
