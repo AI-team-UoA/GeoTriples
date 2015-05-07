@@ -20,9 +20,9 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 
 
-public class FunctionDimension extends AbstractFunction implements Function {
+public class FunctionIntersects extends AbstractFunction implements Function {
 	QLTerm termkind;
-	public FunctionDimension(QLTerm termkind) {
+	public FunctionIntersects(QLTerm termkind) {
 		this.termkind=termkind;
 	}
 	@Override
@@ -30,9 +30,10 @@ public class FunctionDimension extends AbstractFunction implements Function {
 			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
 		
-		Geometry geometry = computeGeometry(arguments.get(0), termkind);
-		valueList.add(GTransormationFunctions.dimension(
-				(Geometry) geometry));
+		Geometry geometry1 = computeGeometry(arguments.get(0), termkind);
+		Geometry geometry2 = computeGeometry(arguments.get(1), termkind);
+		valueList.add(GTransormationFunctions.intersects(
+				geometry1,geometry2));
 		return valueList;
 	}
 

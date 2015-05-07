@@ -146,6 +146,9 @@ public class XPathProcessor extends AbstractRMLProcessor {
             XMLDog dog = new XMLDog(dnc);
             
             //adding expression to the xpathprocessor
+            //System.out.println(reference + "mmmm");
+            //System.out.println(fileName + "mmmm");
+
             dog.addXPath(reference);
 
             jlibs.xml.sax.dog.sniff.Event event = dog.createEvent();

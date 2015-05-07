@@ -14,7 +14,7 @@
 
 <#FieldAttributes>
 rml:logicalSource [ 
-	rml:source "/home/dimis/LEODemo/talkingfields-rml/tf.xml";
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field";
 ];
@@ -72,6 +72,67 @@ rr:subjectMap [
 			rr:datatype xsd:boolean;
 		];
     ] ;
+    
+    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasCrop;
+                     rr:objectMap [ 
+			rr:template "{@crop}";
+			rr:datatype xsd:integer;
+		];
+    ] ;    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasId;
+                     rr:objectMap [ 
+			rr:template "{@ID}";
+			rr:datatype xsd:string;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasVariety;
+                     rr:objectMap [ 
+			rr:template "{@variety}";
+			rr:datatype xsd:string;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasCropType;
+                     rr:objectMap [ 
+			rr:template "{@crop}";
+			rr:datatype xsd:long;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasBigCropType;
+                     rr:objectMap [ 
+			rr:template "{@pre_crop}";
+			rr:datatype xsd:long;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasSeedingDate;
+                     rr:objectMap [ 
+			rr:template "{@seeding_date}";
+			rr:datatype xsd:date;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasDirty_His;
+                     rr:objectMap [ 
+			rr:template "{@dirty_his}";
+			rr:datatype xsd:boolean;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasProcessed;
+                     rr:objectMap [ 
+			rr:template "{@processed}";
+			rr:datatype xsd:boolean;
+		];
+    ] ;
+    
+    
+    
     rr:predicateObjectMap [
         rr:predicate tfo:hasRasterCell;
         rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/RasterCell/id/{./rc/@x}-{./rc/@y}";];
@@ -81,7 +142,7 @@ rr:subjectMap [
     
 <#RasterCellAtrributes>
 rml:logicalSource [ 
-	rml:source "/home/dimis/LEODemo/talkingfields-rml/tf.xml";
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];
@@ -103,6 +164,32 @@ rr:subjectMap [
 			rr:datatype xsd:double;
 		];
     ] ;
+    
+    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasSavings;
+                     rr:objectMap [ 
+			rml:reference "./savings/value";
+			rr:datatype xsd:decimal;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasX;
+                     rr:objectMap [ 
+			rml:reference "@x";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasY;
+                     rr:objectMap [ 
+			rml:reference "@y";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    
+    
+    
     rr:predicateObjectMap [
                      rr:predicate ogc:hasGeometry;
 			        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}";];
@@ -110,7 +197,7 @@ rr:subjectMap [
     
 <#RasterCellGeometry>
 rml:logicalSource [ 
-	rml:source "/home/dimis/LEO/geotriples-git/GeoTriples/resources/rml/talkingfields-rml/tf.xml";
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
         rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];

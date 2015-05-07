@@ -122,7 +122,9 @@ public class Vocab {
         BLANK_NODE("BlankNode"),
         LITERAL("Literal"),
         //FROM ANOTHER ONTOLOGY
-        TYPE("type");
+        TYPE("type"),
+        
+        TRIPLES_MAP("triplesMap");
         private String displayName;
 
         private R2RMLTerm(String displayName) {

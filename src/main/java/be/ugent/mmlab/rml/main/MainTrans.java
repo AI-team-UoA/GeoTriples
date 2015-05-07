@@ -12,10 +12,14 @@ import be.ugent.mmlab.rml.function.FunctionAsGML;
 import be.ugent.mmlab.rml.function.FunctionAsWKT;
 import be.ugent.mmlab.rml.function.FunctionCentroidX;
 import be.ugent.mmlab.rml.function.FunctionCentroidY;
+import be.ugent.mmlab.rml.function.FunctionContains;
 import be.ugent.mmlab.rml.function.FunctionCoordinateDimension;
 import be.ugent.mmlab.rml.function.FunctionDimension;
+import be.ugent.mmlab.rml.function.FunctionEQUI;
 import be.ugent.mmlab.rml.function.FunctionFactory;
+import be.ugent.mmlab.rml.function.FunctionGreaterThan;
 import be.ugent.mmlab.rml.function.FunctionHasSerialization;
+import be.ugent.mmlab.rml.function.FunctionIntersects;
 import be.ugent.mmlab.rml.function.FunctionIs3D;
 import be.ugent.mmlab.rml.function.FunctionIsEmpty;
 import be.ugent.mmlab.rml.function.FunctionIsSimple;
@@ -198,6 +202,9 @@ public class MainTrans {
     	}
     }
     private static void registerFunctions() {
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"), new FunctionEQUI(QLTerm.XPATH_CLASS)); //dont delete or change this line, it replaces the equi join functionality
+
+    	
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"), new FunctionHasSerialization(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"), new FunctionAsGML(QLTerm.XPATH_CLASS));
@@ -211,5 +218,10 @@ public class MainTrans {
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX(QLTerm.XPATH_CLASS));
     	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY(QLTerm.XPATH_CLASS));
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"), new FunctionContains(QLTerm.XPATH_CLASS));
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"), new FunctionIntersects(QLTerm.XPATH_CLASS));
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"), new FunctionGreaterThan(QLTerm.XPATH_CLASS));
+
     }
+    
 }

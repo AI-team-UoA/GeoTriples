@@ -67,6 +67,9 @@ public abstract class AbstractTermMap implements TermMap {
         private URI function = null;
         private List<TermMap> argumentMap =null;
         
+        //extra addition
+        private TriplesMap triplesMap=null;
+        
         protected AbstractTermMap(Value constantValue, URI dataType,
                 String languageTag, String stringTemplate, URI termType,
                 String inverseExpression, ReferenceIdentifier referenceValue)
@@ -86,7 +89,7 @@ public abstract class AbstractTermMap implements TermMap {
         protected AbstractTermMap(Value constantValue, URI dataType,
                 String languageTag, String stringTemplate, URI termType,
                 String inverseExpression, ReferenceIdentifier referenceValue,
-                URI function,List<TermMap> argumentMap)
+                URI function,List<TermMap> argumentMap,TriplesMap owner)
                 throws R2RMLDataError, InvalidR2RMLStructureException,
                 InvalidR2RMLSyntaxException {
 
@@ -99,6 +102,7 @@ public abstract class AbstractTermMap implements TermMap {
                 setInversionExpression(inverseExpression);
                 setFunction(function);
                 setArgumentMap(argumentMap);
+                setTriplesMap(owner);
                 //checkGlobalConsistency(); //dimis uncomment this! this is the only temporary modification (except mods from private to protected)
         }
 
@@ -436,6 +440,14 @@ public abstract class AbstractTermMap implements TermMap {
 
 		public void setArgumentMap(List<TermMap> argumentMap) {
 			this.argumentMap = argumentMap;
+		}
+
+		public TriplesMap getTriplesMap() {
+			return triplesMap;
+		}
+
+		public void setTriplesMap(TriplesMap triplesMap) {
+			this.triplesMap = triplesMap;
 		}
 
 //	public String getValue(Map<ColumnIdentifier, byte[]> dbValues,

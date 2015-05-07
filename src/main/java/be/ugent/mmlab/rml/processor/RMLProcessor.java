@@ -5,9 +5,13 @@ import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
+
 import java.util.List;
+
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+
 import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 
 
 
@@ -59,5 +63,5 @@ public interface RMLProcessor {
      * @param node
      * @return
      */
-    public List<String> processTermMap(TermMap map, Object node);
+    public List<String> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
 }

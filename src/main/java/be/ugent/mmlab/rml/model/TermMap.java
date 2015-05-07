@@ -179,5 +179,9 @@ public interface TermMap {
 	 * @throws  
 	 */
 	//public String getValue(Map<ColumnIdentifier, byte[]> dbValues, ResultSetMetaData dbTypes) throws R2RMLDataError, SQLException, UnsupportedEncodingException;
+	
+	//extra addition
+	public TriplesMap getTriplesMap();
 
+	//public void setTriplesMap(TriplesMap triplesMap) ;
 }

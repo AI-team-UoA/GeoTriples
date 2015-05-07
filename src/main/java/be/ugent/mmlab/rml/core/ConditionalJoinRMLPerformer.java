@@ -20,6 +20,8 @@ public class ConditionalJoinRMLPerformer extends NodeRMLPerformer{
     
     private static Log log = LogFactory.getLog(RMLMappingFactory.class);
     private HashMap<String, String> conditions;
+    
+    
     private Resource subject;
     private URI predicate;
 
