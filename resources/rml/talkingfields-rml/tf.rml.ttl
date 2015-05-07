@@ -103,7 +103,7 @@ rr:subjectMap [
 		];
     ] ;
     rr:predicateObjectMap [
-                     rr:predicate tfo:hasBigCropType;
+                     rr:predicate tfo:hasPreCropType;
                      rr:objectMap [ 
 			rr:template "{@pre_crop}";
 			rr:datatype xsd:long;
@@ -169,7 +169,7 @@ rr:subjectMap [
     rr:predicateObjectMap [
                      rr:predicate tfo:hasSavings;
                      rr:objectMap [ 
-			rml:reference "./savings/value";
+			rml:reference "./savings/@value";
 			rr:datatype xsd:decimal;
 		];
     ] ;
