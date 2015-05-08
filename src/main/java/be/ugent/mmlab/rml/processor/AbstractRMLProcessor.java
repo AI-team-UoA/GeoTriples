@@ -1,6 +1,5 @@
-\package be.ugent.mmlab.rml.processor;
+package be.ugent.mmlab.rml.processor;
 
-<<<<<<< HEAD
 import static be.ugent.mmlab.rml.model.TermType.BLANK_NODE;
 /*=======
 import be.ugent.mmlab.rml.core.ArgumentPosition;
@@ -37,6 +36,11 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import be.ugent.mmlab.rml.vocabulary.VocabTrans;
 >>>>>>> 96025e5c9e349b41e58dd0cee4f258ff8caa2408*/
 
+
+
+
+
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,8 +67,11 @@ import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
 
+import be.ugent.mmlab.rml.core.ArgumentPosition;
 import be.ugent.mmlab.rml.core.ConditionalJoinRMLPerformer;
+import be.ugent.mmlab.rml.core.DependencyRMLPerformer;
 import be.ugent.mmlab.rml.core.JoinRMLPerformer;
+import be.ugent.mmlab.rml.core.JoinReferenceRMLPerformer;
 import be.ugent.mmlab.rml.core.RMLEngine;
 import be.ugent.mmlab.rml.core.RMLPerformer;
 import be.ugent.mmlab.rml.core.SimpleReferencePerformer;
@@ -77,12 +84,14 @@ import be.ugent.mmlab.rml.model.ObjectMap;
 import be.ugent.mmlab.rml.model.PredicateMap;
 import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.ReferencingObjectMap;
+import be.ugent.mmlab.rml.model.StdObjectMap;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
+import be.ugent.mmlab.rml.vocabulary.VocabTrans;
 
 
 /**
