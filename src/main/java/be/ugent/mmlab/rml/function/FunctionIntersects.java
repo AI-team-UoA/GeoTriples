@@ -20,18 +20,15 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 
 
-public class FunctionIntersects extends AbstractFunction implements Function {
-	QLTerm termkind;
-	public FunctionIntersects(QLTerm termkind) {
-		this.termkind=termkind;
-	}
+public class FunctionIntersects extends GeometryFunction implements Function {
+	
 	@Override
-	public List<? extends String> execute(
-			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+	public List<? extends Object> execute(
+			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
 		
-		Geometry geometry1 = computeGeometry(arguments.get(0), termkind);
-		Geometry geometry2 = computeGeometry(arguments.get(1), termkind);
+		Geometry geometry1 = computeGeometry(arguments.get(0), qlterms.get(0));
+		Geometry geometry2 = computeGeometry(arguments.get(1), qlterms.get(1));
 		valueList.add(GTransormationFunctions.intersects(
 				geometry1,geometry2));
 		return valueList;

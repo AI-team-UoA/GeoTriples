@@ -10,4 +10,5 @@ import java.util.HashMap;
 public class Config {
 	public static String EPSG_CODE = "4326";
 	public static final HashMap<String, String> user_namespaces=new HashMap<String, String>();
+	public static final String GEOTRIPLES_AUTO_ID = "GeoTriplesID";
 }

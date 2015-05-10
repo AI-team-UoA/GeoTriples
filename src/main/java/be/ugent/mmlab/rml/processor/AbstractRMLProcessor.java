@@ -11,6 +11,7 @@ import be.ugent.mmlab.rml.core.RMLPerformer;
 import be.ugent.mmlab.rml.core.SimpleReferencePerformer;
 import be.ugent.mmlab.rml.function.Function;
 import be.ugent.mmlab.rml.function.FunctionFactory;
+import be.ugent.mmlab.rml.function.FunctionNotDefined;
 import be.ugent.mmlab.rml.model.AbstractTermMap;
 import be.ugent.mmlab.rml.model.GraphMap;
 import be.ugent.mmlab.rml.model.JoinCondition;
@@ -22,6 +23,7 @@ import be.ugent.mmlab.rml.model.ReferencingObjectMap;
 import be.ugent.mmlab.rml.model.StdObjectMap;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
+import be.ugent.mmlab.rml.model.TermMap.TermMapType;
 import be.ugent.mmlab.rml.model.TermType;
 import static be.ugent.mmlab.rml.model.TermType.BLANK_NODE;
 import static be.ugent.mmlab.rml.model.TermType.IRI;
@@ -85,6 +87,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     /*protected String getIdentifier(LogicalSource ls) {
         return RMLEngine.getFileMap().getProperty(ls.getIdentifier());
     }*/
+    private List<DependencyRMLPerformer> performersForFunctionInsideJoinCondition=new ArrayList<>();
 
     /**
      * gets the expression specified in the logical source
@@ -108,13 +111,13 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     @Override
     public Resource processSubjectMap(SesameDataSet dataset, SubjectMap subjectMap, Object node) {       
         //Get the uri
-        List<String> values = processTermMap(subjectMap, node,null,null,null,null,false);    
+        List<Object> values = processTermMap(subjectMap, node,null,null,null,null,false);    
         //log.info("Abstract RML Processor Graph Map" + subjectMap.getGraphMaps().toString());
         if (values.isEmpty()) 
             if(subjectMap.getTermType() != BLANK_NODE)
                 return null;
             
-        String value = null;
+        Object value = null;
         if(subjectMap.getTermType() != BLANK_NODE){
             //Since it is the subject, more than one value is not allowed. 
             //Only return the first one. Throw exception if not?
@@ -130,16 +133,16 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
         switch (subjectMap.getTermType()) {
             case IRI:
                 if (value != null && !value.equals("")){
-                    if(value.startsWith("www."))
+                    if(value.toString().startsWith("www."))
                         value = "http://" + value;
-                    subject = new URIImpl(value);
+                    subject = new URIImpl(value.toString());
                 }
                 break;
             case BLANK_NODE:
                 subject = new BNodeImpl(org.apache.commons.lang.RandomStringUtils.randomAlphanumeric(10));
                 break;
             default:
-                subject = new URIImpl(value);
+                subject = new URIImpl(value.toString());
         }
         //subject = new URIImpl(value);
         return subject;
@@ -165,14 +168,14 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
      */
 
     @Override
-    public List<String> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin) {
-        List<String> value = new ArrayList<>();
+    public List<Object> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoinInFirstLevel) {
+        List<Object> value = new ArrayList<>();
         //extra addition
         TriplesMap tm=map.getTriplesMap();
         
         RMLProcessor processor=null;
         String fileName =null;
-        if(tm!=null){
+        if(tm!=null && !ignoreOwnerBecauseWeAreInJoinInFirstLevel && performersForFunctionInsideJoinCondition.size()==0){
         	//Create the processor based on the owner triples map
             RMLProcessorFactory factory = new ConcreteRMLProcessorFactory();
             QLTerm queryLanguage = tm.getLogicalSource().getReferenceFormulation();
@@ -192,12 +195,24 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
             case REFERENCE_VALUED:
                 //Get the expression and extract the value
                 ReferenceIdentifierImpl identifier = (ReferenceIdentifierImpl) map.getReferenceValue();
-                if(tm==null || ignoreOwnerBecauseWeAreInJoin){
+                if(tm==null || (ignoreOwnerBecauseWeAreInJoinInFirstLevel)){
                 	return extractValueFromNode(node, identifier.toString().trim());
                 }else{
-                	RMLPerformer performer = new JoinReferenceRMLPerformer(processor, subject, predicate,identifier.toString().trim());
-                    processor.execute(dataset, tm, performer, fileName);
-                    return new ArrayList<>();
+                	//we are in join, and processing a function argument!
+                	if(performersForFunctionInsideJoinCondition.size()>0)
+                	{
+                		for(DependencyRMLPerformer p:performersForFunctionInsideJoinCondition){
+                			if(p.getOwnmap().equals(tm)){
+                				return p.perform(identifier.toString().trim());
+                			}
+                		}
+                	}
+                	else
+                	{
+	                	RMLPerformer performer = new JoinReferenceRMLPerformer(processor, subject, predicate,identifier.toString().trim());
+	                    processor.execute(dataset, tm, performer, fileName);
+	                    return new ArrayList<>();
+                	}
                 }
             case CONSTANT_VALUED:
                 //Extract the value directly from the mapping
@@ -211,7 +226,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     					.extractColumnNamesFromStringTemplate(template);
 
     			for (String expression : tokens) {
-    				List<String> replacements = extractValueFromNode(node,
+    				List<Object> replacements = extractValueFromNode(node,
     						expression);
 
     				for (int i = 0; i < replacements.size(); i++) {
@@ -220,7 +235,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     					}
     					String replacement = null;
     					if (replacements.get(i) != null)
-    						replacement = replacements.get(i).trim();
+    						replacement = replacements.get(i).toString().trim();
 
     					// if (replacement == null || replacement.isEmpty()) {
     					if (replacement == null || replacement.equals("")) {
@@ -231,7 +246,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     						continue;
     					}
 
-    					String temp = value.get(i).trim();
+    					String temp = value.get(i).toString().trim();
 
     					if (expression.contains("[")) {
     						expression = expression.replaceAll("\\[", "")
@@ -263,9 +278,9 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 
     			// Check if there are any placeholders left in the templates and
     			// remove uris that are not
-    			List<String> validValues = new ArrayList<>();
-    			for (String uri : value) {
-    				if (R2RMLToolkit.extractColumnNamesFromStringTemplate(uri)
+    			List<Object> validValues = new ArrayList<>();
+    			for (Object uri : value) {
+    				if (R2RMLToolkit.extractColumnNamesFromStringTemplate(uri.toString())
     						.isEmpty()) {
     					validValues.add(uri);
     				}
@@ -274,17 +289,29 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     			return validValues;
             case TRANSFORMATION_VALUED:
     			// Extract the value directly from the mapping
-    			List<String> argumentsString = new ArrayList<String>();
+    			List<Object> argumentsString = new ArrayList<Object>();
+    			List<QLTerm> argumentsQLTerms = new ArrayList<QLTerm>();
     			for (TermMap argument : map.getArgumentMap()) {
-    				List<String> temp = processTermMap(argument, node, triplesMap, subject, predicate,dataset,false);
+    				List<Object> temp = processTermMap(argument, node, triplesMap, subject, predicate,dataset,false);
     				argumentsString.addAll(temp);
+    				for(int i=0;i<temp.size();++i){
+    					argumentsQLTerms.add((argument.getTriplesMap()==null)?getFormulation(): argument.getTriplesMap().getLogicalSource().getReferenceFormulation());
+    				}
+    				
     			}
-    			Function function = FunctionFactory.get(map.getFunction());
+			Function function=null;
+			try {
+				function = FunctionFactory.get(map.getFunction());
+			} catch (FunctionNotDefined e1) {
+				e1.printStackTrace();
+				System.exit(13);
+			}
     			try {
-    				value.addAll(function.execute(argumentsString));
+    				value.addAll(function.execute(argumentsString,argumentsQLTerms));
     			} catch (Exception e) {
     				// TODO Auto-generated catch block
-    				e.printStackTrace();
+    				//return value;
+    				//e.printStackTrace(); //uncomment for debug
     			}
     			 return value;
     			 
@@ -383,8 +410,9 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 //                        }
                     	List<Integer> maxargs=new ArrayList<>();
                     	List<URI> functions=new ArrayList<>();
-                    	List<List<String>> arguments=new ArrayList<>();
-                    	
+                    	List<List<Object>> arguments=new ArrayList<>();
+                    	List<List<QLTerm>> argumentsQLTerms=new ArrayList<>();
+
                     	Map<TriplesMap,List<TermMap>> clusters=new HashMap<TriplesMap,List<TermMap>>();
                     	Map<TriplesMap,List<ArgumentPosition>> clustersPositions=new HashMap<TriplesMap,List<ArgumentPosition>>();
                     	int iterator=-1;
@@ -412,7 +440,12 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                     		}
 
                     		for(TermMap tm:joinCondition.getArgumentMap()){
+                    			if(tm.getTermMapType().equals(TermMapType.TRANSFORMATION_VALUED)){
+                    				tm.setTriplesMap(parentTriplesMap); //to be processed on the last iteration, where is the parent triples map
+                    				addRecursivelyTheNewClusters(tm,clusters,clustersPositions,parentTriplesMap);
+                    			}
                     			TriplesMap owner=tm.getTriplesMap();
+                    			
                     			if(clusters.get(owner)==null){
                     				clusters.put(owner, new ArrayList<TermMap>());
                     				clustersPositions.put(owner, new ArrayList<ArgumentPosition>());
@@ -423,11 +456,12 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                     		}
                     		maxargs.add(joinCondition.getArgumentMap().size());
                     		functions.add(joinCondition.getFunction());
-                    		arguments.add(new ArrayList<String>());
-                    		
+                    		arguments.add(new ArrayList<Object>());
+                    		argumentsQLTerms.add(new ArrayList<QLTerm>());
                     		
                         	for(int i=0;i<maxargs.get(iterator);++i){
                         		arguments.get(iterator).add(null);
+                        		argumentsQLTerms.get(iterator).add(null);
                         	}
                     	}
                     	
@@ -437,9 +471,10 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                         String fileName1 =null;
                         
                         RMLProcessor processor1 =processor;
-                        RMLPerformer performer1 = new DependencyRMLPerformer(processor1,subject,predicate,parentTriplesMap,
+                        DependencyRMLPerformer performer1 = new DependencyRMLPerformer(processor1,subject,predicate,parentTriplesMap,
                         		(clusters.containsKey(parentTriplesMap))?clusters.get(parentTriplesMap):new ArrayList<TermMap>(),clustersPositions.containsKey(parentTriplesMap)?clustersPositions.get(parentTriplesMap):new ArrayList<ArgumentPosition>(),
-                        				(DependencyRMLPerformer)oldperformer1,oldprocessor1,processor,arguments,functions,parentTriplesMap,fileName);
+                        				(DependencyRMLPerformer)oldperformer1,oldprocessor1,processor,this,arguments,argumentsQLTerms,functions,parentTriplesMap,fileName);
+                        performersForFunctionInsideJoinCondition.add(performer1);
                         oldperformer1=performer1;
                         oldprocessor1=processor1;
                         trmlast=parentTriplesMap;
@@ -463,8 +498,8 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                             else
                                 fileName1 = trm.getLogicalSource().getIdentifier();
                             processor1 =factory.create(queryLanguage1);
-                            performer1 = new DependencyRMLPerformer(processor1,subject,predicate,parentTriplesMap,termmaps,clustersPositions.get(trm),(DependencyRMLPerformer)oldperformer1,oldprocessor1,processor,arguments,functions,trm,fileName1);
-
+                            performer1 = new DependencyRMLPerformer(processor1,subject,predicate,parentTriplesMap,termmaps,clustersPositions.get(trm),(DependencyRMLPerformer)oldperformer1,oldprocessor1,processor,this,arguments,argumentsQLTerms,functions,trm,fileName1);
+                            performersForFunctionInsideJoinCondition.add(performer1);
                     		oldperformer1=performer1;
                     		oldprocessor1=processor1;
                     	}
@@ -474,13 +509,16 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
                     		for(int i=0;i<nullpositions.size();++i){
                     			ArgumentPosition pos=nullpositions.get(i);
                     			arguments.get(pos.getArgumentList()).remove(pos.getActualPosition());
-                    			arguments.get(pos.getArgumentList()).add(pos.getActualPosition(), processor.processTermMap(nullcluster.get(i), node, null, null, null, null, false | true).get(0));
+                    			arguments.get(pos.getArgumentList()).add(pos.getActualPosition(), this.processTermMap(nullcluster.get(i), node, null, null, null, null, false | true).get(0));
+                    			argumentsQLTerms.get(pos.getArgumentList()).remove(pos.getActualPosition());
+                            	argumentsQLTerms.get(pos.getArgumentList()).add(pos.getActualPosition(),getFormulation());
                     		}
                     		
                     	}
                     	
                     	
                     	oldprocessor1.execute(dataset, trmlast, oldperformer1, fileName1);
+                    	performersForFunctionInsideJoinCondition.clear(); //for next use
                     }
 
                 }
@@ -509,7 +547,28 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
         }
     }
 
-    /**
+    private void addRecursivelyTheNewClusters(TermMap tm,
+			Map<TriplesMap, List<TermMap>> clusters,
+			Map<TriplesMap, List<ArgumentPosition>> clustersPositions, TriplesMap parentTriplesMap) {
+    	for(TermMap insidetm:tm.getArgumentMap()){
+			if(insidetm.getTermMapType().equals(TermMapType.TRANSFORMATION_VALUED)){
+				addRecursivelyTheNewClusters(insidetm, clusters, clustersPositions,parentTriplesMap);
+				tm.setTriplesMap(parentTriplesMap);
+			}
+			else
+			{
+				TriplesMap owner=insidetm.getTriplesMap();
+    			
+    			if(clusters.get(owner)==null){
+    				clusters.put(owner, new ArrayList<TermMap>());
+    				clustersPositions.put(owner, new ArrayList<ArgumentPosition>());
+    			}
+			}
+		}
+		
+	}
+
+	/**
      * process a predicate map
      *
      * @param predicateMap
@@ -518,13 +577,13 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
      */
     protected List<URI> processPredicateMap(PredicateMap predicateMap, Object node) {
         // Get the value
-        List<String> values = processTermMap(predicateMap, node,null,null,null,null,false);
+        List<Object> values = processTermMap(predicateMap, node,null,null,null,null,false);
 
         List<URI> uris = new ArrayList<>();
-        for (String value : values) {
-            if(value.startsWith("www."))
+        for (Object value : values) {
+            if(value.toString().startsWith("www."))
                 value = "http://" + value;
-            uris.add(new URIImpl(value));
+            uris.add(new URIImpl(value.toString()));
         }
         //return the uri
         return uris;
@@ -540,31 +599,35 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
     public List<Value> processObjectMap(ObjectMap objectMap, Object node,TriplesMap triplesMap, Resource subject,URI predicate,SesameDataSet dataset) {
         //A Term map returns one or more values (in case expression matches more)
     	
-        List<String> values = processTermMap(objectMap, node,triplesMap,subject,predicate,dataset,false);
+        List<Object> values = processTermMap(objectMap, node,triplesMap,subject,predicate,dataset,false);
 
         List<Value> valueList = new ArrayList<>();
-        for (String value : values) {
+        for (Object value : values) {
             switch (objectMap.getTermType()) {
                 case IRI:
                     if (value != null && !value.equals("")){
-                        if(value.startsWith("www."))
+                        if(value.toString().startsWith("www."))
                             value = "http://" + value;
-                        valueList.add(new URIImpl(value));}
+                        valueList.add(new URIImpl(value.toString()));}
                     break;
                 case BLANK_NODE:
-                    valueList.add(new BNodeImpl(value));
+                    valueList.add(new BNodeImpl(value.toString()));
                     break;
                 case LITERAL:
                     if (objectMap.getLanguageTag() != null && !value.equals("")) {
-                        valueList.add(new LiteralImpl(value, objectMap.getLanguageTag()));
+                        valueList.add(new LiteralImpl(value.toString(), objectMap.getLanguageTag()));
                     } else if (value != null && !value.equals("") && objectMap.getDataType() != null) {
-                        valueList.add(new LiteralImpl(value, objectMap.getDataType()));
+                        valueList.add(new LiteralImpl(value.toString(), objectMap.getDataType()));
                     } else if (value != null && !value.equals("")) {
-                        valueList.add(new LiteralImpl(value.trim()));
+                        valueList.add(new LiteralImpl(value.toString().trim()));
                     }
             }
 
         }
         return valueList;
+    }
+    @Override
+    public QLTerm getFormulation() {
+    	return null;
     }
 }

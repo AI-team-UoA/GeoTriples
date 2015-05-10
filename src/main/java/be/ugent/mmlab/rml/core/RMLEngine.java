@@ -156,8 +156,8 @@ public class RMLEngine {
 
         for (TriplesMap triplesMap : r2rmlMapping.getTriplesMaps()) {
             if (check_ReferencingObjectMap(r2rmlMapping, triplesMap)) 
-                continue;
-            FileInputStream input = null;
+                continue; //i think this check is pointless /dimis
+            //FileInputStream input = null;
             System.out.println("[RMLEngine:generateRDFTriples] Generate RDF triples for " + triplesMap.getName());
             //need to add control if reference Formulation is not defined
             //need to add check for correct spelling, aka rml:queryLanguage and not rml:referenceFormulation otherwise breaks
@@ -177,9 +177,9 @@ public class RMLEngine {
                 log.info("[RMLEngine:generateRDFTriples] next file to be opened " + fileName);
                 //add control in case rml:source is not declared
                 getFileMap().put(fileName, fileName);
-                input = new FileInputStream(fileName);
-                getFileMap().load(input);
-           } catch (IOException ex) {
+                //input = new FileInputStream(fileName);
+                //getFileMap().load(input);
+           } catch (Exception ex) {
                 Logger.getLogger(RMLEngine.class.getName()).log(Level.SEVERE, null, ex);
            }
 
@@ -190,11 +190,11 @@ public class RMLEngine {
                     + " triples generated for " + triplesMap.getName());
             delta = sesameDataSet.getSize();
                         
-            try {
-                input.close();
-            } catch (IOException ex) {
-                Logger.getLogger(RMLEngine.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                //input.close();
+//            } catch (IOException ex) {
+//                Logger.getLogger(RMLEngine.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
         if(filebased)
             try {

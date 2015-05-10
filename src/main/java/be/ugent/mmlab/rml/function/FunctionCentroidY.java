@@ -20,17 +20,14 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 
 
-public class FunctionCentroidY extends AbstractFunction implements Function {
-	QLTerm termkind;
-	public FunctionCentroidY(QLTerm termkind) {
-		this.termkind=termkind;
-	}
+public class FunctionCentroidY extends GeometryFunction implements Function {
+	
 	@Override
-	public List<? extends String> execute(
-			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+	public List<? extends Object> execute(
+			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
 		
-		Geometry geometry = computeGeometry(arguments.get(0), termkind);
+		Geometry geometry = computeGeometry(arguments.get(0), qlterms.get(0));
 		valueList.add(GTransormationFunctions.centroidy(
 				(Geometry) geometry));
 		return valueList;

@@ -20,18 +20,28 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 
 
-public class FunctionAsWKT extends GeometryFunction implements Function {
+public class FunctionAdd extends AbstractFunction implements Function {
 	
 	@Override
 	public List<? extends Object> execute(
 			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
-		List<String> valueList = new ArrayList<>();
+		List<Object> valueList = new ArrayList<>();
+//		System.out.println(arguments.get(0));
+//		System.out.println(arguments.get(1));
+//		System.out.println("result ");
+		valueList.add(
+				String.valueOf(Double.valueOf(arguments.get(0).toString())+Double.valueOf(arguments.get(1).toString())));
+		//System.out.println("Addition:  "+valueList.get(0));
 		
-		Geometry geometry = computeGeometry(arguments.get(0), qlterms.get(0));
-		valueList.add(GTransormationFunctions.asWKT(
-				(Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE)));
 		return valueList;
 	}
 
 
 }
+
+               
+               
+               
+               
+      
+               

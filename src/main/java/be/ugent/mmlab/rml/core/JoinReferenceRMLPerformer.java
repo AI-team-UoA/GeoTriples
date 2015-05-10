@@ -42,7 +42,7 @@ public class JoinReferenceRMLPerformer extends NodeRMLPerformer{
     @Override
     public void perform(Object node, SesameDataSet dataset, TriplesMap map) {
         //Value object = processor.processSubjectMap(dataset, map.getSubjectMap(), node);
-    	List<String> objects = processor.extractValueFromNode(node, expr);
+    	List<Object> objects = processor.extractValueFromNode(node, expr);
     			
         if (objects == null){
             return;
@@ -51,8 +51,8 @@ public class JoinReferenceRMLPerformer extends NodeRMLPerformer{
                     + subject + " Predicate " + predicate + "Object " + objects.toString());
         
         //add the join triple
-        for(String obj:objects){
-        	dataset.add(subject, predicate, new LiteralImpl(obj.trim()));
+        for(Object obj:objects){
+        	dataset.add(subject, predicate, new LiteralImpl(obj.toString().trim()));
         }
     }
 

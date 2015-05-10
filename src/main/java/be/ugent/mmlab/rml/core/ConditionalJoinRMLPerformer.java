@@ -55,9 +55,9 @@ public class ConditionalJoinRMLPerformer extends NodeRMLPerformer{
 
             iter: for (String expr : conditions.keySet()) {
                 String cond = conditions.get(expr);
-                List<String> values = processor.extractValueFromNode(node, expr);
+                List<Object> values = processor.extractValueFromNode(node, expr);
                 
-                for(String value : values){
+                for(Object value : values){
                     if(value == null || !value.equals(cond)){
                             flag = false;
                             break iter;

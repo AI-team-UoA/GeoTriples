@@ -28,8 +28,10 @@ public class VocabTrans extends Vocab{
         
         TRANSFORMATION("transformation"),
         FUNCTION("function"),
-        ARGUMENTMAP("argumentMap")
+        ARGUMENTMAP("argumentMap"),
+        TRIPLES_MAP("triplesMap");
         ;
+        
         private String displayName;
 
         private RRXTerm(String displayName) {

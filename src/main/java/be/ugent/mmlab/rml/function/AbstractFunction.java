@@ -21,6 +21,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.gml2.GMLReader;
 public abstract class AbstractFunction {
+	
 	protected Geometry computeGeometry(String value, QLTerm term)
 			throws SAXException, IOException, ParserConfigurationException,
 			NoSuchAuthorityCodeException, FactoryException, MalformedGeometryException {
@@ -51,6 +52,25 @@ public abstract class AbstractFunction {
 				geometry = g.read(istream);
 			
 			return geometry;
+		case SHP_CLASS:
+			throw new UnsupportedOperationException(
+					"Reading geometries form Shapefile (in String format) implementation is missing");
+		default:
+			throw new MalformedGeometryException("GeoTriples cannot recognize this type of geometry");
+		}
+	}
+	protected Geometry computeGeometry(Object object, QLTerm term)
+			throws SAXException, IOException, ParserConfigurationException,
+			NoSuchAuthorityCodeException, FactoryException, MalformedGeometryException {
+		switch (term) {
+		case SHP_CLASS:
+			return (Geometry)object;
+		case XPATH_CLASS:
+			return computeGeometry((String) object, term);
+		case CSV_CLASS:
+			return computeGeometry((String) object, term);
+		case JSONPATH_CLASS:
+			return computeGeometry((String) object, term);
 		default:
 			throw new MalformedGeometryException("GeoTriples cannot recognize this type of geometry");
 		}

@@ -62,7 +62,8 @@ public class Vocab {
         XPATH_CLASS("XPath"),
         SQL_CLASS("SQL"),
         JSONPATH_CLASS("JSONPath"),
-        CSV_CLASS("CSV");
+        CSV_CLASS("CSV"), 
+        SHP_CLASS("SHP");
         
         private String displayName;
 
@@ -122,9 +123,9 @@ public class Vocab {
         BLANK_NODE("BlankNode"),
         LITERAL("Literal"),
         //FROM ANOTHER ONTOLOGY
-        TYPE("type"),
+        TYPE("type");
         
-        TRIPLES_MAP("triplesMap");
+        
         private String displayName;
 
         private R2RMLTerm(String displayName) {
