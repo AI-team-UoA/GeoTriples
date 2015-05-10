@@ -16,7 +16,6 @@ import be.ugent.mmlab.rml.core.MalformedGeometryException;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.gml2.GMLReader;
@@ -37,8 +36,15 @@ public abstract class AbstractFunction {
 
 		switch (term) {
 		case XPATH_CLASS:
+			
+			//I wrap the geometric value read with these tags so that the GML3 parser perceives it as an autonomous dataset
+//			value = "<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>" + value;
+//			value = value + "</a></gml:featureMember></gml:FeatureCollection>";
+//			System.out.println(value);
+			value = convert2GML2(value);
+//			System.out.println(value);
 			GMLReader gmlreader = new GMLReader();
-			geometry = gmlreader.read(value,null );
+			geometry = gmlreader.read(value,null);
 			return geometry;
 		case CSV_CLASS:
 			throw new UnsupportedOperationException(
@@ -74,5 +80,83 @@ public abstract class AbstractFunction {
 		default:
 			throw new MalformedGeometryException("GeoTriples cannot recognize this type of geometry");
 		}
+	}
+	
+	private String convert2GML2(String value) {
+		String [] tokens = value.split("\n");
+		if (tokens[0].contains("Point")) {
+			tokens[1] = tokens[1].replaceAll("pos", "coordinates");
+			tokens[1] = tokens[1].replaceAll("List", "");
+			String [] tokens2 = tokens[1].split("<|>");
+			tokens2[2] = remakeCoords(tokens2[2]);
+			tokens[1] = "<" + tokens2[1] + ">" + tokens2[2] + "<" + tokens2[3] + ">";
+		}
+		else if (tokens[0].contains("MultiLineString")) {
+			
+		}
+		else if (tokens[0].contains("LineString")) {
+			tokens[1] = tokens[1].replaceAll("pos", "coordinates");
+			tokens[1] = tokens[1].replaceAll("List", "");
+			String [] tokens2 = tokens[1].split("<|>");
+			tokens2[2] = remakeCoords(tokens2[2]);
+			tokens[1] = "<" + tokens2[1] + ">" + tokens2[2] + "<" + tokens2[3] + ">";
+		}
+		else if (tokens[0].contains("MultiPolygon")) {
+			for (int i=0 ; i<tokens.length ; i++) {
+				if (tokens[i].contains("exterior")) {
+					tokens[i] = tokens[i].replaceAll("exterior", "outerBoundaryIs");
+				}
+				else if (tokens[i].contains("interior")) {
+					tokens[i] = tokens[i].replaceAll("interior", "innerBoundaryIs");
+				}
+				else if (tokens[i].contains("pos")) {
+					tokens[i] = tokens[i].replaceAll("pos", "coordinates");
+					tokens[i] = tokens[i].replaceAll("List", "");
+					String [] tokens2 = tokens[i].split("<|>");
+					tokens2[2] = remakeCoords(tokens2[2]);
+					tokens[i] = "<" + tokens2[1] + ">" + tokens2[2] + "<" + tokens2[3] + ">";
+				}
+			}
+		}
+		else if (tokens[0].contains("Polygon")) {
+			for (int i=0 ; i<tokens.length ; i++) {
+				if (tokens[i].contains("exterior")) {
+					tokens[i] = tokens[i].replaceAll("exterior", "outerBoundaryIs");
+				}
+				else if (tokens[i].contains("interior")) {
+					tokens[i] = tokens[i].replaceAll("interior", "innerBoundaryIs");
+				}
+				else if (tokens[i].contains("pos")) {
+					tokens[i] = tokens[i].replaceAll("pos", "coordinates");
+					tokens[i] = tokens[i].replaceAll("List", "");
+					String [] tokens2 = tokens[i].split("<|>");
+					tokens2[2] = remakeCoords(tokens2[2]);
+					tokens[i] = "<" + tokens2[1] + ">" + tokens2[2] + "<" + tokens2[3] + ">";
+				}
+			}
+		}
+		String newValue = "";
+		for (int i=0 ; i<tokens.length ; i++) {
+			newValue += tokens[i];
+		}
+		return newValue;
+	}
+	
+	private String remakeCoords(String value) {
+		String coordBuilder = "";
+		String [] furtherTokenizelvl2 = value.split(" ");
+		for (int i=0 ; i<furtherTokenizelvl2.length ; i++) {
+			coordBuilder += furtherTokenizelvl2[i];
+			if (i < furtherTokenizelvl2.length - 1) {
+				if (i%2 == 0) {
+					coordBuilder += ",";
+				}
+				else {
+					coordBuilder += " ";
+				}
+			}	
+		}
+		
+		return coordBuilder;
 	}
 }

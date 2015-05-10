@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class GeoTriplesCMD {
 	
 	public static void main(String [] args) throws Exception {
+		long startTime = System.currentTimeMillis();
 		if (args.length == 0) {
 			usage();
 		}
@@ -24,6 +25,8 @@ public class GeoTriplesCMD {
 		else {
 			usage();
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("Took "+(endTime - startTime)/1000 + " sec");
 	}
 	
 	public static void usage() {
