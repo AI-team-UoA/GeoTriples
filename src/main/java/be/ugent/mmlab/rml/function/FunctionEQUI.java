@@ -21,13 +21,10 @@ import com.vividsolutions.jts.geom.Geometry;
 
 
 public class FunctionEQUI extends AbstractFunction implements Function {
-	QLTerm termkind;
-	public FunctionEQUI(QLTerm termkind) {
-		this.termkind=termkind;
-	}
+	
 	@Override
-	public List<? extends String> execute(
-			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+	public List<? extends Object> execute(
+			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
 		
 		valueList.add(((Boolean)(

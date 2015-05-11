@@ -182,6 +182,7 @@ public interface TermMap {
 	
 	//extra addition
 	public TriplesMap getTriplesMap();
+	public void setTriplesMap(TriplesMap owner);
 
 	//public void setTriplesMap(TriplesMap triplesMap) ;
 }

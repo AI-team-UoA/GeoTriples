@@ -25,6 +25,8 @@ public class ConcreteRMLProcessorFactory implements RMLProcessorFactory{
                 return new CSVProcessor();
             case JSONPATH_CLASS:
                 return new JSONPathProcessor();
+            case SHP_CLASS:
+                return new ShapefileProcessor();
         }
         return null;
     }

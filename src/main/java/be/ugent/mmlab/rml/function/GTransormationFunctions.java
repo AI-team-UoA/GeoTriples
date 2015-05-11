@@ -110,12 +110,17 @@ public final class GTransormationFunctions {
 		
 		return ((Boolean)the_geom1.contains(the_geom2)).toString() ;
 	}
+	public static String distance(Geometry the_geom1,Geometry the_geom2)
+	{
+		
+		return ((Double)(the_geom1.distance(the_geom2))).toString() ;
+	}
 	public static String intersects(Geometry the_geom1,Geometry the_geom2)
 	{
 		
 		return ((Boolean)the_geom1.intersects(the_geom2)).toString() ;
 	}
-	public static String greaterThan(Integer arg1,Integer arg2)
+	public static String greaterThan(Double arg1,Double arg2)
 	{
 		
 		return ((Boolean)(arg1 >= arg2)).toString() ;

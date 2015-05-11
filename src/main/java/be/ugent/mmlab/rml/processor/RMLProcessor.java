@@ -5,6 +5,7 @@ import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface RMLProcessor {
      * @param expression reference to value
      * @return extracted value
      */
-    public List<String> extractValueFromNode(Object node, String expression);
+    public List<Object> extractValueFromNode(Object node, String expression); //changed return value as List<Object> instead of List<String>
     /**
      * process a subject map
      * @param dataset
@@ -63,5 +64,8 @@ public interface RMLProcessor {
      * @param node
      * @return
      */
-    public List<String> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
+    public List<Object> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
+    public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
+    
+    public QLTerm getFormulation(); //dd
 }

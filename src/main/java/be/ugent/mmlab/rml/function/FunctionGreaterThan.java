@@ -21,19 +21,26 @@ import com.vividsolutions.jts.geom.Geometry;
 
 
 public class FunctionGreaterThan extends AbstractFunction implements Function {
-	QLTerm termkind;
-	public FunctionGreaterThan(QLTerm termkind) {
-		this.termkind=termkind;
-	}
+	
 	@Override
-	public List<? extends String> execute(
-			List<? extends String> arguments) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+	public List<? extends Object> execute(
+			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
-		
+//		System.out.println(arguments.get(0));
+//		System.out.println(arguments.get(1));
+//		System.out.println("result ");
 		valueList.add(GTransormationFunctions.greaterThan(
-				Integer.valueOf(arguments.get(0)),Integer.valueOf(arguments.get(1))));
+				Double.valueOf(arguments.get(0).toString()),Double.valueOf(arguments.get(1).toString())));
+		//System.out.println("result "+valueList.get(0));
 		return valueList;
 	}
 
 
 }
+
+               
+               
+               
+               
+      
+               

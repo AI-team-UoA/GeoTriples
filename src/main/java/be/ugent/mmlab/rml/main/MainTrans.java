@@ -7,6 +7,7 @@ package be.ugent.mmlab.rml.main;
 import be.ugent.mmlab.rml.core.RMLEngine;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.function.Config;
+import be.ugent.mmlab.rml.function.FunctionAdd;
 import be.ugent.mmlab.rml.function.FunctionArea;
 import be.ugent.mmlab.rml.function.FunctionAsGML;
 import be.ugent.mmlab.rml.function.FunctionAsWKT;
@@ -15,6 +16,7 @@ import be.ugent.mmlab.rml.function.FunctionCentroidY;
 import be.ugent.mmlab.rml.function.FunctionContains;
 import be.ugent.mmlab.rml.function.FunctionCoordinateDimension;
 import be.ugent.mmlab.rml.function.FunctionDimension;
+import be.ugent.mmlab.rml.function.FunctionDistance;
 import be.ugent.mmlab.rml.function.FunctionEQUI;
 import be.ugent.mmlab.rml.function.FunctionFactory;
 import be.ugent.mmlab.rml.function.FunctionGreaterThan;
@@ -25,6 +27,7 @@ import be.ugent.mmlab.rml.function.FunctionIsEmpty;
 import be.ugent.mmlab.rml.function.FunctionIsSimple;
 import be.ugent.mmlab.rml.function.FunctionLength;
 import be.ugent.mmlab.rml.function.FunctionSpatialDimension;
+import be.ugent.mmlab.rml.function.FunctionSubtract;
 import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
@@ -202,26 +205,29 @@ public class MainTrans {
     	}
     }
     private static void registerFunctions() {
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"), new FunctionEQUI(QLTerm.XPATH_CLASS)); //dont delete or change this line, it replaces the equi join functionality
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"), new FunctionEQUI()); //dont delete or change this line, it replaces the equi join functionality
 
     	
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"), new FunctionHasSerialization(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"), new FunctionAsGML(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"), new FunctionIsSimple(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"), new FunctionIsEmpty(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D"), new FunctionIs3D(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"), new FunctionSpatialDimension(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension"), new FunctionDimension(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"), new FunctionCoordinateDimension(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area"), new FunctionArea(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"), new FunctionContains(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"), new FunctionIntersects(QLTerm.XPATH_CLASS));
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"), new FunctionGreaterThan(QLTerm.XPATH_CLASS));
-
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"), new FunctionHasSerialization());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"), new FunctionAsGML());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"), new FunctionIsSimple());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"), new FunctionIsEmpty());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D"), new FunctionIs3D());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"), new FunctionSpatialDimension());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension"), new FunctionDimension());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"), new FunctionCoordinateDimension());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area"), new FunctionArea());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"), new FunctionContains());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"), new FunctionIntersects());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/distance"), new FunctionDistance());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"), new FunctionGreaterThan());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/add"), new FunctionAdd());
+    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/subtract"), new FunctionSubtract());
+    	
     }
     
 }

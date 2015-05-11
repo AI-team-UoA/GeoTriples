@@ -5,9 +5,12 @@ import java.util.List;
 
 import be.ugent.mmlab.rml.function.Function;
 import be.ugent.mmlab.rml.function.FunctionFactory;
+import be.ugent.mmlab.rml.function.FunctionNotDefined;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.model.TermMap.TermMapType;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 
 import org.apache.commons.logging.Log;
@@ -29,21 +32,27 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
     private URI predicate;
     private TriplesMap parentTriplesMap;
     private RMLProcessor parentprocessor; //may be the same with a processor in the chain, but not necessary
-    
+    private RMLProcessor mainprocessor;
     private List<TermMap> termMaps;
     List<ArgumentPosition> positions;
     
     private List<URI> functionURIS;
     private RMLProcessor dependencyProcessor=null;
     private DependencyRMLPerformer dependencyPerformer=null;
-    private List<List<String>> arguments; //shared with all performers
+    private List<List<Object>> arguments; //shared with all performers
+    private List<List<QLTerm>> argumentsQLTerms; //shared with all performers
 	private TriplesMap ownmap;
+	public TriplesMap getOwnmap() {
+		return ownmap;
+	}
+
 	private String logicalsource;
+	private Object currentNode;
     
     public DependencyRMLPerformer(RMLProcessor processor, Resource subject, URI predicate,TriplesMap parentTriplesMap, List<TermMap> termMaps , List<ArgumentPosition> positions,
     		DependencyRMLPerformer nextperformer,RMLProcessor dependencyProcessor,
-    		RMLProcessor parentprocessor,
-    		List<List<String>> arguments, List<URI> functions,
+    		RMLProcessor parentprocessor,RMLProcessor mainprocessor,
+    		List<List<Object>> arguments2,List<List<QLTerm>> argumentsQLTerms, List<URI> functions,
     		TriplesMap ownmap , String logicalsource) {
         super(processor);
         //the arguments must have maxArgs null values when passed in this function
@@ -51,9 +60,13 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
         this.predicate = predicate;
         this.parentTriplesMap=parentTriplesMap;
         this.parentprocessor=parentprocessor;
+        
+        this.mainprocessor=mainprocessor;
+        
         this.termMaps = termMaps;
         this.positions=positions;
-        this.arguments=arguments;
+        this.arguments=arguments2;
+        this.argumentsQLTerms=argumentsQLTerms;
         this.functionURIS=functions;
         
         this.dependencyPerformer=nextperformer;
@@ -73,12 +86,17 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
     @Override
     public void perform(Object node, SesameDataSet dataset, TriplesMap map) {
         //Value object = processor.processSubjectMap(dataset, map.getSubjectMap(), node);
-    	
-    	List<String> objects;
+    	currentNode=node;
+    	List<Object> objects;
     	for(int i=0;i<termMaps.size();++i){
     		TermMap tm=termMaps.get(i);
     		//System.out.println(tm.getArgumentMap().get(0));
-    		objects=processor.processTermMap(tm, node, null, null, null, null,true);
+    		if(!tm.getTermMapType().equals(TermMapType.TRANSFORMATION_VALUED))
+    			objects=processor.processTermMap(tm, node, null, null, null, null,true);
+    		else{
+    			//this is the case when there is a function argument and by design must be calculated only through main processor, the home iterator of the join
+    			objects=mainprocessor.processTermMap(tm, null, null, null, null,false);
+    		}
     		if (objects == null){
                 return; //handle this in sequence!!!!
                 //throw exception
@@ -87,6 +105,8 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
     		int actualpos=positions.get(i).getActualPosition();
     		arguments.get(argumentlist).remove(actualpos);
         	arguments.get(argumentlist).add(actualpos,objects.size()==0?null:objects.get(0));
+        	argumentsQLTerms.get(argumentlist).remove(actualpos);
+        	argumentsQLTerms.get(argumentlist).add(actualpos,tm.getTriplesMap().getLogicalSource().getReferenceFormulation());
     	}
     	 
     	if(dependencyProcessor!=null){
@@ -95,14 +115,20 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
 			boolean flag=true;
     		for(int funi=0;funi<functionURIS.size();++funi){
     			URI functionURI=functionURIS.get(funi);
-	    		Function function = FunctionFactory.get(functionURI);
-	    		List<? extends String> results = null;
+	    		Function function=null;
+				try {
+					function = FunctionFactory.get(functionURI);
+				} catch (FunctionNotDefined e1) {
+					e1.printStackTrace();
+					System.exit(13);
+				}
+	    		List<? extends Object> results = null;
 				try {
 					//System.out.println("argsssss " + functionURI + " function " + funi);
-					for(int i=0;i<arguments.get(funi).size();++i){
+					//for(int i=0;i<arguments.get(funi).size();++i){
 						//System.out.println(arguments.get(funi).get(i));
-					}
-					results = function.execute(arguments.get(funi));
+					//}
+					results = function.execute(arguments.get(funi),argumentsQLTerms.get(funi));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
@@ -134,6 +160,12 @@ public class DependencyRMLPerformer extends NodeRMLPerformer{
         log.debug("[DependencyRMLPerformer:findPerms] ");
 
     }
+
+	public List<Object> perform(String reference) {
+		// called from term map evaluation when we are in level 2,3,4 function etc inside a join condition
+		return processor.extractValueFromNode(currentNode, reference);
+	}
+	
 
 
 }

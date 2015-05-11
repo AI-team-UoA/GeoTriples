@@ -56,9 +56,9 @@ public class SimpleReferencePerformer extends NodeRMLPerformer {
             }
         }
         else{
-            List<String> values = processor.processTermMap(map.getSubjectMap(), node , map, subject, predicate,dataset,false);    
-            for(String value : values){
-                Resource object = new URIImpl(value);
+            List<Object> values = processor.processTermMap(map.getSubjectMap(), node , map, subject, predicate,dataset,false);    
+            for(Object value : values){
+                Resource object = new URIImpl(value.toString());
 
                 dataset.add(subject, predicate, object);
                 log.debug("[SimpleReferencePerformer:addTriples] Subject "

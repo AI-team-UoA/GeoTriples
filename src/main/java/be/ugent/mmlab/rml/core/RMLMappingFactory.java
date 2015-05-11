@@ -609,7 +609,7 @@ public abstract class RMLMappingFactory {
 		//System.out.println(function);
 		
 		URI triplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
-				object, R2RMLTerm.TRIPLES_MAP);
+				object, RRXTerm.TRIPLES_MAP);
 		TriplesMap owner=null;
 		if(triplesMap!=null){
 			for (Resource triplesMapResource : triplesMapResources.keySet()) {
