@@ -7,7 +7,11 @@ import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.geotools.GML.Version;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
+import org.geotools.gml3.GML;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.SAXException;
@@ -40,10 +44,18 @@ public abstract class AbstractFunction {
 //			value = "<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>" + value;
 //			value = value + "</a></gml:featureMember></gml:FeatureCollection>";
 //			System.out.println(value);
-			value = convert2GML2(value);
+			StringBuffer sbuffer = new StringBuffer("<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>");
+			sbuffer.append(value);
+			sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
+			//value = convert2GML2(value);
 //			System.out.println(value);
-			GMLReader gmlreader = new GMLReader();
-			geometry = gmlreader.read(value,null);
+			//GMLReader gmlreader = new GMLReader();
+			//geometry = gmlreader.read(value,null);
+			InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
+			org.geotools.GML gml = new org.geotools.GML(Version.GML3);
+			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
+			SimpleFeature feature = iter.next();
+			geometry = (Geometry) feature.getDefaultGeometry();
 			return geometry;
 		case CSV_CLASS:
 			throw new UnsupportedOperationException(
