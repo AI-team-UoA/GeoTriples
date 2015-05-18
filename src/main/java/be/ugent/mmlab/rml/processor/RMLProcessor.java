@@ -1,18 +1,18 @@
 package be.ugent.mmlab.rml.processor;
 
-import be.ugent.mmlab.rml.core.RMLPerformer;
-import be.ugent.mmlab.rml.model.PredicateObjectMap;
-import be.ugent.mmlab.rml.model.SubjectMap;
-import be.ugent.mmlab.rml.model.TermMap;
-import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
-
 import java.util.List;
 
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
+
+import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.model.PredicateObjectMap;
+import be.ugent.mmlab.rml.model.SubjectMap;
+import be.ugent.mmlab.rml.model.TermMap;
+import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 
 
@@ -31,7 +31,7 @@ public interface RMLProcessor {
     public void execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String fileName);
     
     public void execute_node(SesameDataSet dataset, String expression, TriplesMap parentTriplesMap, RMLPerformer performer, Object node, Resource subject);
-
+    public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map, RMLPerformer performer, Object node);
     /**
      * Resolve an expression and extract a single string value from a node
      * @param node current object
@@ -68,4 +68,15 @@ public interface RMLProcessor {
     public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
     
     public QLTerm getFormulation(); //dd
+
+	public Resource processSubjectMap(SesameDataSet dataset,
+			SubjectMap subjectMap); //if we want to execute in other processor with current node
+	
+	public void setDependencyTriplesMap(TriplesMap dependencyTriplesMap);
+
+	public void setDependencyProcessor(RMLProcessor dependencyProcessor);
+
+	Object getCurrentNode();
+
+	public TriplesMap getCurrentTriplesMap();
 }

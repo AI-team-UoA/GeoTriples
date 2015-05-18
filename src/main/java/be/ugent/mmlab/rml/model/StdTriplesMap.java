@@ -31,7 +31,19 @@ import java.util.Set;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
 
 public class StdTriplesMap implements TriplesMap {
-
+	private static StdTriplesMap singleton=null;
+	public static StdTriplesMap getCurrentTriplesMap(){
+		if(singleton==null){
+			try {
+				singleton=new StdTriplesMap(null, null, null, "NULL");
+			} catch (InvalidR2RMLStructureException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+		return singleton;
+	}
 	private Set<PredicateObjectMap> predicateObjectMaps;
 	private SubjectMap subjectMap;
 	private LogicalSource logicalSource;

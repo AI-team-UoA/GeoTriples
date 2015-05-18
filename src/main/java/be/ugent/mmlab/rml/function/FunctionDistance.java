@@ -2,16 +2,11 @@ package be.ugent.mmlab.rml.function;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.LiteralImpl;
 import org.xml.sax.SAXException;
 
 import be.ugent.mmlab.rml.core.MalformedGeometryException;
@@ -29,8 +24,10 @@ public class FunctionDistance extends GeometryFunction implements Function {
 		
 		Geometry geometry1 = computeGeometry(arguments.get(0), qlterms.get(0));
 		Geometry geometry2 = computeGeometry(arguments.get(1), qlterms.get(1));
+		System.out.println(geometry1);
+		System.out.println(geometry2);
 		valueList.add(GTransormationFunctions.distance(geometry1, geometry2));
-		//System.out.println(valueList.get(0));
+		System.out.println(valueList.get(0));
 		return valueList;
 	}
 

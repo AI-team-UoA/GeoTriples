@@ -36,6 +36,7 @@ public class StdReferencingObjectMap implements ReferencingObjectMap {
 	private TriplesMap parentTriplesMap;
 	private HashSet<JoinCondition> joinConditions;
 	private PredicateObjectMap predicateObjectMap;
+	private boolean reversedParent=false;
 
 	public StdReferencingObjectMap(PredicateObjectMap predicateObjectMap,
 			TriplesMap parentTriplesMap, Set<JoinCondition> joinConditions) {
@@ -102,6 +103,11 @@ public class StdReferencingObjectMap implements ReferencingObjectMap {
 			predicateObjectMap.getReferencingObjectMaps().add(this);
 		}
 		this.predicateObjectMap = predicateObjectMap;
+	}
+
+	@Override
+	public boolean isReversedParent() {
+		return reversedParent;
 	}
 
 

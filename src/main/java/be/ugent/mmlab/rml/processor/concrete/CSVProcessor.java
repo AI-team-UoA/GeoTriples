@@ -1,16 +1,5 @@
 package be.ugent.mmlab.rml.processor.concrete;
 
-import be.ugent.mmlab.rml.core.RMLEngine;
-import be.ugent.mmlab.rml.core.RMLMappingFactory;
-import be.ugent.mmlab.rml.core.RMLPerformer;
-import be.ugent.mmlab.rml.model.LogicalSource;
-import be.ugent.mmlab.rml.model.TermMap;
-import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
-import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
-
-import com.csvreader.CsvReader;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +14,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
+
+import be.ugent.mmlab.rml.core.RMLEngine;
+import be.ugent.mmlab.rml.core.RMLMappingFactory;
+import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.model.LogicalSource;
+import be.ugent.mmlab.rml.model.SubjectMap;
+import be.ugent.mmlab.rml.model.TermMap;
+import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
+
+import com.csvreader.CsvReader;
 
 /**
  * 
@@ -95,9 +96,16 @@ public class CSVProcessor extends AbstractRMLProcessor {
 			TriplesMap parentTriplesMap, RMLPerformer performer, Object node,
 			Resource subject) {
 		throw new UnsupportedOperationException(
-				"Not applicable for CSV sources."); // To change body of
+				"[execute_node] Not applicable for CSV sources."); // To change body of
 													// generated methods, choose
 													// Tools | Templates.
+	}
+	@Override
+	public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map,
+			 RMLPerformer performer, Object node
+			){
+		throw new UnsupportedOperationException(
+				"[execute_node_fromdependency] Not applicable for CSV sources.");
 	}
 
 	@Override
@@ -112,5 +120,25 @@ public class CSVProcessor extends AbstractRMLProcessor {
 		return processTermMap(map, currentnode, triplesMap, subject, predicate,
 				dataset, ignoreOwnerBecauseWeAreInJoin);
 
+	}
+	@Override
+	public Resource processSubjectMap(SesameDataSet dataset,
+			SubjectMap subjectMap) {
+		return processSubjectMap(dataset, subjectMap,currentnode);
+	}
+	@Override
+	public Object getCurrentNode(){
+		return currentnode;
+	}
+	@Override
+	public TriplesMap getCurrentTriplesMap(){
+		try {
+			throw new Exception("Bug, it shouldn't use this function from ShapefileProcessor");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(0);
+		}
+		return null;
 	}
 }

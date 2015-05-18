@@ -28,11 +28,6 @@
  */
 package be.ugent.mmlab.rml.model;
 
-import be.ugent.mmlab.rml.model.TermMap.TermMapType;
-import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
-import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
-import be.ugent.mmlab.rml.tools.CustomRDFDataValidator;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,12 +43,15 @@ import net.antidot.semantic.xmls.xsd.XSDType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 
-public abstract class AbstractTermMap implements TermMap {
+import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
+import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
+import be.ugent.mmlab.rml.tools.CustomRDFDataValidator;
 
+public abstract class AbstractTermMap implements TermMap {
+		
         // Log
         private static Log log = LogFactory.getLog(AbstractTermMap.class);
         protected Value constantValue;

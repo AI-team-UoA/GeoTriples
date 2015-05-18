@@ -50,4 +50,8 @@ public interface JoinCondition {
 	public void setArgumentMap(List<TermMap> arguments);
 	public URI getFunction();
 	public void setFunction(URI function);
+
+	public boolean isStructural();
+	public TriplesMap getParentTriplesMap();
+	public TriplesMap getChildTriplesMap();
 }

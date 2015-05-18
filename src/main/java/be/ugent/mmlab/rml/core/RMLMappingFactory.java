@@ -10,6 +10,35 @@
  ***************************************************************************
  */
 package be.ugent.mmlab.rml.core;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
+
 import be.ugent.mmlab.rml.model.GraphMap;
 import be.ugent.mmlab.rml.model.JoinCondition;
 import be.ugent.mmlab.rml.model.LogicalSource;
@@ -33,47 +62,10 @@ import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.vocabulary.Vocab;
-import be.ugent.mmlab.rml.vocabulary.VocabTrans;
 import be.ugent.mmlab.rml.vocabulary.Vocab.R2RMLTerm;
 import be.ugent.mmlab.rml.vocabulary.Vocab.RMLTerm;
+import be.ugent.mmlab.rml.vocabulary.VocabTrans;
 import be.ugent.mmlab.rml.vocabulary.VocabTrans.RRXTerm;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.d2rq.vocab.RR;
-import org.d2rq.vocab.RRX;
-import org.openrdf.OpenRDFUtil;
-import org.openrdf.model.BNode;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
-
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public abstract class RMLMappingFactory {
 
@@ -561,13 +553,19 @@ public abstract class RMLMappingFactory {
 						R2RMLTerm.CHILD);
 				String parent = extractLiteralFromTermMap(r2rmlMappingGraph,
 						jc, R2RMLTerm.PARENT);
-				if ((parent == null || child == null) && function==null) {
+				URI parentTriplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
+						jc, R2RMLTerm.PARENT_TRIPLES_MAP);
+				URI childTriplesMap = (URI) extractValueFromTermMap(r2rmlMappingGraph,
+						jc, R2RMLTerm.CHILD_TRIPLES_MAP);
+				if ((parent == null || child == null) && function==null && childTriplesMap==null) {
 					throw new InvalidR2RMLStructureException(
 							"[RMLMappingFactory:extractReferencingObjectMap] "
 									+ object.stringValue()
-									+ " must have exactly two properties child and parent or (function and argumentsMap). ");
+									+ " must have exactly two properties child and parent or (function and argumentsMap) or (parentTriplesMap and childTriplesMap). ");
 				}
-				result.add(new StdJoinCondition(child, parent,function,arguments));
+				TriplesMap parentTriplesMapTM=triplesMapResources.get(parentTriplesMap);
+				TriplesMap childTriplesMapTM=triplesMapResources.get(childTriplesMap);
+				result.add(new StdJoinCondition(child, parent,function,arguments,parentTriplesMapTM,childTriplesMapTM));
 			}
 		} catch (ClassCastException e) {
 			throw new InvalidR2RMLStructureException(

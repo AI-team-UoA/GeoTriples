@@ -66,6 +66,8 @@ public interface ReferencingObjectMap {
 	 */
 	public PredicateObjectMap getPredicateObjectMap();
 	public void setPredicateObjectMap(PredicateObjectMap predicateObjectMap);
+
+	public boolean isReversedParent();
 	
 
 }

@@ -2,10 +2,14 @@ package eu.linkedeodata.geotriples;
 
 import java.io.PrintStream;
 
+import jena.cmdline.ArgDecl;
+import jena.cmdline.CommandLine;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.mapgen.MappingGenerator;
 
+import be.ugent.mmlab.rml.main.XMLMappingGenerator;
 import eu.linkedeodata.geotriples.gui.RecipeMapping;
 
 
@@ -56,6 +60,31 @@ public class generate_mapping {
 			else if (lastToken.endsWith(".pdf")) {
 				log.info("GeoPDF detected for processing");
 				System.out.println("Currently GeoPDF is not implemented within WP2 (soon)");
+			}
+			else if (lastToken.endsWith(".xml") || lastToken.endsWith("gml")){
+				log.info("XML detected for processing");
+				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
+				final ArgDecl xsdifileArg = new ArgDecl(true, "x", "xsd", "XSD file");
+				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
+				final ArgDecl nullTypesArg = new ArgDecl(false, "null", "nulltypes", "Allow null types to be adressed as classes (Triples Maps)");
+				final CommandLine cmd = new CommandLine();
+				cmd.add(xsdifileArg);
+				cmd.add(baseIRIArg);
+				cmd.add(outfileArg);
+				cmd.add(nullTypesArg);
+				
+				try {
+					cmd.process(args);
+				} catch (IllegalArgumentException ex) {
+					if (ex.getMessage() == null) {
+						ex.printStackTrace(System.err);
+					} else {
+						System.err.println(ex.getMessage());
+					}
+					log.info("Command line tool exception", ex);
+					System.exit(1);
+				}
+				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.hasArg(nullTypesArg)).run();
 			}
 			else {
 				log.info("Database detected for processing");

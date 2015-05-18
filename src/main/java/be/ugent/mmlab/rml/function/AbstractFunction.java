@@ -10,7 +10,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.geotools.GML.Version;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.gml3.GML;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -22,7 +21,6 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.gml2.GMLReader;
 public abstract class AbstractFunction {
 	
 	protected Geometry computeGeometry(String value, QLTerm term)
@@ -50,8 +48,8 @@ public abstract class AbstractFunction {
 			sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
 			//value = convert2GML2(value);
 //			System.out.println(value);
-			//GMLReader gmlreader = new GMLReader();
-			//geometry = gmlreader.read(value,null);
+	//		GMLReader gmlreader = new GMLReader();
+	//		geometry = gmlreader.read(value,null);
 			InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
 			org.geotools.GML gml = new org.geotools.GML(Version.GML3);
 			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);

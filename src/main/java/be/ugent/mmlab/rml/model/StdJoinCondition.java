@@ -31,11 +31,10 @@ package be.ugent.mmlab.rml.model;
 
 import java.util.List;
 
-import org.openrdf.model.URI;
-
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
-import net.antidot.sql.model.tools.SQLDataValidator;
+
+import org.openrdf.model.URI;
 
 public class StdJoinCondition implements JoinCondition {
 
@@ -43,18 +42,24 @@ public class StdJoinCondition implements JoinCondition {
 	private String parent;
 	private URI function = null;
     private List<TermMap> argumentMap =null;
-
+    
+    private TriplesMap parentTriplesMap; //these are for structural relations
+    private TriplesMap childTriplesMap;
+    
 	public StdJoinCondition(String child, String parent)
 			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
 		setChild(child);
 		setParent(parent);
 	}
-	public StdJoinCondition(String child, String parent,URI function,List<TermMap> argumentMap)
+	public StdJoinCondition(String child, String parent,URI function,List<TermMap> argumentMap,TriplesMap parentTriplesMap,TriplesMap childTriplesMap)
 			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
+		setParentTriplesMap(parentTriplesMap);
+		setChildTriplesMap(childTriplesMap);
 		setFunction(function);
 		setArgumentMap(argumentMap);
 		setChild(child);
 		setParent(parent);
+		
 	}
 
 	@Override
@@ -65,10 +70,10 @@ public class StdJoinCondition implements JoinCondition {
 	}
 	private void setParent(String parent)
 			throws InvalidR2RMLStructureException, InvalidR2RMLSyntaxException {
-		if (parent == null && function==null)
+		if (parent == null && function==null && childTriplesMap==null)
 			throw new InvalidR2RMLStructureException(
 					"[StdJoinCondition:setParent] A join condition must "
-							+ "have a parent column name  or a function.");
+							+ "have a parent column name  or a function, or be a structural join.");
 		// old code
 //		if (!SQLDataValidator.isValidSQLIdentifier(parent))
 //			throw new InvalidR2RMLSyntaxException(
@@ -82,10 +87,10 @@ public class StdJoinCondition implements JoinCondition {
 
 	private void setChild(String child) throws InvalidR2RMLStructureException,
 			InvalidR2RMLSyntaxException {
-		if (child == null && function==null)
+		if (child == null && function==null && childTriplesMap==null)
 			throw new InvalidR2RMLStructureException(
 					"[StdJoinCondition:construct] A join condition must "
-							+ "have a child column name or a function.");
+							+ "have a child column name or a function , or be a structural join.");
 		// old code
 //		if (!SQLDataValidator.isValidSQLIdentifier(child))
 //			throw new InvalidR2RMLSyntaxException(
@@ -116,6 +121,25 @@ public class StdJoinCondition implements JoinCondition {
 	}
 	public void setArgumentMap(List<TermMap> argumentMap) {
 		this.argumentMap = argumentMap;
+	}
+	public TriplesMap getParentTriplesMap() {
+		return parentTriplesMap;
+	}
+	public void setParentTriplesMap(TriplesMap parentTriplesMap) {
+		this.parentTriplesMap = parentTriplesMap;
+	}
+	public TriplesMap getChildTriplesMap() {
+		return childTriplesMap;
+	}
+	public void setChildTriplesMap(TriplesMap childTriplesMap) {
+		this.childTriplesMap = childTriplesMap;
+	}
+	@Override
+	public boolean isStructural() {
+		if(childTriplesMap==null){
+			return false;
+		}
+		return true;
 	}
 
 }

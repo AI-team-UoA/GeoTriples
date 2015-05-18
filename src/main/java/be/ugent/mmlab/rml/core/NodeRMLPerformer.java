@@ -1,14 +1,17 @@
 package be.ugent.mmlab.rml.core;
 
+import java.util.Set;
+
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openrdf.model.Resource;
+
 import be.ugent.mmlab.rml.model.GraphMap;
 import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
-import java.util.Set;
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import org.openrdf.model.Resource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Performs the normal handling of an object in the iteration.
@@ -21,6 +24,8 @@ public class NodeRMLPerformer implements RMLPerformer{
     
     protected RMLProcessor processor;
 
+	private Object current_node;
+	
     /**
      * 
      * @param processor the instance processing these nodes
@@ -46,6 +51,7 @@ public class NodeRMLPerformer implements RMLPerformer{
         Set<GraphMap> graph = map.getSubjectMap().getGraphMaps();
 
         for (PredicateObjectMap pom : map.getPredicateObjectMaps()) {
+        	current_node=node;
             processor.processPredicateObjectMap(dataset, subject, pom, node, map);
         }
     }
@@ -63,4 +69,9 @@ public class NodeRMLPerformer implements RMLPerformer{
         for (PredicateObjectMap pom : map.getPredicateObjectMaps()) 
             processor.processPredicateObjectMap(dataset, subject, pom, node, map);
     }
+
+	@Override
+	public Object getCurrentNode() {
+		return current_node;
+	}
 }

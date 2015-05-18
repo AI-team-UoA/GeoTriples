@@ -107,6 +107,7 @@ public class Vocab {
         OBJECT_MAP("objectMap"),
         PARENT("parent"),
         PARENT_TRIPLES_MAP("parentTriplesMap"),
+        CHILD_TRIPLES_MAP("childTriplesMap"),
         PREDICATE("predicate"),
         PREDICATE_MAP("predicateMap"),
         PREDICATE_OBJECT_MAP("predicateObjectMap"),
