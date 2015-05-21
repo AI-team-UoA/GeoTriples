@@ -16,12 +16,12 @@
 
 <#TFServicesFarmServiceprocessingTFB>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing/TFB";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFB/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFB/id/{GeoTriplesID}";
 	rr:class onto:TFB;
 ];
 rr:predicateObjectMap [
@@ -41,12 +41,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcfb>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/fb";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/fb/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/fb/id/{GeoTriplesID}";
 	rr:class onto:fb;
 ];
 rr:predicateObjectMap [
@@ -66,104 +66,46 @@ rr:predicateObjectMap [
 
 <#TFServices>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFServices/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFServices/id/{GeoTriplesID}";
 	rr:class onto:TFServices;
 ];
 rr:predicateObjectMap [
-	rr:predicate onto:has_Serviceprocessing;
+	rr:predicate onto:has_Farm;
 	rr:objectMap [
-		rr:parentTriplesMap <#TFServicesFarmServiceprocessing>;
+		rr:parentTriplesMap <#TFServicesFarm>;
 		rr:joinCondition [
-			rr:childTriplesMap <#TFServicesFarmServiceprocessing>;
+			rr:childTriplesMap <#TFServicesFarm>;
 		];
 	];
 ];
 rr:predicateObjectMap [
-	rr:predicate onto:has_Field;
-	rr:objectMap [
-		rr:parentTriplesMap <#TFServicesFarmField>;
-		rr:joinCondition [
-			rr:childTriplesMap <#TFServicesFarmField>;
-		];
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_UTM-Zone;
+	rr:predicate onto:Creator;
 	rr:objectMap [
 		rr:datatype xsd:string;
-		rml:reference "Farm/@UTM-Zone";
+		rml:reference "@Creator";
 	];
 ];
 rr:predicateObjectMap [
-	rr:predicate onto:Farm_mapdate;
-	rr:objectMap [
-		rr:datatype xsd:TFmapdate;
-		rml:reference "Farm/@mapdate";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_Name;
-	rr:objectMap [
-		rr:datatype xsd:string;
-		rml:reference "Farm/@Name";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_ID;
-	rr:objectMap [
-		rr:datatype xsd:string;
-		rml:reference "Farm/@ID";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_Contact;
-	rr:objectMap [
-		rr:datatype xsd:string;
-		rml:reference "Farm/@Contact";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_email;
-	rr:objectMap [
-		rr:datatype xsd:string;
-		rml:reference "Farm/@email";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_fon;
-	rr:objectMap [
-		rr:datatype xsd:string;
-		rml:reference "Farm/@fon";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_currency;
-	rr:objectMap [
-		rr:datatype xsd:TFCurrencies;
-		rml:reference "Farm/@currency";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:Farm_price_per_kg_N;
+	rr:predicate onto:version;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
-		rml:reference "Farm/@price/per/kg/N";
+		rml:reference "@version";
 	];
 ].
 
 <#TFServicesFarmFieldrc>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/rc/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/rc/id/{GeoTriplesID}";
 	rr:class onto:rc;
 ];
 rr:predicateObjectMap [
@@ -257,15 +199,6 @@ rr:predicateObjectMap [
 	];
 ];
 rr:predicateObjectMap [
-	rr:predicate ogc:hasGeometry;
-	rr:objectMap [
-		rr:parentTriplesMap <#RasterCellGeometry>;
-		rr:joinCondition [
-			rr:childTriplesMap <#RasterCellGeometry>;
-		];
-	];
-];
-rr:predicateObjectMap [
 	rr:predicate onto:x;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
@@ -289,19 +222,19 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmServiceprocessingTFPP>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing/TFPP";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFPP/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFPP/id/{GeoTriplesID}";
 	rr:class onto:TFPP;
 ];
 rr:predicateObjectMap [
 	rr:predicate onto:due_dates;
 	rr:objectMap [
 		rr:datatype xsd:date;
-		rml:reference "due/dates";
+		rml:reference "due_dates";
 	];
 ];
 rr:predicateObjectMap [
@@ -321,12 +254,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcvigor>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/vigor";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/vigor/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/vigor/id/{GeoTriplesID}";
 	rr:class onto:vigor;
 ];
 rr:predicateObjectMap [
@@ -339,12 +272,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcfert>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/fert";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/fert/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/fert/id/{GeoTriplesID}";
 	rr:class onto:fert;
 ];
 rr:predicateObjectMap [
@@ -364,12 +297,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmServiceprocessingTFEE>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing/TFEE";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFEE/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFEE/id/{GeoTriplesID}";
 	rr:class onto:TFEE;
 ];
 rr:predicateObjectMap [
@@ -389,19 +322,19 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmServiceprocessingTFYE>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing/TFYE";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFYE/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFYE/id/{GeoTriplesID}";
 	rr:class onto:TFYE;
 ];
 rr:predicateObjectMap [
 	rr:predicate onto:due_dates;
 	rr:objectMap [
 		rr:datatype xsd:date;
-		rml:reference "due/dates";
+		rml:reference "due_dates";
 	];
 ];
 rr:predicateObjectMap [
@@ -421,12 +354,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmServiceprocessingTFZ>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing/TFZ";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/TFZ/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/TFZ/id/{GeoTriplesID}";
 	rr:class onto:TFZ;
 ];
 rr:predicateObjectMap [
@@ -447,25 +380,25 @@ rr:predicateObjectMap [
 	rr:predicate onto:max_size;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
-		rml:reference "@max/size";
+		rml:reference "@max_size";
 	];
 ];
 rr:predicateObjectMap [
 	rr:predicate onto:min_size;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
-		rml:reference "@min/size";
+		rml:reference "@min_size";
 	];
 ].
 
 <#TFServicesFarmFieldrcresultsvigor>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/vigor";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/vigor/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/vigor/id/{GeoTriplesID}";
 	rr:class onto:vigor;
 ];
 rr:predicateObjectMap [
@@ -476,14 +409,106 @@ rr:predicateObjectMap [
 	];
 ].
 
+<#TFServicesFarm>
+rml:logicalSource [
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:referenceFormulation ql:XPath;
+	rml:iterator "/TFServices/Farm";
+];
+rr:subjectMap [
+	rr:template "http://ha.eu/Farm/id/{GeoTriplesID}";
+	rr:class onto:Farm;
+];
+rr:predicateObjectMap [
+	rr:predicate onto:has_Serviceprocessing;
+	rr:objectMap [
+		rr:parentTriplesMap <#TFServicesFarmServiceprocessing>;
+		rr:joinCondition [
+			rr:childTriplesMap <#TFServicesFarmServiceprocessing>;
+		];
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:has_Field;
+	rr:objectMap [
+		rr:parentTriplesMap <#TFServicesFarmField>;
+		rr:joinCondition [
+			rr:childTriplesMap <#TFServicesFarmField>;
+		];
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:UTM-Zone;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@UTM-Zone";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:mapdate;
+	rr:objectMap [
+		rr:datatype xsd:TFmapdate;
+		rml:reference "@mapdate";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:Name;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@Name";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:ID;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@ID";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:Contact;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@Contact";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:email;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@email";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:fon;
+	rr:objectMap [
+		rr:datatype xsd:string;
+		rml:reference "@fon";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:currency;
+	rr:objectMap [
+		rr:datatype xsd:TFCurrencies;
+		rml:reference "@currency";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:price_per_kg_N;
+	rr:objectMap [
+		rr:datatype xsd:decimal;
+		rml:reference "@price_per_kg_N";
+	];
+].
+
 <#TFServicesFarmServiceprocessing>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Serviceprocessing";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/Serviceprocessing/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/Serviceprocessing/id/{GeoTriplesID}";
 	rr:class onto:Serviceprocessing;
 ];
 rr:predicateObjectMap [
@@ -534,12 +559,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmField>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/Field/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/Field/id/{GeoTriplesID}";
 	rr:class onto:Field;
 ];
 rr:predicateObjectMap [
@@ -596,7 +621,7 @@ rr:predicateObjectMap [
 	rr:predicate onto:FM_area;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
-		rml:reference "@FM/area";
+		rml:reference "@FM_area";
 	];
 ];
 rr:predicateObjectMap [
@@ -610,7 +635,7 @@ rr:predicateObjectMap [
 	rr:predicate onto:pre_crop;
 	rr:objectMap [
 		rr:datatype xsd:TFCroptypes;
-		rml:reference "@pre/crop";
+		rml:reference "@pre_crop";
 	];
 ];
 rr:predicateObjectMap [
@@ -631,7 +656,7 @@ rr:predicateObjectMap [
 	rr:predicate onto:seeding_date;
 	rr:objectMap [
 		rr:datatype xsd:date;
-		rml:reference "@seeding/date";
+		rml:reference "@seeding_date";
 	];
 ];
 rr:predicateObjectMap [
@@ -666,7 +691,7 @@ rr:predicateObjectMap [
 	rr:predicate onto:dirty_his;
 	rr:objectMap [
 		rr:datatype xsd:boolean;
-		rml:reference "@dirty/his";
+		rml:reference "@dirty_his";
 	];
 ];
 rr:predicateObjectMap [
@@ -679,12 +704,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcegr>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/egr";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/egr/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/egr/id/{GeoTriplesID}";
 	rr:class onto:egr;
 ];
 rr:predicateObjectMap [
@@ -709,39 +734,14 @@ rr:predicateObjectMap [
 	];
 ].
 
-<#TFServicesFarmFieldrclai>
-rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
-	rml:referenceFormulation ql:XPath;
-	rml:iterator "/TFServices/Farm/Field/rc/lai";
-];
-rr:subjectMap [
-	rr:template "http://ex.com/lai/id/{GeoTriplesID}";
-	rr:class onto:lai;
-];
-rr:predicateObjectMap [
-	rr:predicate onto:date;
-	rr:objectMap [
-		rr:datatype xsd:date;
-		rml:reference "@date";
-	];
-];
-rr:predicateObjectMap [
-	rr:predicate onto:value;
-	rr:objectMap [
-		rr:datatype xsd:decimal;
-		rml:reference "@value";
-	];
-].
-
 <#TFServicesFarmFieldHarvest>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/Harvest";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/Harvest/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/Harvest/id/{GeoTriplesID}";
 	rr:class onto:Harvest;
 ];
 rr:predicateObjectMap [
@@ -773,14 +773,39 @@ rr:predicateObjectMap [
 	];
 ].
 
+<#TFServicesFarmFieldrclai>
+rml:logicalSource [
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:referenceFormulation ql:XPath;
+	rml:iterator "/TFServices/Farm/Field/rc/lai";
+];
+rr:subjectMap [
+	rr:template "http://ha.eu/lai/id/{GeoTriplesID}";
+	rr:class onto:lai;
+];
+rr:predicateObjectMap [
+	rr:predicate onto:date;
+	rr:objectMap [
+		rr:datatype xsd:date;
+		rml:reference "@date";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicate onto:value;
+	rr:objectMap [
+		rr:datatype xsd:decimal;
+		rml:reference "@value";
+	];
+].
+
 <#TFServicesFarmFieldrcsavings>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/savings";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/savings/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/savings/id/{GeoTriplesID}";
 	rr:class onto:savings;
 ];
 rr:predicateObjectMap [
@@ -793,12 +818,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldFertilization>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/Fertilization";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/Fertilization/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/Fertilization/id/{GeoTriplesID}";
 	rr:class onto:Fertilization;
 ];
 rr:predicateObjectMap [
@@ -812,7 +837,7 @@ rr:predicateObjectMap [
 	rr:predicate onto:amount_kg_N;
 	rr:objectMap [
 		rr:datatype xsd:decimal;
-		rml:reference "@amount/kg/N";
+		rml:reference "@amount_kg_N";
 	];
 ];
 rr:predicateObjectMap [
@@ -825,12 +850,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresultssavings>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/savings";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/savings/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/savings/id/{GeoTriplesID}";
 	rr:class onto:savings;
 ];
 rr:predicateObjectMap [
@@ -843,12 +868,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresults>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/results/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/results/id/{GeoTriplesID}";
 	rr:class onto:results;
 ];
 rr:predicateObjectMap [
@@ -908,12 +933,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresultsdbm>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/dbm";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/dbm/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/dbm/id/{GeoTriplesID}";
 	rr:class onto:dbm;
 ];
 rr:predicateObjectMap [
@@ -940,12 +965,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldeeClasses>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/eeClasses";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/eeClasses/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/eeClasses/id/{GeoTriplesID}";
 	rr:class onto:eeClasses;
 ];
 rr:predicateObjectMap [
@@ -965,12 +990,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresultsZoneNumber>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/ZoneNumber";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/ZoneNumber/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/ZoneNumber/id/{GeoTriplesID}";
 	rr:class onto:ZoneNumber;
 ];
 rr:predicateObjectMap [
@@ -983,12 +1008,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcharv>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/harv";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/harv/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/harv/id/{GeoTriplesID}";
 	rr:class onto:harv;
 ];
 rr:predicateObjectMap [
@@ -1008,12 +1033,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresultsAverageVigor>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/AverageVigor";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/AverageVigor/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/AverageVigor/id/{GeoTriplesID}";
 	rr:class onto:AverageVigor;
 ];
 rr:predicateObjectMap [
@@ -1026,12 +1051,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcquality>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/quality";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/quality/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/quality/id/{GeoTriplesID}";
 	rr:class onto:quality;
 ];
 rr:predicateObjectMap [
@@ -1051,12 +1076,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcresultsegr>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/results/egr";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/egr/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/egr/id/{GeoTriplesID}";
 	rr:class onto:egr;
 ];
 rr:predicateObjectMap [
@@ -1083,12 +1108,12 @@ rr:predicateObjectMap [
 
 <#TFServicesFarmFieldrcdbm>
 rml:logicalSource [
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
+	rml:source "/Users/admin/Documents/WORK/teamkumbarakis/LEO/GeoTriples/resources/rml/TestStructuralTF/000001_TFB.xml";
 	rml:referenceFormulation ql:XPath;
 	rml:iterator "/TFServices/Farm/Field/rc/dbm";
 ];
 rr:subjectMap [
-	rr:template "http://ex.com/dbm/id/{GeoTriplesID}";
+	rr:template "http://ha.eu/dbm/id/{GeoTriplesID}";
 	rr:class onto:dbm;
 ];
 rr:predicateObjectMap [
@@ -1113,96 +1138,3 @@ rr:predicateObjectMap [
 	];
 ].
 
-<#RasterCellGeometry>
-rml:logicalSource [ 
-	rml:source "resources/rml/TestStructuralTF/000001_TFB.xml";
-        rml:referenceFormulation ql:XPath;
-	rml:iterator "/TFServices/Farm/Field/rc";
-];
-rr:subjectMap [
-        rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}"; 
-        rr:class ogc:Geometry;
-            ];
-    
-    rr:predicateObjectMap [
-        rr:predicate ogc:coordinateDimension;
-        rr:objectMap [
-            rr:datatype xsd:integer;
-            rrx:function rrxf:coordinateDimension; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:isSimple;
-        rr:objectMap [
-            rr:datatype xsd:boolean;
-            rrx:function rrxf:isSimple; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:is3D;
-        rr:objectMap [
-            rr:datatype xsd:boolean;
-            rrx:function rrxf:is3D; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:asGML;
-        rr:objectMap [
-            rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
-            rrx:function rrxf:asGML; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:dimension;
-        rr:objectMap [
-            rr:datatype xsd:integer;
-            rrx:function rrxf:dimension; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:isEmpty;
-        rr:objectMap [
-            rr:datatype xsd:boolean;
-            rrx:function rrxf:isEmpty; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:spatialDimension;
-        rr:objectMap [
-            rr:datatype xsd:integer;
-            rrx:function rrxf:spatialDimension; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:hasSerialization;
-        rr:objectMap [
-            rr:datatype ogc:wktLiteral;
-            rrx:function rrxf:hasSerialization; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    rr:predicateObjectMap [
-        rr:predicate ogc:asWKT;
-        rr:objectMap [
-            rr:datatype ogc:wktLiteral;
-            rrx:function rrxf:asWKT; rrx:argumentMap (
-                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
-                );
-        ];
-    ];
-    .

@@ -66,12 +66,14 @@ public class generate_mapping {
 				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 				final ArgDecl xsdifileArg = new ArgDecl(true, "x", "xsd", "XSD file");
 				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
+				final ArgDecl rootElement = new ArgDecl(true, "r", "root", "Root element to start");
 				final ArgDecl nullTypesArg = new ArgDecl(false, "null", "nulltypes", "Allow null types to be adressed as classes (Triples Maps)");
 				final CommandLine cmd = new CommandLine();
 				cmd.add(xsdifileArg);
 				cmd.add(baseIRIArg);
 				cmd.add(outfileArg);
 				cmd.add(nullTypesArg);
+				cmd.add(rootElement);
 				
 				try {
 					cmd.process(args);
@@ -84,7 +86,7 @@ public class generate_mapping {
 					log.info("Command line tool exception", ex);
 					System.exit(1);
 				}
-				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.hasArg(nullTypesArg)).run();
+				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement), cmd.hasArg(nullTypesArg)).run();
 			}
 			else {
 				log.info("Database detected for processing");
