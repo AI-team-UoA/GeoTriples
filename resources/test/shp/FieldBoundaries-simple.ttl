@@ -1,0 +1,175 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix strdf: <http://strdf.di.uoa.gr/ontology#>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:FieldBoundariesSchallermayer_geometry
+    rr:logicalTable [ rr:tableName "`FieldBoundariesSchallermayer`"; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template "http://data.linkedeodata.eu/field-boundaries/FieldBoundariesSchallermayer/Geometry/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:is3D;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:is3D;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "FieldBoundariesSchallermayer_geometry #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:isSimple;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:coordinateDimension;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asGML;
+        rr:objectMap [
+            rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
+            rrx:function rrxf:asGML;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:function rrxf:asWKT;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:dimension;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:spatialDimension;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasSerialization;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:function rrxf:hasSerialization;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:isEmpty;
+            rrx:argumentMap 
+            (
+                 [ rr:column "`the_geom`"; ]
+            )
+        ];
+    ];
+    .
+map:FieldBoundariesSchallermayer
+    rr:logicalTable [ rr:tableName "`FieldBoundariesSchallermayer`"; ];
+    rr:subjectMap [ rr:class vocab:FieldBoundariesSchallermayer; rr:template "http://data.linkedeodata.eu/field-boundaries/FieldBoundariesSchallermayer/id/{`gid`}"; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_NUMMER;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`NUMMER`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_ID;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`ID`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_NAME;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column "`NAME`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template "FieldBoundariesSchallermayer #{`gid`}";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_FLAECHE;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column "`FLAECHE`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:has_TEILNUM;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column "`TEILNUM`";
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:FieldBoundariesSchallermayer_geometry;
+            rr:joinCondition [ rr:child "gid"; rr:parent "gid"; ];
+        ];
+    ];
+    .
