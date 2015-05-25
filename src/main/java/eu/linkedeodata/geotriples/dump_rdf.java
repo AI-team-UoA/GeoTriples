@@ -123,7 +123,6 @@ public class dump_rdf {
 			
 			return;
 		}
-		
 		for (int i=0 ; i<args.length ; i++) {
 			if (args[i].equals("-sh")) {
 				shFound = true;
