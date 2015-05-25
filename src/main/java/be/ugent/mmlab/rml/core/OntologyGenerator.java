@@ -17,10 +17,11 @@ public class OntologyGenerator {
 	private String NS = "http://data.linkedeodata.eu/ontology#";
 	private String OGC = "http://www.opengis.net/ont/geosparql#";
 
-	public OntologyGenerator(boolean useGeoSPARQL) {
+	public OntologyGenerator(boolean useGeoSPARQL,String namespace) {
 		if(useGeoSPARQL){
 			useGeoSPARQL();
 		}
+		NS=namespace;
 	}
 	public void useGeoSPARQL(){
 		m.read("http://www.opengis.net/ont/geosparql");
@@ -62,8 +63,12 @@ public class OntologyGenerator {
 
 	public void createObjectProperty(String domainclass, String propertyname,
 			String rangeclass,boolean isSubPropertyOfHasGeometry) {
-		OntClass dc = m.getOntClass(NS + domainclass);
+		OntClass dc = m.getOntClass(NS + domainclass);		
 		OntClass rc = m.getOntClass(NS + rangeclass);
+		if(rc==null){
+			createClass(rangeclass);
+			rc= m.getOntClass(NS + rangeclass);
+		}
 		ObjectProperty p = m.createObjectProperty(NS + propertyname);
 		p.addDomain(dc);
 		p.addRange(rc);
@@ -77,48 +82,48 @@ public class OntologyGenerator {
 	}
 
 	protected Resource selectXSDType(String l) {
-		// if (l.equalsIgnoreCase("integer"))
-		// return XSD.integer;
-		// else if (l.equalsIgnoreCase("int"))
-		// return XSD.xint;
-		// else if (l.equalsIgnoreCase("unsigned"))
-		// return XSD.unsignedInt;
-		// else if (l.equalsIgnoreCase("ulong") ||
-		// l.equalsIgnoreCase("ulonglong"))
-		// return XSD.unsignedLong;
-		// else if (l.equalsIgnoreCase("short"))
-		// return XSD.xshort;
-		// else if (l.equalsIgnoreCase("long") ||
-		// l.equalsIgnoreCase("longlong"))
-		// return XSD.xlong;
-		// else if (l.equalsIgnoreCase("string") || l.equalsIgnoreCase("char"))
-		// return XSD.xstring;
-		// else if (l.equalsIgnoreCase("float"))
-		// return XSD.xfloat;
-		// else if (l.equalsIgnoreCase("double")
-		// || l.equalsIgnoreCase("longdouble"))
-		// return XSD.xdouble;
-		// else if (l.equalsIgnoreCase("boolean") || l.equalsIgnoreCase("bool"))
-		// return XSD.xboolean;
-		// else if (l.equalsIgnoreCase("decimal"))
-		// return XSD.decimal;
-		// else if (l.equalsIgnoreCase("nonNegativeInteger"))
-		// return XSD.nonNegativeInteger;
-		// else if (l.equalsIgnoreCase("date"))
-		// return XSD.date;
-		// else if (l.equalsIgnoreCase("time"))
-		// return XSD.time;
-		// else if (l.equalsIgnoreCase("datetime"))
-		// return XSD.dateTime;
-		// else if (l.equalsIgnoreCase("absolutedatetime"))
-		// return XSD.dateTime;
-		// else
+		 if (l.equalsIgnoreCase("integer"))
+		 return XSD.integer;
+		 else if (l.equalsIgnoreCase("int"))
+		 return XSD.xint;
+		 else if (l.equalsIgnoreCase("unsigned"))
+		 return XSD.unsignedInt;
+		 else if (l.equalsIgnoreCase("ulong") ||
+		 l.equalsIgnoreCase("ulonglong"))
+		 return XSD.unsignedLong;
+		 else if (l.equalsIgnoreCase("short"))
+		 return XSD.xshort;
+		 else if (l.equalsIgnoreCase("long") ||
+		 l.equalsIgnoreCase("longlong"))
+		 return XSD.xlong;
+		 else if (l.equalsIgnoreCase("string") || l.equalsIgnoreCase("char"))
+		 return XSD.xstring;
+		 else if (l.equalsIgnoreCase("float"))
+		 return XSD.xfloat;
+		 else if (l.equalsIgnoreCase("double")
+		 || l.equalsIgnoreCase("longdouble"))
+		 return XSD.xdouble;
+		 else if (l.equalsIgnoreCase("boolean") || l.equalsIgnoreCase("bool"))
+		 return XSD.xboolean;
+		 else if (l.equalsIgnoreCase("decimal"))
+		 return XSD.decimal;
+		 else if (l.equalsIgnoreCase("nonNegativeInteger"))
+		 return XSD.nonNegativeInteger;
+		 else if (l.equalsIgnoreCase("date"))
+		 return XSD.date;
+		 else if (l.equalsIgnoreCase("time"))
+		 return XSD.time;
+		 else if (l.equalsIgnoreCase("datetime"))
+		 return XSD.dateTime;
+		 else if (l.equalsIgnoreCase("absolutedatetime"))
+		 return XSD.dateTime;
+		 else
 		return new ResourceImpl(l);
 		// return null;
 	}
 	public static void main(String[] args) {
 		boolean useGeoSPARQL=true;
-		OntologyGenerator a = new OntologyGenerator(useGeoSPARQL);
+		OntologyGenerator a = new OntologyGenerator(useGeoSPARQL,"http://data.linkedeodata.eu/ontology#");
 		a.createClass("A");
 		a.createClass("B");
 		a.createClass("C");

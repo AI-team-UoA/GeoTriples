@@ -20,6 +20,8 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
+import be.ugent.mmlab.rml.core.OntologyGenerator;
+
 public class XMLMappingGenerator {
 	private final static Log log = LogFactory.getLog(XMLMappingGenerator.class);
 	private String pathToXML;
@@ -29,11 +31,14 @@ public class XMLMappingGenerator {
 	private boolean allownulltypes = false;
 	private File outputfile;
 	private char prefix = 'a';
-	private String rootelement=null;
+	private String rootelement = null;
 	HashMap<String, String> namespaces = new HashMap<String, String>();
+	private File ontologyOutputFile = null;
+	OntologyGenerator ontology = null;
 
 	public XMLMappingGenerator(String xsdfilename, String xmlfilename,
-			String outputfile, String baseiri, String rootelement, boolean allownulltypesasclasses)
+			String outputfile, String baseiri, String rootelement,
+			boolean allownulltypesasclasses, String ontologyOutputFile)
 			throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, ClassCastException, FileNotFoundException,
 			XmlException, IOException {
@@ -45,7 +50,11 @@ public class XMLMappingGenerator {
 		this.allownulltypes = allownulltypesasclasses;
 		this.pathToXML = new File(xmlfilename).getAbsolutePath();
 		this.outputfile = new File(outputfile);
-		this.rootelement=rootelement;
+		if (ontologyOutputFile != null) {
+			this.ontologyOutputFile = new File(ontologyOutputFile);
+			ontology = new OntologyGenerator(true,baseURI);
+		}
+		this.rootelement = rootelement;
 	}
 
 	private String getGTName(QName name) {
@@ -99,12 +108,12 @@ public class XMLMappingGenerator {
 			// if (!(globals[i].getName().getLocalPart().equals("Wegdeel") &&
 			// globals[i].getName().getNamespaceURI().equals("http://www.opengis.net/gml")))
 			// {
-			if(rootelement!=null){
+			if (rootelement != null) {
 				if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
 					continue;
 				}
-			}else{
-				if(i!=0){
+			} else {
+				if (i != 0) {
 					continue;
 				}
 			}
@@ -162,11 +171,12 @@ public class XMLMappingGenerator {
 
 						String typename = (sp.getType().getName() != null) ? sp
 								.getType().getName().getLocalPart() : null;
-						triplesMaps.put(
-								path,
-								triplesMaps.get(path)
-										+ printPredicateObjectMap(predicate,
-												reference, typename));
+						triplesMaps
+								.put(path,
+										triplesMaps.get(path)
+												+ printPredicateObjectMap(
+														predicate, reference,
+														typename, classname));
 					} else if (sp.getType().getName() != null || allownulltypes) {
 						// this is a class
 
@@ -183,7 +193,8 @@ public class XMLMappingGenerator {
 								triplesMaps.get("/" + getGTName(sge.getName()))
 										+ printRefObjectMap(sp.getName()
 												.getLocalPart(), newpath
-												.replaceAll("/", "")));
+												.replaceAll("/", ""),
+												classname, typeName));
 						triplesMaps.put(newpath, triplesMaps.get(newpath)
 								+ printTriplesMap(newpath.replaceAll("/", "")));
 						triplesMaps.put(newpath, triplesMaps.get(newpath)
@@ -208,16 +219,20 @@ public class XMLMappingGenerator {
 							triplesMaps.get("/" + getGTName(sge.getName()))
 									+ printRefObjectMap(sp.getName()
 											.getLocalPart(), newpath
-											.replaceAll("/", "")));
+											.replaceAll("/", ""), classname,
+											typeName, true));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printTriplesMap(newpath.replaceAll("/", "")));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printLogicalSource(newpath));
 					triplesMaps.put(
 							newpath,
+//							triplesMaps.get(newpath)
+//									+ printSubjectMap(baseURI + typeName
+//											+ "/id/", "Geometry", "ogc"));
 							triplesMaps.get(newpath)
-									+ printSubjectMap(baseURI + typeName
-											+ "/id/", "Geometry", "ogc"));
+							+ printSubjectMap(baseURI + typeName
+									+ "/id/",typeName, true));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printGEOPredicateObjectMaps());
 				}
@@ -246,12 +261,17 @@ public class XMLMappingGenerator {
 							triplesMaps.get(path)
 									+ printPredicateObjectMap(
 											predicate.replace("@", ""),
-											reference, typename));
+											reference, typename, classname));
 				}
 			}
 			// break;
 		}
 		printmapping();
+		printontology();
+	}
+
+	private void printontology() throws FileNotFoundException {
+		ontology.writeToOutput(new PrintStream(ontologyOutputFile));
 	}
 
 	private void printmapping() throws FileNotFoundException {
@@ -270,7 +290,7 @@ public class XMLMappingGenerator {
 				+ "@prefix gml: <http://www.opengis.net/gml/> . \n"
 				+ "@prefix schema: <http://schema.org/>.\n"
 				+ "@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>.\n"
-				+ "@prefix onto: <http://eex#>.\n");
+				+ "@prefix onto: <"+baseURI+"ontology#>.\n");
 		for (String key : namespaces.keySet()) {
 			out.println("@prefix " + namespaces.get(key) + ": <" + key + "> .");
 		}
@@ -304,7 +324,9 @@ public class XMLMappingGenerator {
 		// } else {
 		// System.out.println("Class Found");
 		// }
-
+		boolean hasNotNullTypeFather = sp.getType().getName() != null;
+		String fathersTypeName = (hasNotNullTypeFather) ? sp.getType()
+				.getName().getLocalPart() : sp.getName().getLocalPart();
 		for (SchemaProperty spp : sp.getType().getElementProperties()) {
 			String newpath = path + "/" + getGTName(spp.getName());
 			System.out
@@ -314,6 +336,7 @@ public class XMLMappingGenerator {
 			boolean hasNotNullType = spp.getType().getName() != null;
 			String typeName = (hasNotNullType) ? spp.getType().getName()
 					.getLocalPart() : spp.getName().getLocalPart();
+
 			boolean isGeometry = false;
 			if (spp.getType().getName() != null) {
 				isGeometry = checkIfGMLGeometry(spp.getType());
@@ -334,7 +357,8 @@ public class XMLMappingGenerator {
 							pathclass,
 							triplesMaps.get(pathclass)
 									+ printPredicateObjectMap(predicate,
-											reference, typename));
+											reference, typename,
+											fathersTypeName));
 				} else if (hasNotNullType || allownulltypes) {
 					// this is a class
 					if (!triplesMaps.containsKey(pathclass)) {
@@ -348,7 +372,8 @@ public class XMLMappingGenerator {
 							triplesMaps.get(pathclass)
 									+ printRefObjectMap(spp.getName()
 											.getLocalPart(), newpath
-											.replaceAll("/", "")));
+											.replaceAll("/", ""),
+											fathersTypeName, typeName));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printTriplesMap(newpath.replaceAll("/", "")));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
@@ -371,17 +396,22 @@ public class XMLMappingGenerator {
 						triplesMaps.get(pathclass)
 								+ printRefObjectMap(spp.getName()
 										.getLocalPart(), newpath.replaceAll(
-										"/", "")));
+										"/", ""), fathersTypeName, typeName,
+										true));
 				triplesMaps.put(newpath, triplesMaps.get(newpath)
 						+ printTriplesMap(newpath.replaceAll("/", "")));
 				triplesMaps.put(newpath, triplesMaps.get(newpath)
 						+ printLogicalSource(newpath));
 				triplesMaps.put(
 						newpath,
+//						triplesMaps.get(newpath)
+//								+ printSubjectMap(baseURI + typeName + "/id/",
+//										"Geometry", "ogc"));
 						triplesMaps.get(newpath)
-								+ printSubjectMap(baseURI + typeName + "/id/",
-										"Geometry", "ogc"));
-				triplesMaps.put(newpath, triplesMaps.get(newpath)
+						+ printSubjectMap(baseURI + typeName + "/id/",
+								typeName, true));
+
+						triplesMaps.put(newpath, triplesMaps.get(newpath)
 						+ printGEOPredicateObjectMaps());
 			}
 
@@ -408,7 +438,7 @@ public class XMLMappingGenerator {
 						triplesMaps.get(path)
 								+ printPredicateObjectMap(
 										predicate.replace("@", ""), reference,
-										typename));
+										typename, fathersTypeName));
 			}
 		}
 
@@ -453,11 +483,23 @@ public class XMLMappingGenerator {
 	}
 
 	private String printSubjectMap(String baseuri, String classname) {
-		return printSubjectMap(baseuri, classname, null);
+		return printSubjectMap(baseuri, classname, null, false);
 	}
 
 	private String printSubjectMap(String baseuri, String classname,
-			String classprefix) {
+			boolean isGeometrySubClass) {
+		return printSubjectMap(baseuri, classname, null, isGeometrySubClass);
+	}
+
+	private String printSubjectMap(String baseuri, String classname,
+			String classprefix, boolean isGeometrySubClass) {
+		if (ontology != null) {
+			if (isGeometrySubClass) {
+				ontology.createGeometryClass(classname);
+			} else {
+				ontology.createClass(classname);
+			}
+		}
 		String base = baseuri + (baseuri.endsWith("/") ? "" : "/");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:subjectMap [\n");
@@ -469,20 +511,20 @@ public class XMLMappingGenerator {
 	}
 
 	private String printPredicateObjectMap(String predicate, String reference,
-			String type) {
+			String type, String classname) {
 		return printPredicateObjectMap(predicate, reference, type, null, null,
-				null);
+				null, classname);
 	}
 
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String typeprefix, String predicatedprefix,
-			String function) {
+			String function, String classname) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:predicateObjectMap [\n");
 		sb.append("\trr:predicate "
 				+ ((predicatedprefix == null) ? "onto" : (predicatedprefix))
 				+ ":");
-		sb.append(predicate + ";\n");
+		sb.append("has_"+predicate + ";\n");
 		sb.append("\trr:objectMap [\n");
 		if (type != null) {
 			sb.append("\t\trr:datatype "
@@ -493,7 +535,10 @@ public class XMLMappingGenerator {
 			sb.append("\t\trrx:function rrxf:" + function + ";\n");
 			sb.append("\t\trrx:argumentMap ( [ ");
 			sb.append("rml:reference \"" + reference + "\"; ] );\n");
-		} else {
+		} else { // we have simple reference
+			if (ontology != null) {
+				ontology.createDatatypeProperty(classname, "has_"+predicate, type);
+			}
 			sb.append("\t\trml:reference \"" + reference + "\";\n");
 		}
 		sb.append("\t];\n");
@@ -501,7 +546,15 @@ public class XMLMappingGenerator {
 		return sb.toString();
 	}
 
-	private String printRefObjectMap(String predicate, String parentTriplesMap) {
+	private String printRefObjectMap(String predicate, String parentTriplesMap,
+			String domainclassname, String rangeclassname) {
+		return printRefObjectMap(predicate, parentTriplesMap, domainclassname,
+				rangeclassname, false);
+	}
+
+	private String printRefObjectMap(String predicate, String parentTriplesMap,
+			String domainclassname, String rangeclassname,
+			boolean isSubTypeOfGeometry) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:predicateObjectMap [\n");
 		sb.append("\trr:predicate onto:has_");
@@ -513,6 +566,17 @@ public class XMLMappingGenerator {
 		sb.append("\t\t];\n");
 		sb.append("\t];\n");
 		sb.append("];\n");
+		if (ontology != null) {
+			System.out.println(domainclassname);
+			System.out.println(predicate);
+			System.out.println(rangeclassname);
+			System.out.println(isSubTypeOfGeometry);
+			ontology.createObjectProperty(domainclassname, "has_"+predicate,
+					rangeclassname, isSubTypeOfGeometry);
+			if(isSubTypeOfGeometry){
+				ontology.addFeatureAsSuperClass(domainclassname);
+			}
+		}
 		return sb.toString();
 	}
 
@@ -525,11 +589,11 @@ public class XMLMappingGenerator {
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(printPredicateObjectMap("dimension", "*", "integer", null,
-				"ogc", "dimension"));
+				"ogc", "dimension", ""));
 		sb.append(printPredicateObjectMap("asWKT", "*", "wktLiteral", "ogc",
-				"ogc", "asWKT"));
+				"ogc", "asWKT", ""));
 		sb.append(printPredicateObjectMap("asGML", "*", "gmlLiteral", "ogc",
-				"ogc", "asGML"));
+				"ogc", "asGML", ""));
 		// TODO write all the GeoSPARQL properties
 		return sb.toString();
 	}
@@ -545,8 +609,8 @@ public class XMLMappingGenerator {
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
 		XMLMappingGenerator m = new XMLMappingGenerator(args[0], args[1],
-				args[2], args[3],args[4], (args.length == 5) ? Boolean.valueOf(args[5])
-						: false);
+				args[2], args[3], args[4],
+				(args.length > 4) ? Boolean.valueOf(args[5]) : false, (args.length > 5)?args[6]:null);
 		m.run();
 	}
 }

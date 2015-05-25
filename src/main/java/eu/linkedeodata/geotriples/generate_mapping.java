@@ -68,12 +68,15 @@ public class generate_mapping {
 				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
 				final ArgDecl rootElement = new ArgDecl(true, "r", "root", "Root element to start");
 				final ArgDecl nullTypesArg = new ArgDecl(false, "null", "nulltypes", "Allow null types to be adressed as classes (Triples Maps)");
+				final ArgDecl ontologyOutArg = new ArgDecl(true, "k", "k", "outfile for ontology");
+
 				final CommandLine cmd = new CommandLine();
 				cmd.add(xsdifileArg);
 				cmd.add(baseIRIArg);
 				cmd.add(outfileArg);
 				cmd.add(nullTypesArg);
 				cmd.add(rootElement);
+				cmd.add(ontologyOutArg);
 				
 				try {
 					cmd.process(args);
@@ -86,7 +89,9 @@ public class generate_mapping {
 					log.info("Command line tool exception", ex);
 					System.exit(1);
 				}
-				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement), cmd.hasArg(nullTypesArg)).run();
+				String dd = cmd.getValue(ontologyOutArg);
+				System.out.println(dd);
+				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement), cmd.hasArg(nullTypesArg),cmd.getValue(ontologyOutArg)).run();
 			}
 			else {
 				log.info("Database detected for processing");
