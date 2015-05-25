@@ -436,9 +436,9 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 						} else {
 							int end = map.getLogicalSource().getReference()
 									.length();
-							log.info("RML:AbstractRMLProcessor "
+							/*log.info("RML:AbstractRMLProcessor "
 									+ parentTriplesMap.getLogicalSource()
-											.getReference().toString());
+											.getReference().toString());*/
 							String expression = "";
 							switch (parentTriplesMap.getLogicalSource()
 									.getReferenceFormulation().toString()) {

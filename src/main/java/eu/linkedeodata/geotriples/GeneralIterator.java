@@ -119,7 +119,7 @@ public class GeneralIterator implements ClosableIterator<GeneralResultRow> {
 	    	return;
 	    }
     	this.queryExecuted = true;
-    	log.info(querytable);
+    	/*log.info(querytable);*/
 		try {
 			if(this.sqlquery.toLowerCase().contains("where"))
 			{
