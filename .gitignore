@@ -4,3 +4,4 @@ resources/rml/talkingfields-rml/output.txt
 *.txt
 *.nt
 *.n3
+/bin

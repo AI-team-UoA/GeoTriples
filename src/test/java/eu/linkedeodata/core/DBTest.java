@@ -16,13 +16,14 @@ public abstract class DBTest extends TemplateTest {
 	protected String username;
 	protected String password;
 	
-	public DBTest(String dbName, String username, String password, boolean postgres, String baseIRI, String mappingFile) {
+	public DBTest(String dbName, String username, String password, boolean postgres, String baseIRI, String mappingFile, String originalFile) {
 		this.dbName = dbName;
 		this.postgres = postgres;
 		this.username = username;
 		this.password = password;
 		this.baseIRI = baseIRI;
 		this.mappingFile = mappingFile;
+		this.originalRdfGraphFile = originalFile;
 	}
 	
 	@Before @Override
@@ -32,7 +33,7 @@ public abstract class DBTest extends TemplateTest {
 	
 	@Test @Override
 	public void test() throws Exception {
-		String [] args = { "dump_rdf", "-b", this.baseIRI, "-o", this.outputFile, "-u", this.username, "-p", this.password, "-jdbc", this.postgres ? "jdbc:postgresql://"+Utils.serverName + ":"+Utils.postgresPort+ "/" + this.dbName : "jdbc:monetdb://"+Utils.serverName + ":" + Utils.monetdbPort + "/" + this.dbName, this.mappingFile };
+		String [] args = { "-b", this.baseIRI, "-o", this.outputFile, "-u", this.username, "-p", this.password, "-jdbc", this.postgres ? "jdbc:postgresql://"+Utils.serverName + ":"+Utils.postgresPort+ "/" + this.dbName : "jdbc:monetdb://"+Utils.serverName + ":" + Utils.monetdbPort + "/" + this.dbName, this.mappingFile };
 		new dump_rdf().process(args);
 		Utils.sortFile(originalRdfGraphFile);
 		Utils.sortFile(this.outputFile);

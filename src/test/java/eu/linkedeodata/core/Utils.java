@@ -84,6 +84,9 @@ public class Utils {
 			url = "jdbc:postgresql://"+serverName+":"+postgresPort+"/"+name;
 			conn = DriverManager.getConnection(url, postgresUsername, postgresPassword);
 		}
+		else {
+			//monetdb
+		}
 	}
 
 	public static void unloaddb() throws SQLException {

@@ -1,0 +1,118 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix strdf: <http://strdf.di.uoa.gr/ontology#>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:fieldboundariesschallermayerGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT *, st_dimension(geom) as dimension, st_coorddim(geom) as "coordinateDimension", st_coorddim(geom) as "spatialDimension", CASE WHEN st_issimple(geom) THEN 'true' ELSE 'false' END as "isSimple", CASE WHEN st_isempty(geom) THEN 'true' ELSE 'false' END as "isEmpty", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/', ST_SRID(geom), '> ' ,st_astext(geom)) as "asWKT" FROM "fieldboundariesschallermayer\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/talking-fields/fieldboundariesschallermayer/Geometry/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isEmpty"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rr:column '"isSimple"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'fieldboundariesschallermayerGeo #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"coordinateDimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"dimension"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"spatialDimension"';
+        ];
+    ];
+    .
+map:fieldboundariesschallermayer
+    rr:logicalTable [ rr:tableName '"fieldboundariesschallermayer"'; ];
+    rr:subjectMap [ rr:class vocab:fieldboundariesschallermayer; rr:template 'http://data.linkedeodata.eu/talking-fields/fieldboundariesschallermayer/id/{"gid"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:fieldboundariesschallermayer_teilnum;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"teilnum"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'fieldboundariesschallermayer #{"gid"}';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:fieldboundariesschallermayer_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:fieldboundariesschallermayer_nummer;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"nummer"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:fieldboundariesschallermayerGeo;
+            rr:joinCondition [ rr:child '"gid"'; rr:parent '"gid"'; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:fieldboundariesschallermayer_id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:fieldboundariesschallermayer_flaeche;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"flaeche"';
+        ];
+    ];
+    .
