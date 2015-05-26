@@ -54,6 +54,14 @@ public abstract class AbstractFunction {
 			org.geotools.GML gml = new org.geotools.GML(Version.GML3);
 			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
 			SimpleFeature feature = iter.next();
+//			ElementInstance instance =null;
+//			Node node;
+//			FeatureTypeCache ftCache;
+//			BindingWalkerFactory bwFactory;
+//			GML3ParsingUtils.parseFeature(instance, node, value, ftCache, bwFactory)
+//			DataUtilities.crea createFeature(featureType, value);
+			//SimpleFeatureBuilder.
+			//SimpleFeature f=new SimpleFeatureImpl(values, featureType, id)
 			geometry = (Geometry) feature.getDefaultGeometry();
 			return geometry;
 		case CSV_CLASS:

@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaGlobalElement;
@@ -35,9 +36,10 @@ public class XMLMappingGenerator {
 	HashMap<String, String> namespaces = new HashMap<String, String>();
 	private File ontologyOutputFile = null;
 	OntologyGenerator ontology = null;
+	private String basePath = null;
 
 	public XMLMappingGenerator(String xsdfilename, String xmlfilename,
-			String outputfile, String baseiri, String rootelement,
+			String outputfile, String baseiri, String rootelement,String basepath,String namespaces,
 			boolean allownulltypesasclasses, String ontologyOutputFile)
 			throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, ClassCastException, FileNotFoundException,
@@ -55,6 +57,20 @@ public class XMLMappingGenerator {
 			ontology = new OntologyGenerator(true,baseURI);
 		}
 		this.rootelement = rootelement;
+		this.basePath=basepath;
+		if(this.basePath!=null)
+		if(this.basePath.endsWith("/")){
+			this.basePath=this.basePath.substring(0, this.basePath.length()-2);
+		}
+		if(namespaces!=null){
+			String []nss=namespaces.split(",");
+			for(String ns:nss){
+				String [] tokens=ns.split("(\\s+)");
+				String prefix=tokens[0];
+				String uri=tokens[1];
+				this.namespaces.put(uri.trim(), prefix.trim());
+			}
+		}
 	}
 
 	private String getGTName(QName name) {
@@ -112,6 +128,7 @@ public class XMLMappingGenerator {
 				if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
 					continue;
 				}
+				System.out.println("The type is finite: "+globals[i].getType().isFinite());
 			} else {
 				if (i != 0) {
 					continue;
@@ -286,8 +303,6 @@ public class XMLMappingGenerator {
 				+ "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
 				+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
 				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n"
-				+ "@prefix aaa: <http://www.myphotos.org/> .\n"
-				+ "@prefix gml: <http://www.opengis.net/gml/> . \n"
 				+ "@prefix schema: <http://schema.org/>.\n"
 				+ "@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>.\n"
 				+ "@prefix onto: <"+baseURI+"ontology#>.\n");
@@ -478,7 +493,7 @@ public class XMLMappingGenerator {
 		sb.append("rml:logicalSource [\n");
 		sb.append("\trml:source \"" + pathToXML + "\";\n");
 		sb.append("\trml:referenceFormulation ql:XPath;\n");
-		sb.append("\trml:iterator \"" + path + "\";\n];\n");
+		sb.append("\trml:iterator \"" + (basePath==null?path:(basePath+path)) + "\";\n];\n");
 		return sb.toString();
 	}
 
@@ -513,18 +528,21 @@ public class XMLMappingGenerator {
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String classname) {
 		return printPredicateObjectMap(predicate, reference, type, null, null,
-				null, classname);
+				null, classname,false);
 	}
 
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String typeprefix, String predicatedprefix,
-			String function, String classname) {
+			String function, String classname,boolean isgeometrypredicate) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:predicateObjectMap [\n");
 		sb.append("\trr:predicate "
 				+ ((predicatedprefix == null) ? "onto" : (predicatedprefix))
 				+ ":");
-		sb.append("has_"+predicate + ";\n");
+		if(!isgeometrypredicate){
+			predicate="hasPredicate"+WordUtils.capitalize(predicate);
+		}
+		sb.append(predicate + ";\n");
 		sb.append("\trr:objectMap [\n");
 		if (type != null) {
 			sb.append("\t\trr:datatype "
@@ -536,8 +554,8 @@ public class XMLMappingGenerator {
 			sb.append("\t\trrx:argumentMap ( [ ");
 			sb.append("rml:reference \"" + reference + "\"; ] );\n");
 		} else { // we have simple reference
-			if (ontology != null) {
-				ontology.createDatatypeProperty(classname, "has_"+predicate, type);
+			if (ontology != null && !isgeometrypredicate) {
+				ontology.createDatatypeProperty(classname, "hasPredicate"+WordUtils.capitalize(predicate), type);
 			}
 			sb.append("\t\trml:reference \"" + reference + "\";\n");
 		}
@@ -589,11 +607,11 @@ public class XMLMappingGenerator {
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(printPredicateObjectMap("dimension", "*", "integer", null,
-				"ogc", "dimension", ""));
+				"ogc", "dimension", "",true));
 		sb.append(printPredicateObjectMap("asWKT", "*", "wktLiteral", "ogc",
-				"ogc", "asWKT", ""));
+				"ogc", "asWKT", "",true));
 		sb.append(printPredicateObjectMap("asGML", "*", "gmlLiteral", "ogc",
-				"ogc", "asGML", ""));
+				"ogc", "asGML", "",true));
 		// TODO write all the GeoSPARQL properties
 		return sb.toString();
 	}
@@ -603,14 +621,14 @@ public class XMLMappingGenerator {
 			FileNotFoundException, XmlException, IOException {
 		if (args.length < 4) {
 			System.err
-					.println("Please give arguments, eg <xsdfile> <xmlfile> <outputfile> <baseiri> <rootelement> [<true or false> for generating classes for elements without type name]");
+					.println("Please give arguments, eg <xsdfile> <xmlfile> <outputfile> <baseiri> <rootelement> <basepath> <namespaces> [<true or false> for generating classes for elements without type name]");
 			System.exit(1);
 		}
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
 		XMLMappingGenerator m = new XMLMappingGenerator(args[0], args[1],
-				args[2], args[3], args[4],
-				(args.length > 4) ? Boolean.valueOf(args[5]) : false, (args.length > 5)?args[6]:null);
+				args[2], args[3], args[4],args[5],args[6],
+				(args.length > 7) ? Boolean.valueOf(args[7]) : false, (args.length > 7)?args[8]:null);
 		m.run();
 	}
 }

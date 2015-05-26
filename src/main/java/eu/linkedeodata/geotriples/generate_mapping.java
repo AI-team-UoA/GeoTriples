@@ -68,8 +68,9 @@ public class generate_mapping {
 				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
 				final ArgDecl rootElement = new ArgDecl(true, "r", "root", "Root element to start");
 				final ArgDecl nullTypesArg = new ArgDecl(false, "null", "nulltypes", "Allow null types to be adressed as classes (Triples Maps)");
-				final ArgDecl ontologyOutArg = new ArgDecl(true, "k", "k", "outfile for ontology");
-
+				final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
+				final ArgDecl rootPathArg = new ArgDecl(true, "rp", "rootpath", "path of root element eg /a/b when root element is c");
+				final ArgDecl namespacesArg = new ArgDecl(true, "ns", "namespaces", "used for namespaces in root path (-rp | --rootpath)");
 				final CommandLine cmd = new CommandLine();
 				cmd.add(xsdifileArg);
 				cmd.add(baseIRIArg);
@@ -77,6 +78,8 @@ public class generate_mapping {
 				cmd.add(nullTypesArg);
 				cmd.add(rootElement);
 				cmd.add(ontologyOutArg);
+				cmd.add(rootPathArg);
+				cmd.add(namespacesArg);
 				
 				try {
 					cmd.process(args);
@@ -91,7 +94,7 @@ public class generate_mapping {
 				}
 				String dd = cmd.getValue(ontologyOutArg);
 				System.out.println(dd);
-				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement), cmd.hasArg(nullTypesArg),cmd.getValue(ontologyOutArg)).run();
+				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement),cmd.getValue(rootPathArg),cmd.getValue(namespacesArg), cmd.hasArg(nullTypesArg),cmd.getValue(ontologyOutArg)).run();
 			}
 			else {
 				log.info("Database detected for processing");
