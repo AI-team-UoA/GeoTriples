@@ -7,10 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.geotools.GML.Version;
-import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.SAXException;
@@ -21,6 +18,7 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.gml2.GMLReader;
 public abstract class AbstractFunction {
 	
 	protected Geometry computeGeometry(String value, QLTerm term)
@@ -48,12 +46,13 @@ public abstract class AbstractFunction {
 			sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
 			//value = convert2GML2(value);
 //			System.out.println(value);
-	//		GMLReader gmlreader = new GMLReader();
-	//		geometry = gmlreader.read(value,null);
-			InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
-			org.geotools.GML gml = new org.geotools.GML(Version.GML3);
-			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
-			SimpleFeature feature = iter.next();
+			
+			GMLReader gmlreader = new GMLReader();
+			geometry = gmlreader.read(value,null);
+			////InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
+			////org.geotools.GML gml = new org.geotools.GML(Version.GML3);
+//			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
+//			SimpleFeature feature = iter.next();
 //			ElementInstance instance =null;
 //			Node node;
 //			FeatureTypeCache ftCache;
@@ -62,7 +61,7 @@ public abstract class AbstractFunction {
 //			DataUtilities.crea createFeature(featureType, value);
 			//SimpleFeatureBuilder.
 			//SimpleFeature f=new SimpleFeatureImpl(values, featureType, id)
-			geometry = (Geometry) feature.getDefaultGeometry();
+//			geometry = (Geometry) feature.getDefaultGeometry();
 			return geometry;
 		case CSV_CLASS:
 			throw new UnsupportedOperationException(

@@ -182,7 +182,7 @@ public class XMLMappingGenerator {
 						}
 						String predicate =newpath
 								.replaceFirst(path, "").replaceFirst("/", "")
-								.replace("/", "_").replace(":","");
+								.replace("/", "_").replace(":","-");
 						String reference = getGTName(sp.getName());
 
 						String typename = (sp.getType().getName() != null) ? sp
@@ -266,7 +266,7 @@ public class XMLMappingGenerator {
 					}
 					String predicate = newpath
 							.replaceFirst(path, "").replaceFirst("/", "")
-							.replace("/", "_").replace(":","");	
+							.replace("/", "_").replace(":","-");	
 					String reference = "@" + getGTName(spp.getName());
 
 					String typename = (spp.getType().getName() != null) ? spp
@@ -365,7 +365,7 @@ public class XMLMappingGenerator {
 							: spp.getName().getLocalPart();*/
 					String predicate = newpath
 							.replaceFirst(pathclass, "").replaceFirst("/", "")
-							.replace("/", "_").replace(":","");
+							.replace("/", "_").replace(":","-");
 					String reference = getGTName(spp.getName());
 					String typename = (spp.getType().getName() != null) ? spp
 							.getType().getName().getLocalPart() : null;
@@ -445,7 +445,7 @@ public class XMLMappingGenerator {
 				}
 				String predicate =  newpath
 						.replaceFirst(path, "").replaceFirst("/", "")
-						.replace("/", "_").replace(":","");;
+						.replaceAll("/", "_").replace(":","-");
 				String reference = "@" + getGTName(spp.getName());
 				String typename = (spp.getType().getName() != null) ? spp
 						.getType().getName().getLocalPart() : null;
@@ -550,7 +550,7 @@ public class XMLMappingGenerator {
 				+ ((predicatedprefix == null) ? "onto" : (predicatedprefix))
 				+ ":");
 		if(!isgeometrypredicate){
-			predicate="hasPredicate"+WordUtils.capitalize(predicate);
+			predicate="has"+WordUtils.capitalize(predicate,new char[]{'-'});
 		}
 		sb.append(predicate + ";\n");
 		sb.append("\trr:objectMap [\n");
@@ -565,7 +565,7 @@ public class XMLMappingGenerator {
 			sb.append("rml:reference \"" + reference + "\"; ] );\n");
 		} else { // we have simple reference
 			if (ontology != null && !isgeometrypredicate) {
-				ontology.createDatatypeProperty(classname, "hasPredicate"+WordUtils.capitalize(predicate), type);
+				ontology.createDatatypeProperty(classname, "has"+WordUtils.capitalize(predicate,new char[]{'-'}), type);
 			}
 			sb.append("\t\trml:reference \"" + reference + "\";\n");
 		}
