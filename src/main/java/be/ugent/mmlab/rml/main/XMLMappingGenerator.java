@@ -180,10 +180,9 @@ public class XMLMappingGenerator {
 						if (!triplesMaps.containsKey(path)) {
 							triplesMaps.put(path, " ");
 						}
-						String predicate = (sp.getType().getName() == null) ? newpath
+						String predicate =newpath
 								.replaceFirst(path, "").replaceFirst("/", "")
-								.replace("/", "_")
-								: sp.getName().getLocalPart();
+								.replace("/", "_").replace(":","");
 						String reference = getGTName(sp.getName());
 
 						String typename = (sp.getType().getName() != null) ? sp
@@ -265,10 +264,9 @@ public class XMLMappingGenerator {
 					if (!triplesMaps.containsKey(path)) {
 						triplesMaps.put(path, " ");
 					}
-					String predicate = (spp.getType().getName() == null) ? newpath
+					String predicate = newpath
 							.replaceFirst(path, "").replaceFirst("/", "")
-							.replace("/", "_")
-							: "@" + spp.getName().getLocalPart();
+							.replace("/", "_").replace(":","");	
 					String reference = "@" + getGTName(spp.getName());
 
 					String typename = (spp.getType().getName() != null) ? spp
@@ -361,10 +359,13 @@ public class XMLMappingGenerator {
 					if (!triplesMaps.containsKey(pathclass)) {
 						triplesMaps.put(pathclass, " ");
 					}
-					String predicate = (sp.getType().getName() == null) ? newpath
+					/*String predicate = (sp.getType().getName() == null) ? newpath
 							.replaceFirst(pathclass, "").replaceFirst("/", "")
 							.replace("/", "_")
-							: spp.getName().getLocalPart();
+							: spp.getName().getLocalPart();*/
+					String predicate = newpath
+							.replaceFirst(pathclass, "").replaceFirst("/", "")
+							.replace("/", "_").replace(":","");
 					String reference = getGTName(spp.getName());
 					String typename = (spp.getType().getName() != null) ? spp
 							.getType().getName().getLocalPart() : null;
@@ -442,9 +443,9 @@ public class XMLMappingGenerator {
 				if (!triplesMaps.containsKey(path)) {
 					triplesMaps.put(path, " ");
 				}
-				String predicate = (sp.getType().getName() == null) ? newpath
+				String predicate =  newpath
 						.replaceFirst(path, "").replaceFirst("/", "")
-						.replace("/", "_") : "@" + spp.getName().getLocalPart();
+						.replace("/", "_").replace(":","");;
 				String reference = "@" + getGTName(spp.getName());
 				String typename = (spp.getType().getName() != null) ? spp
 						.getType().getName().getLocalPart() : null;
@@ -483,6 +484,15 @@ public class XMLMappingGenerator {
 			return true;
 		}
 		if (type.getName().getLocalPart().equals("MultiSurfacePropertyType")) {
+			return true;
+		}
+		if (type.getName().getLocalPart().equals("MultiGeometryPropertyType")) {
+			return true;
+		}
+		if (type.getName().getLocalPart().equals("LineStringPropertyType")) {
+			return true;
+		}
+		if (type.getName().getLocalPart().equals("MultiLineStringPropertyType")) {
 			return true;
 		}
 		return false;

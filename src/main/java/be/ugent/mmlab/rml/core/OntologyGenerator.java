@@ -82,6 +82,9 @@ public class OntologyGenerator {
 	}
 
 	protected Resource selectXSDType(String l) {
+		if(l==null){
+			return XSD.xstring;
+		}
 		 if (l.equalsIgnoreCase("integer"))
 		 return XSD.integer;
 		 else if (l.equalsIgnoreCase("int"))
