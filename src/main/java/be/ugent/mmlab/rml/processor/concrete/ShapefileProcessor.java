@@ -23,6 +23,7 @@ import org.opengis.feature.Property;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 
+import be.ugent.mmlab.rml.core.DependencyRMLPerformer;
 import be.ugent.mmlab.rml.core.KeyGenerator;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.core.RMLPerformer;
@@ -41,12 +42,24 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 
 	private static Log log = LogFactory.getLog(RMLMappingFactory.class);
 	private HashMap<String, Object> currentnode;
+	protected TriplesMap map;
 
 	@Override
 	public void execute(SesameDataSet dataset, TriplesMap map,
 			RMLPerformer performer, String fileName) {
 		// InputStream fis = null;
+		if(dependencyTriplesMap!=null || dependencyProcessor!=null){
+			if(dependencyTriplesMap!=null){
+				DependencyRMLPerformer dependencyPerformer=((DependencyRMLPerformer)AbstractRMLProcessor.performersForFunctionInsideJoinCondition.get(dependencyTriplesMap));
+				execute_node_fromdependency(dataset, map.getLogicalSource().getReference().replaceFirst(dependencyPerformer.getOwnmap().getLogicalSource().getReference(), ""), map, performer, dependencyPerformer.getCurrentNode());
+			}else
+			{
+				execute_node_fromdependency(dataset, map.getLogicalSource().getReference().replaceFirst(dependencyProcessor.getCurrentTriplesMap().getLogicalSource().getReference(), ""), map, performer, dependencyProcessor.getCurrentNode());
+			}
+			return;
+		}
 		try {
+			this.map=map;
 			// TODO: add character guessing
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[Shapefile Processor] filename " + fileName);
@@ -116,8 +129,11 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 	public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map,
 			 RMLPerformer performer, Object node
 			){
-		throw new UnsupportedOperationException(
-				"[execute_node_fromdependency] Not applicable for Shapefile sources.");
+		this.map = map;
+//		throw new UnsupportedOperationException(
+//				"[execute_node_fromdependency] Not applicable for Shapefile sources.");
+		currentnode = (HashMap<String, Object>) node;
+		performer.perform(node, dataset, map);
 	}
 
 	@Override
@@ -144,13 +160,14 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 	}
 	@Override
 	public TriplesMap getCurrentTriplesMap(){
-		try {
-			throw new Exception("Bug, it shouldn't use this function from ShapefileProcessor");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.exit(0);
-		}
-		return null;
+//		try {
+//			throw new Exception("Bug, it shouldn't use this function from ShapefileProcessor");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.exit(0);
+//		}
+//		return null;
+		return map;
 	}
 }

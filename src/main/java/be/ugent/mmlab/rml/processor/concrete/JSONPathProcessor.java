@@ -86,7 +86,10 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 				JSONArray arr = (JSONArray) val;
 				return Arrays.asList(arr.toArray(new Object[0]));
 			}
-			list.add((String) val.toString());
+			if(val!=null)
+				list.add((String) val.toString());
+			else
+				list.add("null");
 			return list;
 		} catch (com.jayway.jsonpath.InvalidPathException ex) {
 			return new ArrayList<>();
