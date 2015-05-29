@@ -1,0 +1,291 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix tfo: <http://data.linkedeodata.eu/talking-fields/ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ex: <http://www.example.com/> .
+@base <http://example.com/base> .
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix aaa: <http://www.myphotos.org/> .
+@prefix gml: <http://www.opengis.net/gml/> . 
+
+
+<#FieldAttributes>
+rml:logicalSource [ 
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
+        rml:referenceFormulation ql:XPath;
+	rml:iterator "/TFServices/Farm/Field";
+];
+rr:subjectMap [
+        rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Field/id/{@ID}"; 
+        rr:class tfo:Field;
+            ];
+	rr:predicateObjectMap [
+                     rr:predicate tfo:hasName;
+                     rr:objectMap [ 
+			rr:template "{@Name}";
+			rr:datatype xsd:string;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasFM_Area;
+                     rr:objectMap [ 
+			rr:template "{@FM_area}";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasUsage;
+                     rr:objectMap [ 
+			rr:template "{@usage}";
+			rr:datatype xsd:integer;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasClientID;
+                     rr:objectMap [ 
+			rr:template "{@ClientID}";
+			rr:datatype xsd:integer;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasMainPeriod;
+                     rr:objectMap [ 
+			rr:template "{@mainperiod}";
+			rr:datatype xsd:integer;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasSubPeriod;
+                     rr:objectMap [ 
+			rr:template "{@subperiod}";
+			rr:datatype xsd:integer;
+		];
+    ] ;
+	
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasWatering;
+                     rr:objectMap [ 
+			rr:template "{@watering}";
+			rr:datatype xsd:boolean;
+		];
+    ] ;
+    
+    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasCrop;
+                     rr:objectMap [ 
+			rr:template "{@crop}";
+			rr:datatype xsd:integer;
+		];
+    ] ;    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasId;
+                     rr:objectMap [ 
+			rr:template "{@ID}";
+			rr:datatype xsd:string;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasVariety;
+                     rr:objectMap [ 
+			rr:template "{@variety}";
+			rr:datatype xsd:string;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasCropType;
+                     rr:objectMap [ 
+			rr:template "{@crop}";
+			rr:datatype xsd:long;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasPreCropType;
+                     rr:objectMap [ 
+			rr:template "{@pre_crop}";
+			rr:datatype xsd:long;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasSeedingDate;
+                     rr:objectMap [ 
+			rr:template "{@seeding_date}";
+			rr:datatype xsd:date;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasDirty_His;
+                     rr:objectMap [ 
+			rr:template "{@dirty_his}";
+			rr:datatype xsd:boolean;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasProcessed;
+                     rr:objectMap [ 
+			rr:template "{@processed}";
+			rr:datatype xsd:boolean;
+		];
+    ] ;
+    
+    
+    
+    rr:predicateObjectMap [
+        rr:predicate tfo:hasRasterCell;
+        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/RasterCell/id/{./rc/@x}-{./rc/@y}";];
+    ].
+    
+    
+    
+<#RasterCellAtrributes>
+rml:logicalSource [ 
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
+        rml:referenceFormulation ql:XPath;
+	rml:iterator "/TFServices/Farm/Field/rc";
+];
+rr:subjectMap [
+        rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/RasterCell/id/{@x}-{@y}"; 
+        rr:class tfo:RasterCell;
+            ];
+	rr:predicateObjectMap [
+                     rr:predicate tfo:hasCV;
+                     rr:objectMap [ 
+			rr:template "{@cv}";
+			rr:datatype xsd:double;
+		];
+    ];
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasVigor;
+                     rr:objectMap [ 
+			rml:reference "./results/vigor/@value";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    
+    
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasSavings;
+                     rr:objectMap [ 
+			rml:reference "./savings/@value";
+			rr:datatype xsd:decimal;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasX;
+                     rr:objectMap [ 
+			rml:reference "@x";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    rr:predicateObjectMap [
+                     rr:predicate tfo:hasY;
+                     rr:objectMap [ 
+			rml:reference "@y";
+			rr:datatype xsd:double;
+		];
+    ] ;
+    
+    
+    
+    rr:predicateObjectMap [
+                     rr:predicate ogc:hasGeometry;
+			        rr:objectMap [ rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}";];
+    ] .
+    
+<#RasterCellGeometry>
+rml:logicalSource [ 
+	rml:source "resources/rml/talkingfields-rml/tf.xml";
+        rml:referenceFormulation ql:XPath;
+	rml:iterator "/TFServices/Farm/Field/rc";
+];
+rr:subjectMap [
+        rr:template "http://data.linkedeodata.eu/talking-fields/Intern_Schallermayer_TFB_TFZ/Geometry/{@x}-{@y}"; 
+        rr:class ogc:Geometry;
+            ];
+    
+    rr:predicateObjectMap [
+        rr:predicate ogc:coordinateDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:coordinateDimension; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isSimple;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:isSimple; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:is3D;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:is3D; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asGML;
+        rr:objectMap [
+            rr:datatype <http://opengis.net/ont/geosparql#gmlLiteral>;
+            rrx:function rrxf:asGML; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:dimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:dimension; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:isEmpty;
+        rr:objectMap [
+            rr:datatype xsd:boolean;
+            rrx:function rrxf:isEmpty; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:spatialDimension;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rrx:function rrxf:spatialDimension; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasSerialization;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:function rrxf:hasSerialization; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rrx:function rrxf:asWKT; rrx:argumentMap (
+                    [rr:template "{fn:concat('Polygon ((' , @x - 10, ' ' , @y -10 , ' , ' , @x + 10, ' ' , @y -10 , ' , ' ,  @x + 10, ' ' , @y + 10 , ' , '  ,  @x - 10, ' ' , @y +10 , ' , ' ,  @x - 10, ' ' , @y - 10  , ' ))' )}";]
+                );
+        ];
+    ];
+    .
+    
