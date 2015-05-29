@@ -15,7 +15,7 @@ public abstract class TemplateTest {
 	String baseIRI;
 	
 	@Before
-	public void before() throws SQLException {
+	public void before() throws SQLException, ClassNotFoundException {
 		
 	}
 	

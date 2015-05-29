@@ -27,7 +27,7 @@ public abstract class DBTest extends TemplateTest {
 	}
 	
 	@Before @Override
-	public void before() throws SQLException {
+	public void before() throws SQLException, ClassNotFoundException {
 		Utils.loaddb(dbName, postgres);
 	}
 	
@@ -38,7 +38,7 @@ public abstract class DBTest extends TemplateTest {
 		Utils.sortFile(originalRdfGraphFile);
 		Utils.sortFile(this.outputFile);
 		boolean expr = Utils.checkDiff(originalRdfGraphFile+"_sorted.nt", this.outputFile+"_sorted.nt");
-		assertTrue("SHP Test:" + this.getClass() + ": RDF graph file and results do not match", !expr);
+		assertTrue("DB Test:" + this.getClass() + ": RDF graph file and results do not match", !expr);
 	}
 	
 	@After @Override

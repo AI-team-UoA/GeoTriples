@@ -337,6 +337,7 @@ public class R2RMLCompiler implements CompiledMapping {
 		@Override
 		public void visitComponent(R2RMLView query) {
 			String sql = query.getSQLQuery().toString();
+			System.out.println(sql);
 			String name = "VIEW" + Integer.toHexString(sql.hashCode());
 			SQLOp selectStatement = sqlConnection.getSelectStatement(sql);
 			result = AliasOp.create(selectStatement, name);

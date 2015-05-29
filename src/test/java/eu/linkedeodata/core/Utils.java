@@ -29,8 +29,9 @@ public class Utils {
 	/*
 	 * monetdb specific
 	 */
-//	private static String monetdbUsername = "monetdb";
-//	private static String monetdbPassword = "monetdb";
+	private static String monetdbUsername = "monetdb";
+	private static String monetdbPassword = "monetdb";
+	
 	public static int monetdbPort = 50000;	
 	
 	public static void createdb(String name, String sqlPath, boolean postgres) throws SQLException {
@@ -78,14 +79,16 @@ public class Utils {
 		
 	}
 	
-	public static void loaddb(String name, boolean postgres) throws SQLException {
+	public static void loaddb(String name, boolean postgres) throws SQLException, ClassNotFoundException {
 		String url = "";
 		if (postgres) {
 			url = "jdbc:postgresql://"+serverName+":"+postgresPort+"/"+name;
 			conn = DriverManager.getConnection(url, postgresUsername, postgresPassword);
 		}
 		else {
-			//monetdb
+			Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
+			url = "monetdb://"+serverName+":"+monetdbPort+"/"+name;
+			conn = DriverManager.getConnection(url, monetdbUsername, monetdbPassword);
 		}
 	}
 
