@@ -105,7 +105,7 @@ This mapping can transform into RDF the talkingfield XML files that have been gi
 
 <p>A typical rml-execution is the following</p>
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt -s 32633 talkingfields.mapping.ttl
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 talkingfields.mapping.ttl
 ```
 
 - Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
@@ -126,10 +126,10 @@ $ cd resources/rml/talkingfields-rml/
 Then invoke the RML processor with the RML mapping 
 
 ```bash
-$ java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o output.txt -s 32633 tf.rml.ttl
+$ java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 tf.rml.ttl
 ```
 
-That's it! The RDF graph is in the output.txt file, in the same directory.
+That's it! The RDF graph is in the talkingfields.graph.nt file, in the same directory.
 
 
 
