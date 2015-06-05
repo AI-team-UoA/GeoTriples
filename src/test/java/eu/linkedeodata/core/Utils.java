@@ -87,7 +87,7 @@ public class Utils {
 		}
 		else {
 			Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
-			url = "monetdb://"+serverName+":"+monetdbPort+"/"+name;
+			url = "jdbc:monetdb://"+serverName+":"+monetdbPort+"/"+name;
 			conn = DriverManager.getConnection(url, monetdbUsername, monetdbPassword);
 		}
 	}

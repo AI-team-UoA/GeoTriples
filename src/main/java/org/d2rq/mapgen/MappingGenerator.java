@@ -659,9 +659,9 @@ public class MappingGenerator {
 				iriTemplate = style.getGeometryIRITemplate(auxTable, key);
 			/*}*/
 			
-			String query = "SELECT *," + " st_dimension(" + geoColumn + ") as dimension, st_coorddim(" + geoColumn + ") as \"coordinateDimension\", st_coorddim(" + geoColumn + ") as \"spatialDimension\", CASE WHEN st_issimple(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isSimple\", CASE WHEN st_isempty(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'> \' ,st_astext(" + geoColumn + ")) as \"asWKT\" FROM " + tableName.toString();
+			String query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_coorddim(" + geoColumn + ") as \"coordinateDimension\", st_coorddim(" + geoColumn + ") as \"spatialDimension\", CASE WHEN st_issimple(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isSimple\", CASE WHEN st_isempty(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'> \' ,st_astext(" + geoColumn + ")) as \"asWKT\" FROM " + tableName.toString();
 			if (sqlConnection.getJdbcURL().contains("monetdb")) {
-				query = "SELECT *," + " st_dimension(" + geoColumn + ") as dimension, st_dimension(" + geoColumn + ") as \"coordinateDimension\", st_dimension(" + geoColumn + ") as \"spatialDimension\",  st_issimple(" + geoColumn + ") as \"isSimple\", st_isempty(" + geoColumn + ") as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +"> \' , REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', '')) as \"asWKT\" FROM " + tableName.toString();
+				query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_dimension(" + geoColumn + ") as \"coordinateDimension\", st_dimension(" + geoColumn + ") as \"spatialDimension\",  st_issimple(" + geoColumn + ") as \"isSimple\", st_isempty(" + geoColumn + ") as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +"> \' , REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', '')) as \"asWKT\" FROM " + tableName.toString();
 			}
 			target.generateGeoEntities(class_, table.getName(), 
 					iriTemplate, blankNodeColumns, query);
