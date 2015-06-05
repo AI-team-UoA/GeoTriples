@@ -1,0 +1,88 @@
+@prefix geof: <http://www.opengis.net/def/function/geosparql/>.
+@prefix map: <#>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix strdf: <http://strdf.di.uoa.gr/ontology#>.
+@prefix vocab: <ontology#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+map:rs_schalliGeo
+    rr:logicalTable [ rr:sqlQuery """SELECT *, CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '"', '')) as "asWKT" FROM "talkingfieldsschalli"."rs"."schalli" AS "heck\""""; ];
+    rr:subjectMap [ rr:class ogc:Geometry; rr:template 'http://data.linkedeodata.eu/talking-fields/schalli/Geometry/{"gid"}/{"id"}/{"nummer"}/{"teilnum"}/{"name"}/{"flaeche"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:asWKT;
+        rr:objectMap [
+            rr:datatype ogc:wktLiteral;
+            rr:column '"asWKT"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'schalliGeo #{"gid"}/{"id"}/{"nummer"}/{"teilnum"}/{"name"}/{"flaeche"}';
+        ];
+    ];
+    .
+map:rs_schalli
+    rr:logicalTable [ rr:tableName '"talkingfieldsschalli"."rs"."schalli"'; ];
+    rr:subjectMap [ rr:class vocab:rs_schalli; rr:template 'http://data.linkedeodata.eu/talking-fields/schalli/id/{"gid"}/{"id"}/{"nummer"}/{"teilnum"}/{"name"}/{"flaeche"}'; ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_nummer;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"nummer"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_flaeche;
+        rr:objectMap [
+            rr:datatype xsd:double;
+            rr:column '"flaeche"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate ogc:hasGeometry;
+        rr:objectMap [
+            rr:parentTriplesMap map:rs_schalliGeo;
+            rr:joinCondition [ rr:child '"flaeche"'; rr:parent '"flaeche"'; ];
+            rr:joinCondition [ rr:child '"name"'; rr:parent '"name"'; ];
+            rr:joinCondition [ rr:child '"gid"'; rr:parent '"gid"'; ];
+            rr:joinCondition [ rr:child '"id"'; rr:parent '"id"'; ];
+            rr:joinCondition [ rr:child '"nummer"'; rr:parent '"nummer"'; ];
+            rr:joinCondition [ rr:child '"teilnum"'; rr:parent '"teilnum"'; ];
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_teilnum;
+        rr:objectMap [
+            rr:datatype xsd:decimal;
+            rr:column '"teilnum"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_id;
+        rr:objectMap [
+            rr:datatype xsd:integer;
+            rr:column '"id"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate vocab:rs_schalli_name;
+        rr:objectMap [
+            rr:datatype xsd:string;
+            rr:column '"name"';
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label;
+        rr:objectMap [
+            rr:termType rr:Literal;
+            rr:template 'schalli #{"gid"}/{"id"}/{"nummer"}/{"teilnum"}/{"name"}/{"flaeche"}';
+        ];
+    ];
+    .
