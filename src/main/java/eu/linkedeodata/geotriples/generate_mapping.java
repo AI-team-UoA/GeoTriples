@@ -71,6 +71,7 @@ public class generate_mapping {
 				final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 				final ArgDecl rootPathArg = new ArgDecl(true, "rp", "rootpath", "path of root element eg /a/b when root element is c");
 				final ArgDecl namespacesArg = new ArgDecl(true, "ns", "namespaces", "used for namespaces in root path (-rp | --rootpath)");
+				final ArgDecl onlyNamespace = new ArgDecl(true, "onlyns", "onlynamespace", "only global elements for this namespace will be analyzed");
 				final CommandLine cmd = new CommandLine();
 				cmd.add(xsdifileArg);
 				cmd.add(baseIRIArg);
@@ -80,6 +81,7 @@ public class generate_mapping {
 				cmd.add(ontologyOutArg);
 				cmd.add(rootPathArg);
 				cmd.add(namespacesArg);
+				cmd.add(onlyNamespace);
 				
 				try {
 					cmd.process(args);
@@ -94,7 +96,8 @@ public class generate_mapping {
 				}
 				String dd = cmd.getValue(ontologyOutArg);
 				System.out.println(dd);
-				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement),cmd.getValue(rootPathArg),cmd.getValue(namespacesArg), cmd.hasArg(nullTypesArg),cmd.getValue(ontologyOutArg)).run();
+				
+				new XMLMappingGenerator(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),cmd.getValue(rootElement),cmd.getValue(rootPathArg),cmd.getValue(namespacesArg), cmd.hasArg(nullTypesArg),cmd.getValue(ontologyOutArg),cmd.getValue(onlyNamespace)).run();
 			}
 			else {
 				log.info("Database detected for processing");

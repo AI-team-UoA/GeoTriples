@@ -49,7 +49,11 @@ public final class GTransormationFunctions {
 	
 	public static String dimension(Geometry the_geom)
 	{
-		return String.valueOf(the_geom.getCoordinates().length);
+		//System.out.println("mpike kai tha parei timi");
+		//String result=String.valueOf(the_geom.getCoordinates().length);
+		//System.out.println("to result einai "+result);
+		//return result;
+		return String.valueOf(the_geom.getDimension());
 	}
 	public static String coordinateDimension(Geometry the_geom)
 	{

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.xml.namespace.QName;
 
@@ -37,13 +38,24 @@ public class XMLMappingGenerator {
 	private File ontologyOutputFile = null;
 	OntologyGenerator ontology = null;
 	private String basePath = null;
+	private String onlynamespace=null;
 
 	public XMLMappingGenerator(String xsdfilename, String xmlfilename,
 			String outputfile, String baseiri, String rootelement,String basepath,String namespaces,
-			boolean allownulltypesasclasses, String ontologyOutputFile)
+			boolean allownulltypesasclasses, String ontologyOutputFile,String onlynamespace)
 			throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, ClassCastException, FileNotFoundException,
 			XmlException, IOException {
+		System.out.println("xsdfilename="+xsdfilename);
+		System.out.println("xmlfilename="+xmlfilename);
+		System.out.println("outputfile="+outputfile);
+		System.out.println("baseiri"+baseiri);
+		System.out.println("root="+rootelement);
+		System.out.println("basepath="+basepath);
+		System.out.println("namespaces="+namespaces);
+		System.out.println("allownulltypesasclasses="+allownulltypesasclasses);
+		System.out.println("ontologyOutputFile="+ontologyOutputFile);
+		System.out.println("only global elements for namespace "+onlynamespace);
 		this.baseURI = baseiri;
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";
@@ -56,16 +68,23 @@ public class XMLMappingGenerator {
 			this.ontologyOutputFile = new File(ontologyOutputFile);
 			ontology = new OntologyGenerator(true,baseURI);
 		}
+		
+		this.onlynamespace=onlynamespace;
+		
 		this.rootelement = rootelement;
 		this.basePath=basepath;
 		if(this.basePath!=null)
 		if(this.basePath.endsWith("/")){
+			if(this.basePath.length()>1)
 			this.basePath=this.basePath.substring(0, this.basePath.length()-2);
+			else
+				this.basePath="";
 		}
 		if(namespaces!=null){
 			String []nss=namespaces.split(",");
 			for(String ns:nss){
-				String [] tokens=ns.split("(\\s+)");
+				//String [] tokens=ns.split("(\\s+)");
+				String [] tokens=ns.split("\\|");
 				String prefix=tokens[0];
 				String uri=tokens[1];
 				this.namespaces.put(uri.trim(), prefix.trim());
@@ -74,18 +93,29 @@ public class XMLMappingGenerator {
 	}
 
 	private String getGTName(QName name) {
+		if(name==null){
+			return null;
+		}
 		if (name.getNamespaceURI() == null) {
 			return name.getLocalPart();
 		}
 		if (name.getNamespaceURI().isEmpty()) {
 			return name.getLocalPart();
 		}
+		if(name.getLocalPart()==null){
+			return null;
+		}
+		if(name.getLocalPart().isEmpty()){
+			return null;
+		}
 		String prefix = namespaces.get(name.getNamespaceURI());
 		if (prefix != null) {
 			return prefix + ":" + name.getLocalPart();
 		}
-		namespaces.put(name.getNamespaceURI(), String.valueOf(this.prefix));
-		return String.valueOf(this.prefix++);
+		String newprefix=new String(name.getNamespaceURI());
+		//newprefix+="#";
+		namespaces.put(newprefix, String.valueOf(this.prefix));
+		return String.valueOf(this.prefix++) +":"+name.getLocalPart();
 
 	}
 
@@ -95,6 +125,8 @@ public class XMLMappingGenerator {
 
 		XmlOptions pp = new XmlOptions();
 		pp.put("COMPILE_DOWNLOAD_URLS", "true");
+		pp.setCompileDownloadUrls();
+		//pp.setLoadUseDefaultResolver();
 		SchemaTypeSystem sts = XmlBeans.compileXsd(
 				new XmlObject[] { XmlObject.Factory.parse(new FileInputStream(
 						xsdFileName)) }, XmlBeans.getBuiltinTypeSystem(), pp);
@@ -124,15 +156,26 @@ public class XMLMappingGenerator {
 			// if (!(globals[i].getName().getLocalPart().equals("Wegdeel") &&
 			// globals[i].getName().getNamespaceURI().equals("http://www.opengis.net/gml")))
 			// {
-			if (rootelement != null) {
-				if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
+			System.out.println("Global elementtt: "+globals[i].getName());
+			//if(true)
+				//continue;
+			
+				if(onlynamespace!=null){
+					if (!(globals[i].getName().getNamespaceURI().equals(onlynamespace))) {
+						continue;
+					}
+				}
+				else if (rootelement != null) {
+					if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
+						continue;
+					}
+					System.out.println("The type is finite: "+globals[i].getType().isFinite());
+				} 
+				else if (i != 0) {
 					continue;
 				}
-				System.out.println("The type is finite: "+globals[i].getType().isFinite());
-			} else {
-				if (i != 0) {
-					continue;
-				}
+			if(globals[i].getName().getLocalPart().equals("GeoObject")){//this is only for the netherlands use case
+				continue;
 			}
 			// if(i!=0)
 			// continue;
@@ -185,8 +228,10 @@ public class XMLMappingGenerator {
 								.replace("/", "_").replace(":","-");
 						String reference = getGTName(sp.getName());
 
-						String typename = (sp.getType().getName() != null) ? sp
-								.getType().getName().getLocalPart() : null;
+						String typename = getGTName(sp.getType().getName());
+						//(sp.getType().getName() != null) ? sp.getType().getName().getLocalPart() : null;
+								/*String typeprefix = (sp.getType().getName() != null) ? sp
+										.getType().getName().getNamespaceURI() : null;*/
 						triplesMaps
 								.put(path,
 										triplesMaps.get(path)
@@ -268,9 +313,11 @@ public class XMLMappingGenerator {
 							.replaceFirst(path, "").replaceFirst("/", "")
 							.replace("/", "_").replace(":","-");	
 					String reference = "@" + getGTName(spp.getName());
-
-					String typename = (spp.getType().getName() != null) ? spp
-							.getType().getName().getLocalPart() : null;
+					String typename = getGTName(spp.getType().getName());
+//					String typename = (spp.getType().getName() != null) ? spp
+//							.getType().getName().getLocalPart() : null;
+							String typeprefix = (spp.getType().getName() != null) ? spp
+									.getType().getName().getNamespaceURI() : null;
 					triplesMaps.put(
 							path,
 							triplesMaps.get(path)
@@ -284,6 +331,8 @@ public class XMLMappingGenerator {
 		printmapping();
 		printontology();
 	}
+
+	
 
 	private void printontology() throws FileNotFoundException {
 		ontology.writeToOutput(new PrintStream(ontologyOutputFile));
@@ -305,11 +354,21 @@ public class XMLMappingGenerator {
 				+ "@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>.\n"
 				+ "@prefix onto: <"+baseURI+"ontology#>.\n");
 		for (String key : namespaces.keySet()) {
-			out.println("@prefix " + namespaces.get(key) + ": <" + key + "> .");
+			out.println("@prefix " + namespaces.get(key) + ": <" + key + "#> .");
 		}
 		for (String triplesMap : triplesMaps.keySet()) {
 			log.debug("TRIPLES MAP: " + triplesMap);
-
+			if(triplesMaps
+					.get(triplesMap).isEmpty() || triplesMaps
+					.get(triplesMap).equals("null") || triplesMaps
+					.get(triplesMap)==null){
+				continue;
+			}
+System.out.println("TRIPLES MAP: " + triplesMap);
+if(triplesMap.equals("/hma:MaskFeature/a:name") || triplesMap.equals("/hma:maskMembers/hma:MaskFeature/a:extentOf")){
+	System.out.println(triplesMaps
+					.get(triplesMap));
+}
 			out.println(triplesMaps
 					.get(triplesMap)
 					.trim()
@@ -321,10 +380,15 @@ public class XMLMappingGenerator {
 		}
 		out.close();
 	}
-
+HashSet<SchemaType> types=new HashSet<>();
 	private void visit(SchemaProperty sp, String path, String pathclass,
 			int indent) {
 		// System.out.println(pathclass);
+		if(sp.getType()!=null){
+		if(types.contains(sp.getType())){
+			return;
+		}}
+		types.add(sp.getType());
 		String tabs = "";
 		for (int i = 0; i < indent; ++i) {
 			tabs += "\t";
@@ -367,8 +431,11 @@ public class XMLMappingGenerator {
 							.replaceFirst(pathclass, "").replaceFirst("/", "")
 							.replace("/", "_").replace(":","-");
 					String reference = getGTName(spp.getName());
-					String typename = (spp.getType().getName() != null) ? spp
-							.getType().getName().getLocalPart() : null;
+					String typename = getGTName(spp.getType().getName());
+//					String typename = (spp.getType().getName() != null) ? spp
+//							.getType().getName().getLocalPart() : null;
+							String typeprefix = (spp.getType().getName() != null) ? spp
+									.getType().getName().getNamespaceURI() : null;
 					triplesMaps.put(
 							pathclass,
 							triplesMaps.get(pathclass)
@@ -390,7 +457,7 @@ public class XMLMappingGenerator {
 											.getLocalPart(), newpath
 											.replaceAll("/", ""),
 											fathersTypeName, typeName));
-					triplesMaps.put(newpath, triplesMaps.get(newpath)
+					triplesMaps.put(newpath, ((triplesMaps.get(newpath)!=null)?triplesMaps.get(newpath):"")
 							+ printTriplesMap(newpath.replaceAll("/", "")));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printLogicalSource(newpath));
@@ -414,7 +481,7 @@ public class XMLMappingGenerator {
 										.getLocalPart(), newpath.replaceAll(
 										"/", ""), fathersTypeName, typeName,
 										true));
-				triplesMaps.put(newpath, triplesMaps.get(newpath)
+				triplesMaps.put(newpath, ((triplesMaps.get(newpath)!=null)?triplesMaps.get(newpath):"")
 						+ printTriplesMap(newpath.replaceAll("/", "")));
 				triplesMaps.put(newpath, triplesMaps.get(newpath)
 						+ printLogicalSource(newpath));
@@ -447,8 +514,11 @@ public class XMLMappingGenerator {
 						.replaceFirst(path, "").replaceFirst("/", "")
 						.replaceAll("/", "_").replace(":","-");
 				String reference = "@" + getGTName(spp.getName());
-				String typename = (spp.getType().getName() != null) ? spp
-						.getType().getName().getLocalPart() : null;
+				String typename = getGTName(spp.getType().getName());
+//				String typename = (spp.getType().getName() != null) ? spp
+//						.getType().getName().getLocalPart() : null;
+						String typeprefix = (spp.getType().getName() != null) ? spp
+								.getType().getName().getNamespaceURI() : null;
 				triplesMaps.put(
 						path,
 						triplesMaps.get(path)
@@ -457,7 +527,7 @@ public class XMLMappingGenerator {
 										typename, fathersTypeName));
 			}
 		}
-
+		types.remove(sp.getType());
 	}
 
 	private boolean checkIfGMLGeometry(SchemaType type) {
@@ -537,7 +607,7 @@ public class XMLMappingGenerator {
 
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String classname) {
-		return printPredicateObjectMap(predicate, reference, type, null, null,
+		return printPredicateObjectMap(predicate, reference, type,null, null,
 				null, classname,false);
 	}
 
@@ -555,8 +625,8 @@ public class XMLMappingGenerator {
 		sb.append(predicate + ";\n");
 		sb.append("\trr:objectMap [\n");
 		if (type != null) {
-			sb.append("\t\trr:datatype "
-					+ ((typeprefix == null) ? "xsd" : (typeprefix)) + ":"
+			sb.append("\t\trr:datatype "+
+					" "
 					+ type + ";\n");
 		}
 		if (function != null) {
@@ -616,12 +686,22 @@ public class XMLMappingGenerator {
 
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(printPredicateObjectMap("dimension", "*", "integer", null,
+		sb.append(printPredicateObjectMap("dimension", "*", "xsd:integer", null,
 				"ogc", "dimension", "",true));
-		sb.append(printPredicateObjectMap("asWKT", "*", "wktLiteral", "ogc",
+		sb.append(printPredicateObjectMap("asWKT", "*", "ogc:wktLiteral", null,
 				"ogc", "asWKT", "",true));
-		sb.append(printPredicateObjectMap("asGML", "*", "gmlLiteral", "ogc",
-				"ogc", "asGML", "",true));
+//		sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral", null,
+//				"ogc", "asGML", "",true));
+		sb.append(printPredicateObjectMap("is3D", "*", "xsd:boolean", null,
+				"ogc", "is3D", "",true));
+		sb.append(printPredicateObjectMap("isSimple", "*", "xsd:boolean", null,
+				"ogc", "isSimple", "",true));
+		sb.append(printPredicateObjectMap("hasSerialization", "*", "ogc:wktLiteral", null,
+				"ogc", "hasSerialization", "",true));
+		sb.append(printPredicateObjectMap("coordinateDimension", "*", "xsd:integer", null,
+				"ogc", "coordinateDimension", "",true));
+		sb.append(printPredicateObjectMap("spatialDimension", "*", "xsd:integer", null,
+				"ogc", "spatialDimension", "",true));
 		// TODO write all the GeoSPARQL properties
 		return sb.toString();
 	}
@@ -638,7 +718,7 @@ public class XMLMappingGenerator {
 		// "personal.xml" , "http://ex.com/" , true);
 		XMLMappingGenerator m = new XMLMappingGenerator(args[0], args[1],
 				args[2], args[3], args[4],args[5],args[6],
-				(args.length > 7) ? Boolean.valueOf(args[7]) : false, (args.length > 7)?args[8]:null);
+				(args.length > 7) ? Boolean.valueOf(args[7]) : false, (args.length > 8)?args[8]:null,(args.length > 9)?args[9]:null);
 		m.run();
 	}
 }

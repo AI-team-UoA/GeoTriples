@@ -4,6 +4,32 @@ package be.ugent.mmlab.rml.main;
 * @author: dimis (dimis@di.uoa.gr)
 * 
 ****************************************************************************/
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
+
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
+
 import be.ugent.mmlab.rml.core.RMLEngine;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.function.Config;
@@ -29,35 +55,6 @@ import be.ugent.mmlab.rml.function.FunctionLength;
 import be.ugent.mmlab.rml.function.FunctionSpatialDimension;
 import be.ugent.mmlab.rml.function.FunctionSubtract;
 import be.ugent.mmlab.rml.model.RMLMapping;
-import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLSyntaxException;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
-
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
 
 /**
  *
@@ -71,7 +68,7 @@ public class MainTrans {
      */
     public static void main(String[] args) throws Exception {
         try {
-        	String file, outfile;
+            String file, outfile;
             String graphName = "";
             RDFFormat format = RDFFormat.N3;
             // create Options object
@@ -97,32 +94,34 @@ public class MainTrans {
             System.out.println("mapping document " + file);
             if(cmd.hasOption("epsg"))
             {
-            	Config.EPSG_CODE=cmd.getOptionValue("epsg");
+                Config.EPSG_CODE=cmd.getOptionValue("epsg");
             }
             if(cmd.hasOption("ns"))
             {
-            	readNamespaces(cmd.getOptionValue("ns"));
+                readNamespaces(cmd.getOptionValue("ns"));
+            }else{
+                readNamespacesFromMapping(file);
             }
             if (cmd.hasOption("f")) {
-            	String formatValue = cmd.getOptionValue("f");
-            	if (formatValue.equalsIgnoreCase("N3")) {
-            		format = RDFFormat.N3;
-            	}
-            	else if (formatValue.equalsIgnoreCase("RDF/XML")) {
-            		format = RDFFormat.RDFXML;
-            	}
-            	else if (formatValue.equalsIgnoreCase("N-TRIPLE") || formatValue.equalsIgnoreCase("N-TRIPLES") || formatValue.equalsIgnoreCase("NTRIPLE") || formatValue.equalsIgnoreCase("NTRIPLES")) {
-            		format = RDFFormat.NTRIPLES;
-            	}
-            	else if (formatValue.equalsIgnoreCase("TURTLE")) {
-            		format = RDFFormat.TURTLE;
-            	}
-            	else if (formatValue.equalsIgnoreCase("BIN")) {
-            		format = RDFFormat.BINARY;
-            	}
-            	else {
-            		format = RDFFormat.N3;
-            	}
+                String formatValue = cmd.getOptionValue("f");
+                if (formatValue.equalsIgnoreCase("N3")) {
+                    format = RDFFormat.N3;
+                }
+                else if (formatValue.equalsIgnoreCase("RDF/XML")) {
+                    format = RDFFormat.RDFXML;
+                }
+                else if (formatValue.equalsIgnoreCase("N-TRIPLE") || formatValue.equalsIgnoreCase("N-TRIPLES") || formatValue.equalsIgnoreCase("NTRIPLE") || formatValue.equalsIgnoreCase("NTRIPLES")) {
+                    format = RDFFormat.NTRIPLES;
+                }
+                else if (formatValue.equalsIgnoreCase("TURTLE")) {
+                    format = RDFFormat.TURTLE;
+                }
+                else if (formatValue.equalsIgnoreCase("BIN")) {
+                    format = RDFFormat.BINARY;
+                }
+                else {
+                    format = RDFFormat.N3;
+                }
             }
             FileInputStream source_properties = null;    
             if(cmd.hasOption("sp")) {
@@ -133,8 +132,8 @@ public class MainTrans {
                 engine.runRMLMapping(mapping, graphName, outfile, true, true);
             }
             else {
-            	engine.runRMLMapping(mapping, graphName, outfile, true, false);
-            	//TODO: replace the above line with the two lines below:
+                engine.runRMLMapping(mapping, graphName, outfile, true, false);
+                //TODO: replace the above line with the two lines below:
                 /*SesameDataSet output = engine.runRMLMapping(mapping, "");
                 output.dumpRDF(new PrintStream(new File(outfile)), RDFFormat.RDFXML);*/
             }
@@ -193,41 +192,56 @@ public class MainTrans {
         return false;
     }
     private static void readNamespaces(String filename) throws Exception {
-    	try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
-    	    for(String line; (line = br.readLine()) != null; ) {
-    	        String [] tokens=line.split(" +|\t|,|;");
-    	        if(tokens.length!=2){
-    	        	throw new Exception("File with namespaces contains a bad line");
-    	        }
-    	        Config.user_namespaces.put(tokens[0], tokens[1]);
-    	    }
-    	    br.close();
-    	}
+        try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            for(String line; (line = br.readLine()) != null; ) {
+                String [] tokens=line.split(" +|\t|,|;");
+                if(tokens.length!=2){
+                    throw new Exception("File with namespaces contains a bad line");
+                }
+                Config.user_namespaces.put(tokens[0], tokens[1]);
+            }
+            br.close();
+        }
+    }
+    private static void readNamespacesFromMapping(String filename) throws Exception {
+        try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            for(String line; (line = br.readLine()) != null; ) {
+                if(line.trim().startsWith("@prefix")){
+                    String [] tokens=line.split("\\s+");
+                    if(tokens.length<3){
+                        throw new Exception("Mapping file in contains a bad line with @prefix");
+                    }
+                    System.out.println("adding namespace "+tokens[1].replace(":", "").trim()+": " +tokens[2].replaceAll("[<>#]", ""));
+                    Config.user_namespaces.put(tokens[1].replace(":", "").trim(), tokens[2].replaceAll("[<>#]", ""));               }
+                
+            }
+            br.close();
+        }
     }
     private static void registerFunctions() {
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"), new FunctionEQUI()); //dont delete or change this line, it replaces the equi join functionality
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"), new FunctionEQUI()); //dont delete or change this line, it replaces the equi join functionality
 
-    	
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"), new FunctionHasSerialization());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"), new FunctionAsGML());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"), new FunctionIsSimple());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"), new FunctionIsEmpty());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D"), new FunctionIs3D());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"), new FunctionSpatialDimension());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension"), new FunctionDimension());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"), new FunctionCoordinateDimension());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area"), new FunctionArea());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"), new FunctionContains());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"), new FunctionIntersects());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/distance"), new FunctionDistance());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"), new FunctionGreaterThan());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/add"), new FunctionAdd());
-    	FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/subtract"), new FunctionSubtract());
-    	
+        
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"), new FunctionAsWKT());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"), new FunctionHasSerialization());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"), new FunctionAsGML());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"), new FunctionIsSimple());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"), new FunctionIsEmpty());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D"), new FunctionIs3D());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"), new FunctionSpatialDimension());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension"), new FunctionDimension());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"), new FunctionCoordinateDimension());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area"), new FunctionArea());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"), new FunctionLength());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"), new FunctionCentroidX());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"), new FunctionCentroidY());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"), new FunctionContains());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"), new FunctionIntersects());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/distance"), new FunctionDistance());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"), new FunctionGreaterThan());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/add"), new FunctionAdd());
+        FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/subtract"), new FunctionSubtract());
+        
     }
     
 }

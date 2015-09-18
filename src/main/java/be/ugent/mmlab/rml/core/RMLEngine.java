@@ -1,5 +1,22 @@
 package be.ugent.mmlab.rml.core;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openrdf.repository.RepositoryException;
+
 import be.ugent.mmlab.rml.dataset.FileSesameDataset;
 import be.ugent.mmlab.rml.model.LogicalSource;
 import be.ugent.mmlab.rml.model.PredicateObjectMap;
@@ -9,18 +26,7 @@ import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
 import be.ugent.mmlab.rml.processor.RMLProcessorFactory;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openrdf.repository.RepositoryException;
+import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 /**
  * Engine that will perform the mapping starting from the TermMaps
@@ -114,9 +120,9 @@ public class RMLEngine {
  
         generateRDFTriples(sesameDataSet, rmlMapping, filebased, source_properties);
         
-	log.info("[RMLEngine:generateRDFTriples] All triples were generated ");
+    log.info("[RMLEngine:generateRDFTriples] All triples were generated ");
         
-	long endTime = System.nanoTime();
+    long endTime = System.nanoTime();
         long duration = endTime - startTime;
         log.debug("[RMLEngine:runRMLMapping] RML mapping done! Generated " + sesameDataSet.getSize() + " in " + ((double) duration) / 1000000000 + "s . ");
         return sesameDataSet;
@@ -145,6 +151,8 @@ public class RMLEngine {
      * @throws R2RMLDataError
      * @throws UnsupportedEncodingException
      */
+    
+    HashMap<String, List<String>> cacheToAvoidOpeningFiles=new HashMap<>();
     protected void generateRDFTriples(SesameDataSet sesameDataSet,
             RMLMapping r2rmlMapping, boolean filebased, boolean source_properties) throws SQLException, R2RMLDataError,
             UnsupportedEncodingException {
@@ -153,12 +161,38 @@ public class RMLEngine {
         int delta = 0;
 
         RMLProcessorFactory factory = new ConcreteRMLProcessorFactory();
-
-        for (TriplesMap triplesMap : r2rmlMapping.getTriplesMaps()) {
+        List<TriplesMap> tmaps = new ArrayList<TriplesMap>(r2rmlMapping.getTriplesMaps());
+        Collections.sort(tmaps);
+        for (TriplesMap triplesMap : tmaps) {
+            
             if (check_ReferencingObjectMap(r2rmlMapping, triplesMap)) 
                 continue; //i think this check is pointless /dimis
             //FileInputStream input = null;
+            LogicalSource ls=triplesMap.getLogicalSource();
+            String logicalsource=ls.getIdentifier();
+            String iteratorstr=ls.getReference();
             System.out.println("[RMLEngine:generateRDFTriples] Generate RDF triples for " + triplesMap.getName());
+            System.out.println(ls.getReference());
+            boolean shouldnotvisit=false;
+            if(ls.getReferenceFormulation().equals(QLTerm.XPATH_CLASS)){
+                
+                
+                if(cacheToAvoidOpeningFiles.containsKey(logicalsource)){
+                    
+                    List<String> list = cacheToAvoidOpeningFiles.get(logicalsource);
+                    for(String sub:list){
+                        if(iteratorstr.startsWith(sub)){
+                            shouldnotvisit=true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(shouldnotvisit==true){
+                System.out.println("Should not visit");
+                continue;
+            }
+            
             //need to add control if reference Formulation is not defined
             //need to add check for correct spelling, aka rml:queryLanguage and not rml:referenceFormulation otherwise breaks
             RMLProcessor processor = factory.create(triplesMap.getLogicalSource().getReferenceFormulation());
@@ -184,7 +218,13 @@ public class RMLEngine {
            }
 
             processor.execute(sesameDataSet, triplesMap, new NodeRMLPerformer(processor), fileName);
-
+            if(sesameDataSet.getSize() - delta ==0){
+                if(!cacheToAvoidOpeningFiles.containsKey(logicalsource))
+                {
+                    cacheToAvoidOpeningFiles.put(logicalsource, new ArrayList<String>());
+                }
+                cacheToAvoidOpeningFiles.get(logicalsource).add(iteratorstr);
+            }
             log.info("[RMLEngine:generateRDFTriples] "
                     + (sesameDataSet.getSize() - delta)
                     + " triples generated for " + triplesMap.getName());

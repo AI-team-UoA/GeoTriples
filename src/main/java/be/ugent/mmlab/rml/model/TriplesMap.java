@@ -31,7 +31,7 @@ import java.util.Set;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
 
 
-public interface TriplesMap {
+public interface TriplesMap extends Comparable<TriplesMap> {
 
 	/**
 	 * It must have exactly one logical source, which specifies a

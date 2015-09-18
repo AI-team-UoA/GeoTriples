@@ -325,6 +325,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 				}
 
 			}
+			//System.out.println(map.getFunction().toString());
 			Function function = null;
 			try {
 				function = FunctionFactory.get(map.getFunction());
@@ -338,7 +339,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				// return value;
-				// e.printStackTrace(); //uncomment for debug
+				 e.printStackTrace(); //uncomment for debug
 			}
 			return value;
 

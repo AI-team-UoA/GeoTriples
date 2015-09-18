@@ -30,7 +30,7 @@ import java.util.Set;
 
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.InvalidR2RMLStructureException;
 
-public class StdTriplesMap implements TriplesMap {
+public class StdTriplesMap implements TriplesMap,Comparable<TriplesMap> {
 	private static StdTriplesMap singleton=null;
 	public static StdTriplesMap getCurrentTriplesMap(){
 		if(singleton==null){
@@ -111,6 +111,11 @@ public class StdTriplesMap implements TriplesMap {
 		if (name != null)
 			this.name = name;
 		
+	}
+
+	@Override
+	public int compareTo(TriplesMap o) {
+		return getLogicalSource().getReference().compareToIgnoreCase(o.getLogicalSource().getReference());
 	}
 
 }

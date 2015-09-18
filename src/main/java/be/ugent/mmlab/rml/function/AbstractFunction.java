@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.geotools.geojson.geom.GeometryJSON;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.SAXException;
@@ -41,18 +42,49 @@ public abstract class AbstractFunction {
 //			value = "<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>" + value;
 //			value = value + "</a></gml:featureMember></gml:FeatureCollection>";
 //			System.out.println(value);
-			StringBuffer sbuffer = new StringBuffer("<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>");
-			sbuffer.append(value);
-			sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
-			//value = convert2GML2(value);
+			
+			
 //			System.out.println(value);
 			
-			GMLReader gmlreader = new GMLReader();
-			geometry = gmlreader.read(value,null);
-			////InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
-			////org.geotools.GML gml = new org.geotools.GML(Version.GML3);
-//			SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
-//			SimpleFeature feature = iter.next();
+			if(Config.useGML3){
+				org.geotools.xml.Configuration configuration = new org.geotools.gml3.GMLConfiguration();
+				org.geotools.xml.Parser parser = new org.geotools.xml.Parser(configuration);
+				
+				StringBuffer sbuffer = new StringBuffer("<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>");
+				//StringBuffer sbuffer = new StringBuffer("<gml:featureMember xmlns:gml=\"http://www.opengis.net/gml\">");
+				sbuffer.append(value);
+				sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
+				//sbuffer.append("</gml:featureMember>");
+				InputStream in = new ByteArrayInputStream(sbuffer.toString().getBytes());
+				Object oo=parser.parse(in);
+				//System.out.println(oo.getClass());
+				//System.out.println(oo);
+				//System.out.println("------------1");
+				/*HashMap<?, ?> kk =(HashMap<?, ?>) parser.parse(in);
+				for(Object o:kk.keySet()){
+					System.out.println(kk.get(o));
+				}*/
+				
+				org.geotools.feature.DefaultFeatureCollection dfc=(org.geotools.feature.DefaultFeatureCollection) oo;
+				SimpleFeature aa = dfc.features().next();
+				//System.out.println(aa.getDefaultGeometry());
+				geometry=(Geometry) aa.getDefaultGeometry();
+				//System.out.println("------------2");
+				/*StringBuffer sbuffer = new StringBuffer("<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>");
+				sbuffer.append(value);
+				sbuffer.append("</a></gml:featureMember></gml:FeatureCollection>");
+				
+				org.geotools.GML gml = new org.geotools.GML(Version.GML3);
+				SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
+				SimpleFeature feature = iter.next();
+				geometry = (Geometry) feature.getDefaultGeometryProperty().;*/
+			}else{
+				value = convert2GML2(value);
+				GMLReader gmlreader = new GMLReader();
+				geometry = gmlreader.read(value,null);
+
+			}
+			
 //			ElementInstance instance =null;
 //			Node node;
 //			FeatureTypeCache ftCache;
@@ -61,7 +93,14 @@ public abstract class AbstractFunction {
 //			DataUtilities.crea createFeature(featureType, value);
 			//SimpleFeatureBuilder.
 			//SimpleFeature f=new SimpleFeatureImpl(values, featureType, id)
-//			geometry = (Geometry) feature.getDefaultGeometry();
+			if(geometry==null){
+				try{
+				throw new Exception("Could not parse the geometry!");
+				}catch
+				(Exception ee){
+					ee.printStackTrace();
+				}
+			}
 			return geometry;
 		case CSV_CLASS:
 			throw new UnsupportedOperationException(
