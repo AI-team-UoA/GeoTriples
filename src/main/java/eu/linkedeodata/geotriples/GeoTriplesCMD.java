@@ -21,6 +21,9 @@ public class GeoTriplesCMD {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else if(mode.equals("ontop-spatial")){
+			String[] ontopargs = Arrays.copyOfRange(args, 1, args.length);
+	        org.semanticweb.ontop.cli.Ontop.main(ontopargs);
 		}
 		else {
 			usage();

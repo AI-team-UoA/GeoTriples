@@ -21,7 +21,21 @@ public class OntologyGenerator {
 		if(useGeoSPARQL){
 			useGeoSPARQL();
 		}
-		NS=namespace;
+		if(namespace.endsWith("/")){
+			//NS=namespace.substring(0,namespace.length()-1)+"#";
+			NS=namespace+"ontology#";
+		}
+		else if(!namespace.endsWith("#")){
+			NS=namespace+"/ontology#";
+		}else if(namespace.endsWith("#")){
+			if(!namespace.endsWith("ontology#")){
+				NS=namespace.substring(0,namespace.length()-1)+"/ontology#";
+			}
+		}else //nothing
+		{
+			NS=namespace+"ontology#";
+		}
+		
 	}
 	public void useGeoSPARQL(){
 		m.read("http://www.opengis.net/ont/geosparql");
@@ -56,9 +70,9 @@ public class OntologyGenerator {
 		p.addDomain(c);
 		// RDFDatatype dt =
 		// TypeMapper.getInstance().getSafeTypeByName(datatype);
-		Resource dt = selectXSDType(datatype);
+		/*Resource dt = selectXSDType(datatype);
 		if (dt != null)
-			p.addRange(dt);
+			p.addRange(dt);*/
 	}
 
 	public void createObjectProperty(String domainclass, String propertyname,
@@ -126,7 +140,7 @@ public class OntologyGenerator {
 	}
 	public static void main(String[] args) {
 		boolean useGeoSPARQL=true;
-		OntologyGenerator a = new OntologyGenerator(useGeoSPARQL,"http://data.linkedeodata.eu/ontology#");
+		OntologyGenerator a = new OntologyGenerator(false && useGeoSPARQL,"http://data.linkedeodata.eu/ontology#");
 		a.createClass("A");
 		a.createClass("B");
 		a.createClass("C");

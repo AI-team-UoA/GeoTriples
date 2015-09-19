@@ -185,16 +185,19 @@
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-iri</artifactId>
 			<version>0.9.4</version>
+			<!--version>1.0.2</version-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-core</artifactId>
 			<version>2.7.4</version>
+			<!--version>2.11.2</version-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-arq</artifactId>
 			<version>2.9.4</version>
+			<!--version>2.11.2</version-->
 		</dependency>
 		<dependency>
 			<groupId>
@@ -431,6 +434,25 @@ gt-process-geometry</artifactId>
 				<pomFile>${basedir}/libs/RMLMapper-0.1.pom.xml</pomFile> </configuration> 
 				</execution> </executions> </plugin> -->
 			<plugin>
+          <groupId>com.googlecode.addjars-maven-plugin</groupId>
+          <artifactId>addjars-maven-plugin</artifactId>
+          <version>1.0.5</version>
+          <executions>
+            <execution>
+                <goals>
+                    <goal>add-jars</goal>
+                </goals>
+                <configuration>
+                    <resources>
+                        <resource>
+                            <directory>${basedir}/ontop-spatial-lib</directory>
+                        </resource>
+                    </resources>
+                </configuration>
+            </execution>
+          </executions>
+        </plugin>
+			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
 				<version>1.4.4</version>
@@ -486,7 +508,7 @@ gt-process-geometry</artifactId>
 			<plugin>
 				<artifactId>jdeb</artifactId>
 				<groupId>org.vafer</groupId>
-				<version>1.3</version>
+				<version>1.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -534,6 +556,9 @@ gt-process-geometry</artifactId>
 									</mapper>
 								</data>
 							</dataSet>
+							<controlDir>
+							${basedir}/src/deb/control
+							</controlDir>
 						</configuration>
 					</execution>
 				</executions>

@@ -38,24 +38,27 @@ public class XMLMappingGenerator {
 	private File ontologyOutputFile = null;
 	OntologyGenerator ontology = null;
 	private String basePath = null;
-	private String onlynamespace=null;
+	private String onlynamespace = null;
 
 	public XMLMappingGenerator(String xsdfilename, String xmlfilename,
-			String outputfile, String baseiri, String rootelement,String basepath,String namespaces,
-			boolean allownulltypesasclasses, String ontologyOutputFile,String onlynamespace)
-			throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException, ClassCastException, FileNotFoundException,
-			XmlException, IOException {
-		System.out.println("xsdfilename="+xsdfilename);
-		System.out.println("xmlfilename="+xmlfilename);
-		System.out.println("outputfile="+outputfile);
-		System.out.println("baseiri"+baseiri);
-		System.out.println("root="+rootelement);
-		System.out.println("basepath="+basepath);
-		System.out.println("namespaces="+namespaces);
-		System.out.println("allownulltypesasclasses="+allownulltypesasclasses);
-		System.out.println("ontologyOutputFile="+ontologyOutputFile);
-		System.out.println("only global elements for namespace "+onlynamespace);
+			String outputfile, String baseiri, String rootelement,
+			String basepath, String namespaces,
+			boolean allownulltypesasclasses, String ontologyOutputFile,
+			String onlynamespace) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException, ClassCastException,
+			FileNotFoundException, XmlException, IOException {
+		System.out.println("xsdfilename=" + xsdfilename);
+		System.out.println("xmlfilename=" + xmlfilename);
+		System.out.println("outputfile=" + outputfile);
+		System.out.println("baseiri" + baseiri);
+		System.out.println("root=" + rootelement);
+		System.out.println("basepath=" + basepath);
+		System.out.println("namespaces=" + namespaces);
+		System.out
+				.println("allownulltypesasclasses=" + allownulltypesasclasses);
+		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
+		System.out.println("only global elements for namespace "
+				+ onlynamespace);
 		this.baseURI = baseiri;
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";
@@ -66,34 +69,35 @@ public class XMLMappingGenerator {
 		this.outputfile = new File(outputfile);
 		if (ontologyOutputFile != null) {
 			this.ontologyOutputFile = new File(ontologyOutputFile);
-			ontology = new OntologyGenerator(true,baseURI);
+			ontology = new OntologyGenerator(true, baseURI);
 		}
-		
-		this.onlynamespace=onlynamespace;
-		
+
+		this.onlynamespace = onlynamespace;
+
 		this.rootelement = rootelement;
-		this.basePath=basepath;
-		if(this.basePath!=null)
-		if(this.basePath.endsWith("/")){
-			if(this.basePath.length()>1)
-			this.basePath=this.basePath.substring(0, this.basePath.length()-2);
-			else
-				this.basePath="";
-		}
-		if(namespaces!=null){
-			String []nss=namespaces.split(",");
-			for(String ns:nss){
-				//String [] tokens=ns.split("(\\s+)");
-				String [] tokens=ns.split("\\|");
-				String prefix=tokens[0];
-				String uri=tokens[1];
+		this.basePath = basepath;
+		if (this.basePath != null)
+			if (this.basePath.endsWith("/")) {
+				if (this.basePath.length() > 1)
+					this.basePath = this.basePath.substring(0,
+							this.basePath.length() - 2);
+				else
+					this.basePath = "";
+			}
+		if (namespaces != null) {
+			String[] nss = namespaces.split(",");
+			for (String ns : nss) {
+				// String [] tokens=ns.split("(\\s+)");
+				String[] tokens = ns.split("\\|");
+				String prefix = tokens[0];
+				String uri = tokens[1];
 				this.namespaces.put(uri.trim(), prefix.trim());
 			}
 		}
 	}
 
 	private String getGTName(QName name) {
-		if(name==null){
+		if (name == null) {
 			return null;
 		}
 		if (name.getNamespaceURI() == null) {
@@ -102,20 +106,20 @@ public class XMLMappingGenerator {
 		if (name.getNamespaceURI().isEmpty()) {
 			return name.getLocalPart();
 		}
-		if(name.getLocalPart()==null){
+		if (name.getLocalPart() == null) {
 			return null;
 		}
-		if(name.getLocalPart().isEmpty()){
+		if (name.getLocalPart().isEmpty()) {
 			return null;
 		}
 		String prefix = namespaces.get(name.getNamespaceURI());
 		if (prefix != null) {
 			return prefix + ":" + name.getLocalPart();
 		}
-		String newprefix=new String(name.getNamespaceURI());
-		//newprefix+="#";
+		String newprefix = new String(name.getNamespaceURI());
+		// newprefix+="#";
 		namespaces.put(newprefix, String.valueOf(this.prefix));
-		return String.valueOf(this.prefix++) +":"+name.getLocalPart();
+		return String.valueOf(this.prefix++) + ":" + name.getLocalPart();
 
 	}
 
@@ -126,7 +130,7 @@ public class XMLMappingGenerator {
 		XmlOptions pp = new XmlOptions();
 		pp.put("COMPILE_DOWNLOAD_URLS", "true");
 		pp.setCompileDownloadUrls();
-		//pp.setLoadUseDefaultResolver();
+		// pp.setLoadUseDefaultResolver();
 		SchemaTypeSystem sts = XmlBeans.compileXsd(
 				new XmlObject[] { XmlObject.Factory.parse(new FileInputStream(
 						xsdFileName)) }, XmlBeans.getBuiltinTypeSystem(), pp);
@@ -156,25 +160,32 @@ public class XMLMappingGenerator {
 			// if (!(globals[i].getName().getLocalPart().equals("Wegdeel") &&
 			// globals[i].getName().getNamespaceURI().equals("http://www.opengis.net/gml")))
 			// {
-			System.out.println("Global elementtt: "+globals[i].getName());
-			//if(true)
-				//continue;
-			
-				if(onlynamespace!=null){
-					if (!(globals[i].getName().getNamespaceURI().equals(onlynamespace))) {
-						continue;
-					}
-				}
-				else if (rootelement != null) {
-					if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
-						continue;
-					}
-					System.out.println("The type is finite: "+globals[i].getType().isFinite());
-				} 
-				else if (i != 0) {
+			System.out.println("Global elementtt: " + globals[i].getName());
+			// if(true)
+			// continue;
+
+			if (onlynamespace != null) {
+				if (!(globals[i].getName().getNamespaceURI()
+						.equals(onlynamespace))) {
 					continue;
 				}
-			if(globals[i].getName().getLocalPart().equals("GeoObject")){//this is only for the netherlands use case
+			} else if (rootelement != null) {
+				if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
+					continue;
+				}
+				System.out.println("The type is finite: "
+						+ globals[i].getType().isFinite());
+			} else if (i != 0) {
+				continue;
+			}
+			if (globals[i].getName().getLocalPart().equals("GeoObject")) {// this
+																			// is
+																			// only
+																			// for
+																			// the
+																			// netherlands
+																			// use
+																			// case
 				continue;
 			}
 			// if(i!=0)
@@ -223,15 +234,18 @@ public class XMLMappingGenerator {
 						if (!triplesMaps.containsKey(path)) {
 							triplesMaps.put(path, " ");
 						}
-						String predicate =newpath
-								.replaceFirst(path, "").replaceFirst("/", "")
-								.replace("/", "_").replace(":","-");
+						String predicate = newpath.replaceFirst(path, "")
+								.replaceFirst("/", "").replace("/", "_")
+								.replace(":", "-");
 						String reference = getGTName(sp.getName());
 
 						String typename = getGTName(sp.getType().getName());
-						//(sp.getType().getName() != null) ? sp.getType().getName().getLocalPart() : null;
-								/*String typeprefix = (sp.getType().getName() != null) ? sp
-										.getType().getName().getNamespaceURI() : null;*/
+						// (sp.getType().getName() != null) ?
+						// sp.getType().getName().getLocalPart() : null;
+						/*
+						 * String typeprefix = (sp.getType().getName() != null)
+						 * ? sp .getType().getName().getNamespaceURI() : null;
+						 */
 						triplesMaps
 								.put(path,
 										triplesMaps.get(path)
@@ -286,14 +300,13 @@ public class XMLMappingGenerator {
 							+ printTriplesMap(newpath.replaceAll("/", "")));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printLogicalSource(newpath));
-					triplesMaps.put(
-							newpath,
-//							triplesMaps.get(newpath)
-//									+ printSubjectMap(baseURI + typeName
-//											+ "/id/", "Geometry", "ogc"));
+					triplesMaps.put(newpath,
+					// triplesMaps.get(newpath)
+					// + printSubjectMap(baseURI + typeName
+					// + "/id/", "Geometry", "ogc"));
 							triplesMaps.get(newpath)
-							+ printSubjectMap(baseURI + typeName
-									+ "/id/",typeName, true));
+									+ printSubjectMap(baseURI + typeName
+											+ "/id/", typeName, true));
 					triplesMaps.put(newpath, triplesMaps.get(newpath)
 							+ printGEOPredicateObjectMaps());
 				}
@@ -309,15 +322,15 @@ public class XMLMappingGenerator {
 					if (!triplesMaps.containsKey(path)) {
 						triplesMaps.put(path, " ");
 					}
-					String predicate = newpath
-							.replaceFirst(path, "").replaceFirst("/", "")
-							.replace("/", "_").replace(":","-");	
+					String predicate = newpath.replaceFirst(path, "")
+							.replaceFirst("/", "").replace("/", "_")
+							.replace(":", "-");
 					String reference = "@" + getGTName(spp.getName());
 					String typename = getGTName(spp.getType().getName());
-//					String typename = (spp.getType().getName() != null) ? spp
-//							.getType().getName().getLocalPart() : null;
-							String typeprefix = (spp.getType().getName() != null) ? spp
-									.getType().getName().getNamespaceURI() : null;
+					// String typename = (spp.getType().getName() != null) ? spp
+					// .getType().getName().getLocalPart() : null;
+					String typeprefix = (spp.getType().getName() != null) ? spp
+							.getType().getName().getNamespaceURI() : null;
 					triplesMaps.put(
 							path,
 							triplesMaps.get(path)
@@ -331,8 +344,6 @@ public class XMLMappingGenerator {
 		printmapping();
 		printontology();
 	}
-
-	
 
 	private void printontology() throws FileNotFoundException {
 		ontology.writeToOutput(new PrintStream(ontologyOutputFile));
@@ -352,23 +363,24 @@ public class XMLMappingGenerator {
 				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n"
 				+ "@prefix schema: <http://schema.org/>.\n"
 				+ "@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>.\n"
-				+ "@prefix onto: <"+baseURI+"ontology#>.\n");
+				+ "@prefix onto: <" + baseURI + "ontology#>.\n");
 		for (String key : namespaces.keySet()) {
 			out.println("@prefix " + namespaces.get(key) + ": <" + key + "#> .");
 		}
 		for (String triplesMap : triplesMaps.keySet()) {
 			log.debug("TRIPLES MAP: " + triplesMap);
-			if(triplesMaps
-					.get(triplesMap).isEmpty() || triplesMaps
-					.get(triplesMap).equals("null") || triplesMaps
-					.get(triplesMap)==null){
+			if (triplesMaps.get(triplesMap).isEmpty()
+					|| triplesMaps.get(triplesMap).equals("null")
+					|| triplesMaps.get(triplesMap) == null) {
 				continue;
 			}
-System.out.println("TRIPLES MAP: " + triplesMap);
-if(triplesMap.equals("/hma:MaskFeature/a:name") || triplesMap.equals("/hma:maskMembers/hma:MaskFeature/a:extentOf")){
-	System.out.println(triplesMaps
-					.get(triplesMap));
-}
+			// System.out.println("TRIPLES MAP: " + triplesMap);
+			/*
+			 * if(triplesMap.equals("/hma:MaskFeature/a:name") ||
+			 * triplesMap.equals
+			 * ("/hma:maskMembers/hma:MaskFeature/a:extentOf")){
+			 * System.out.println(triplesMaps .get(triplesMap)); }
+			 */
 			out.println(triplesMaps
 					.get(triplesMap)
 					.trim()
@@ -380,14 +392,17 @@ if(triplesMap.equals("/hma:MaskFeature/a:name") || triplesMap.equals("/hma:maskM
 		}
 		out.close();
 	}
-HashSet<SchemaType> types=new HashSet<>();
+
+	HashSet<SchemaType> types = new HashSet<>();
+
 	private void visit(SchemaProperty sp, String path, String pathclass,
 			int indent) {
 		// System.out.println(pathclass);
-		if(sp.getType()!=null){
-		if(types.contains(sp.getType())){
-			return;
-		}}
+		if (sp.getType() != null) {
+			if (types.contains(sp.getType())) {
+				return;
+			}
+		}
 		types.add(sp.getType());
 		String tabs = "";
 		for (int i = 0; i < indent; ++i) {
@@ -404,51 +419,94 @@ HashSet<SchemaType> types=new HashSet<>();
 		boolean hasNotNullTypeFather = sp.getType().getName() != null;
 		String fathersTypeName = (hasNotNullTypeFather) ? sp.getType()
 				.getName().getLocalPart() : sp.getName().getLocalPart();
-		for (SchemaProperty spp : sp.getType().getElementProperties()) {
-			String newpath = path + "/" + getGTName(spp.getName());
-			System.out
-					.println(tabs + "Element: " + getGTName(spp.getName())
-							+ " Type: " + spp.getType().getName() + " Path: "
-							+ newpath);
-			boolean hasNotNullType = spp.getType().getName() != null;
-			String typeName = (hasNotNullType) ? spp.getType().getName()
-					.getLocalPart() : spp.getName().getLocalPart();
+		if (sp.getType().getElementProperties().length == 0) {
+			String predicate = "XMLElementvalue";
+			String reference = "*";
+			String typename = "xsd:string";
+			triplesMaps.put(
+					pathclass,
+					triplesMaps.get(pathclass)
+							+ printPredicateObjectMap(predicate,
+									reference, typename,
+									fathersTypeName));
+		} else {
+			for (SchemaProperty spp : sp.getType().getElementProperties()) {
+				String newpath = path + "/" + getGTName(spp.getName());
+				System.out.println(tabs + "Element: "
+						+ getGTName(spp.getName()) + " Type: "
+						+ spp.getType().getName() + " Path: " + newpath);
+				boolean hasNotNullType = spp.getType().getName() != null;
+				String typeName = (hasNotNullType) ? spp.getType().getName()
+						.getLocalPart() : spp.getName().getLocalPart();
 
-			boolean isGeometry = false;
-			if (spp.getType().getName() != null) {
-				isGeometry = checkIfGMLGeometry(spp.getType());
-			}
-			if (!isGeometry) {
-				if (spp.getType().isSimpleType()) {
+				boolean isGeometry = false;
+				if (spp.getType().getName() != null) {
+					isGeometry = checkIfGMLGeometry(spp.getType());
+				}
+				if (!isGeometry) {
+					if (spp.getType().isSimpleType()) {
+						if (!triplesMaps.containsKey(pathclass)) {
+							triplesMaps.put(pathclass, " ");
+						}
+						/*
+						 * String predicate = (sp.getType().getName() == null) ?
+						 * newpath .replaceFirst(pathclass,
+						 * "").replaceFirst("/", "") .replace("/", "_") :
+						 * spp.getName().getLocalPart();
+						 */
+						String predicate = newpath.replaceFirst(pathclass, "")
+								.replaceFirst("/", "").replace("/", "_")
+								.replace(":", "-");
+						String reference = getGTName(spp.getName());
+						String typename = getGTName(spp.getType().getName());
+						// String typename = (spp.getType().getName() != null) ?
+						// spp
+						// .getType().getName().getLocalPart() : null;
+						String typeprefix = (spp.getType().getName() != null) ? spp
+								.getType().getName().getNamespaceURI()
+								: null;
+						triplesMaps.put(
+								pathclass,
+								triplesMaps.get(pathclass)
+										+ printPredicateObjectMap(predicate,
+												reference, typename,
+												fathersTypeName));
+					} else if (hasNotNullType || allownulltypes) {
+						// this is a class
+						if (!triplesMaps.containsKey(pathclass)) {
+							triplesMaps.put(pathclass, " ");
+						}
+						if (!triplesMaps.containsKey(newpath)) {
+							triplesMaps.put(newpath, " ");
+						}
+						triplesMaps.put(
+								pathclass,
+								triplesMaps.get(pathclass)
+										+ printRefObjectMap(spp.getName()
+												.getLocalPart(), newpath
+												.replaceAll("/", ""),
+												fathersTypeName, typeName));
+						triplesMaps
+								.put(newpath,
+										((triplesMaps.get(newpath) != null) ? triplesMaps
+												.get(newpath) : "")
+												+ printTriplesMap(newpath
+														.replaceAll("/", "")));
+						triplesMaps.put(newpath, triplesMaps.get(newpath)
+								+ printLogicalSource(newpath));
+						triplesMaps.put(
+								newpath,
+								triplesMaps.get(newpath)
+										+ printSubjectMap(baseURI + typeName
+												+ "/id/", typeName));
+						String currentclasspath = (spp.getType().getName() == null && !allownulltypes) ? pathclass
+								: newpath;
+						visit(spp, currentclasspath, currentclasspath,
+								indent + 1);
+					}
+				} else {
 					if (!triplesMaps.containsKey(pathclass)) {
 						triplesMaps.put(pathclass, " ");
-					}
-					/*String predicate = (sp.getType().getName() == null) ? newpath
-							.replaceFirst(pathclass, "").replaceFirst("/", "")
-							.replace("/", "_")
-							: spp.getName().getLocalPart();*/
-					String predicate = newpath
-							.replaceFirst(pathclass, "").replaceFirst("/", "")
-							.replace("/", "_").replace(":","-");
-					String reference = getGTName(spp.getName());
-					String typename = getGTName(spp.getType().getName());
-//					String typename = (spp.getType().getName() != null) ? spp
-//							.getType().getName().getLocalPart() : null;
-							String typeprefix = (spp.getType().getName() != null) ? spp
-									.getType().getName().getNamespaceURI() : null;
-					triplesMaps.put(
-							pathclass,
-							triplesMaps.get(pathclass)
-									+ printPredicateObjectMap(predicate,
-											reference, typename,
-											fathersTypeName));
-				} else if (hasNotNullType || allownulltypes) {
-					// this is a class
-					if (!triplesMaps.containsKey(pathclass)) {
-						triplesMaps.put(pathclass, " ");
-					}
-					if (!triplesMaps.containsKey(newpath)) {
-						triplesMaps.put(newpath, " ");
 					}
 					triplesMaps.put(
 							pathclass,
@@ -456,48 +514,28 @@ HashSet<SchemaType> types=new HashSet<>();
 									+ printRefObjectMap(spp.getName()
 											.getLocalPart(), newpath
 											.replaceAll("/", ""),
-											fathersTypeName, typeName));
-					triplesMaps.put(newpath, ((triplesMaps.get(newpath)!=null)?triplesMaps.get(newpath):"")
-							+ printTriplesMap(newpath.replaceAll("/", "")));
-					triplesMaps.put(newpath, triplesMaps.get(newpath)
-							+ printLogicalSource(newpath));
+											fathersTypeName, typeName, true));
 					triplesMaps.put(
 							newpath,
+							((triplesMaps.get(newpath) != null) ? triplesMaps
+									.get(newpath) : "")
+									+ printTriplesMap(newpath.replaceAll("/",
+											"")));
+					triplesMaps.put(newpath, triplesMaps.get(newpath)
+							+ printLogicalSource(newpath));
+					triplesMaps.put(newpath,
+					// triplesMaps.get(newpath)
+					// + printSubjectMap(baseURI + typeName + "/id/",
+					// "Geometry", "ogc"));
 							triplesMaps.get(newpath)
 									+ printSubjectMap(baseURI + typeName
-											+ "/id/", typeName));
-					String currentclasspath = (spp.getType().getName() == null && !allownulltypes) ? pathclass
-							: newpath;
-					visit(spp, currentclasspath, currentclasspath, indent + 1);
-				}
-			} else {
-				if (!triplesMaps.containsKey(pathclass)) {
-					triplesMaps.put(pathclass, " ");
-				}
-				triplesMaps.put(
-						pathclass,
-						triplesMaps.get(pathclass)
-								+ printRefObjectMap(spp.getName()
-										.getLocalPart(), newpath.replaceAll(
-										"/", ""), fathersTypeName, typeName,
-										true));
-				triplesMaps.put(newpath, ((triplesMaps.get(newpath)!=null)?triplesMaps.get(newpath):"")
-						+ printTriplesMap(newpath.replaceAll("/", "")));
-				triplesMaps.put(newpath, triplesMaps.get(newpath)
-						+ printLogicalSource(newpath));
-				triplesMaps.put(
-						newpath,
-//						triplesMaps.get(newpath)
-//								+ printSubjectMap(baseURI + typeName + "/id/",
-//										"Geometry", "ogc"));
-						triplesMaps.get(newpath)
-						+ printSubjectMap(baseURI + typeName + "/id/",
-								typeName, true));
+											+ "/id/", typeName, true));
 
-						triplesMaps.put(newpath, triplesMaps.get(newpath)
-						+ printGEOPredicateObjectMaps());
+					triplesMaps.put(newpath, triplesMaps.get(newpath)
+							+ printGEOPredicateObjectMaps());
+				}
+
 			}
-
 		}
 		for (SchemaProperty spp : sp.getType().getAttributeProperties()) {
 			String newpath = path + "/@" + getGTName(spp.getName());
@@ -510,15 +548,15 @@ HashSet<SchemaType> types=new HashSet<>();
 				if (!triplesMaps.containsKey(path)) {
 					triplesMaps.put(path, " ");
 				}
-				String predicate =  newpath
-						.replaceFirst(path, "").replaceFirst("/", "")
-						.replaceAll("/", "_").replace(":","-");
+				String predicate = newpath.replaceFirst(path, "")
+						.replaceFirst("/", "").replaceAll("/", "_")
+						.replace(":", "-");
 				String reference = "@" + getGTName(spp.getName());
 				String typename = getGTName(spp.getType().getName());
-//				String typename = (spp.getType().getName() != null) ? spp
-//						.getType().getName().getLocalPart() : null;
-						String typeprefix = (spp.getType().getName() != null) ? spp
-								.getType().getName().getNamespaceURI() : null;
+				// String typename = (spp.getType().getName() != null) ? spp
+				// .getType().getName().getLocalPart() : null;
+				String typeprefix = (spp.getType().getName() != null) ? spp
+						.getType().getName().getNamespaceURI() : null;
 				triplesMaps.put(
 						path,
 						triplesMaps.get(path)
@@ -573,7 +611,8 @@ HashSet<SchemaType> types=new HashSet<>();
 		sb.append("rml:logicalSource [\n");
 		sb.append("\trml:source \"" + pathToXML + "\";\n");
 		sb.append("\trml:referenceFormulation ql:XPath;\n");
-		sb.append("\trml:iterator \"" + (basePath==null?path:(basePath+path)) + "\";\n];\n");
+		sb.append("\trml:iterator \""
+				+ (basePath == null ? path : (basePath + path)) + "\";\n];\n");
 		return sb.toString();
 	}
 
@@ -607,27 +646,26 @@ HashSet<SchemaType> types=new HashSet<>();
 
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String classname) {
-		return printPredicateObjectMap(predicate, reference, type,null, null,
-				null, classname,false);
+		return printPredicateObjectMap(predicate, reference, type, null, null,
+				null, classname, false);
 	}
 
 	private String printPredicateObjectMap(String predicate, String reference,
 			String type, String typeprefix, String predicatedprefix,
-			String function, String classname,boolean isgeometrypredicate) {
+			String function, String classname, boolean isgeometrypredicate) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:predicateObjectMap [\n");
 		sb.append("\trr:predicate "
 				+ ((predicatedprefix == null) ? "onto" : (predicatedprefix))
 				+ ":");
-		if(!isgeometrypredicate){
-			predicate="has"+WordUtils.capitalize(predicate,new char[]{'-'});
+		if (!isgeometrypredicate) {
+			predicate = "has"
+					+ WordUtils.capitalize(predicate, new char[] { '-' });
 		}
 		sb.append(predicate + ";\n");
 		sb.append("\trr:objectMap [\n");
 		if (type != null) {
-			sb.append("\t\trr:datatype "+
-					" "
-					+ type + ";\n");
+			sb.append("\t\trr:datatype " + " " + type + ";\n");
 		}
 		if (function != null) {
 			sb.append("\t\trrx:function rrxf:" + function + ";\n");
@@ -635,7 +673,11 @@ HashSet<SchemaType> types=new HashSet<>();
 			sb.append("rml:reference \"" + reference + "\"; ] );\n");
 		} else { // we have simple reference
 			if (ontology != null && !isgeometrypredicate) {
-				ontology.createDatatypeProperty(classname, "has"+WordUtils.capitalize(predicate,new char[]{'-'}), type);
+				ontology.createDatatypeProperty(
+						classname,
+						"has"
+								+ WordUtils.capitalize(predicate,
+										new char[] { '-' }), type);
 			}
 			sb.append("\t\trml:reference \"" + reference + "\";\n");
 		}
@@ -669,9 +711,9 @@ HashSet<SchemaType> types=new HashSet<>();
 			System.out.println(predicate);
 			System.out.println(rangeclassname);
 			System.out.println(isSubTypeOfGeometry);
-			ontology.createObjectProperty(domainclassname, "has_"+predicate,
+			ontology.createObjectProperty(domainclassname, "has_" + predicate,
 					rangeclassname, isSubTypeOfGeometry);
-			if(isSubTypeOfGeometry){
+			if (isSubTypeOfGeometry) {
 				ontology.addFeatureAsSuperClass(domainclassname);
 			}
 		}
@@ -686,22 +728,23 @@ HashSet<SchemaType> types=new HashSet<>();
 
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(printPredicateObjectMap("dimension", "*", "xsd:integer", null,
-				"ogc", "dimension", "",true));
+		sb.append(printPredicateObjectMap("dimension", "*", "xsd:integer",
+				null, "ogc", "dimension", "", true));
 		sb.append(printPredicateObjectMap("asWKT", "*", "ogc:wktLiteral", null,
-				"ogc", "asWKT", "",true));
-//		sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral", null,
-//				"ogc", "asGML", "",true));
+				"ogc", "asWKT", "", true));
+		// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
+		// null,
+		// "ogc", "asGML", "",true));
 		sb.append(printPredicateObjectMap("is3D", "*", "xsd:boolean", null,
-				"ogc", "is3D", "",true));
+				"ogc", "is3D", "", true));
 		sb.append(printPredicateObjectMap("isSimple", "*", "xsd:boolean", null,
-				"ogc", "isSimple", "",true));
-		sb.append(printPredicateObjectMap("hasSerialization", "*", "ogc:wktLiteral", null,
-				"ogc", "hasSerialization", "",true));
-		sb.append(printPredicateObjectMap("coordinateDimension", "*", "xsd:integer", null,
-				"ogc", "coordinateDimension", "",true));
-		sb.append(printPredicateObjectMap("spatialDimension", "*", "xsd:integer", null,
-				"ogc", "spatialDimension", "",true));
+				"ogc", "isSimple", "", true));
+		sb.append(printPredicateObjectMap("hasSerialization", "*",
+				"ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
+		sb.append(printPredicateObjectMap("coordinateDimension", "*",
+				"xsd:integer", null, "ogc", "coordinateDimension", "", true));
+		sb.append(printPredicateObjectMap("spatialDimension", "*",
+				"xsd:integer", null, "ogc", "spatialDimension", "", true));
 		// TODO write all the GeoSPARQL properties
 		return sb.toString();
 	}
@@ -717,8 +760,10 @@ HashSet<SchemaType> types=new HashSet<>();
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
 		XMLMappingGenerator m = new XMLMappingGenerator(args[0], args[1],
-				args[2], args[3], args[4],args[5],args[6],
-				(args.length > 7) ? Boolean.valueOf(args[7]) : false, (args.length > 8)?args[8]:null,(args.length > 9)?args[9]:null);
+				args[2], args[3], args[4], args[5], args[6],
+				(args.length > 7) ? Boolean.valueOf(args[7]) : false,
+				(args.length > 8) ? args[8] : null, (args.length > 9) ? args[9]
+						: null);
 		m.run();
 	}
 }
