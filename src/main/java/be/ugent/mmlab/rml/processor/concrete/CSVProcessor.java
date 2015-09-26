@@ -46,9 +46,10 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	}
 
 	@Override
-	public void execute(SesameDataSet dataset, TriplesMap map,
+	public long execute(SesameDataSet dataset, TriplesMap map,
 			RMLPerformer performer, String fileName) {
 		// InputStream fis = null;
+		long totalmatches=0;
 		try {
 			char delimiter = getDelimiter(map.getLogicalSource());
 
@@ -62,6 +63,7 @@ public class CSVProcessor extends AbstractRMLProcessor {
 			reader.readHeaders();
 			// Iterate the rows
 			while (reader.readRecord()) {
+				++totalmatches;
 				HashMap<String, String> row = new HashMap<>();
 
 				for (String header : reader.getHeaders()) {
@@ -77,6 +79,7 @@ public class CSVProcessor extends AbstractRMLProcessor {
 		} catch (IOException ex) {
 			log.error(ex);
 		}
+		return totalmatches;
 	}
 
 	@Override

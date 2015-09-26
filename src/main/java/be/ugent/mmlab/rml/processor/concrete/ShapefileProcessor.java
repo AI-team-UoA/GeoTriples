@@ -45,7 +45,7 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 	protected TriplesMap map;
 
 	@Override
-	public void execute(SesameDataSet dataset, TriplesMap map,
+	public long execute(SesameDataSet dataset, TriplesMap map,
 			RMLPerformer performer, String fileName) {
 		// InputStream fis = null;
 		if(dependencyTriplesMap!=null || dependencyProcessor!=null){
@@ -56,8 +56,9 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 			{
 				execute_node_fromdependency(dataset, map.getLogicalSource().getReference().replaceFirst(dependencyProcessor.getCurrentTriplesMap().getLogicalSource().getReference(), ""), map, performer, dependencyProcessor.getCurrentNode());
 			}
-			return;
+			return 10;
 		}
+		final WrappedLong totalmatches=new WrappedLong();
 		try {
 			this.map=map;
 			// TODO: add character guessing
@@ -71,10 +72,13 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 			
 			FeatureCollection<?, ?> collection = featureSource.getFeatures();
 			FeatureIterator<?> iterator = collection.features();
+			
 			try {
+				
 				KeyGenerator keygen=new KeyGenerator();
 				// Iterate the rows
 				while (iterator.hasNext()) {
+					totalmatches.increase();
 					HashMap<String, Object> row = new HashMap<>();
 					Feature feature = iterator.next();
 					for (Property p : feature.getProperties()) {
@@ -102,6 +106,7 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 		} catch (IOException ex) {
 			log.error(ex);
 		}
+		return totalmatches.getValue();
 	}
 
 	@Override

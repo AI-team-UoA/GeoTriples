@@ -44,7 +44,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 	private TriplesMap map;
 
 	@Override
-	public void execute(SesameDataSet dataset, TriplesMap map,
+	public long execute(SesameDataSet dataset, TriplesMap map,
 			RMLPerformer performer, String fileName) {
 		if(dependencyTriplesMap!=null || dependencyProcessor!=null){
 			if(dependencyTriplesMap!=null){
@@ -55,8 +55,9 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 			{
 				execute_node_fromdependency(dataset, map.getLogicalSource().getReference().replaceFirst(dependencyProcessor.getCurrentTriplesMap().getLogicalSource().getReference(), ""), map, performer, dependencyProcessor.getCurrentNode());
 			}
-			return;
+			return 10;
 		}
+		long totalmatches=0l;
 		try {
 			String reference = getReference(map.getLogicalSource());
 			// This is a none streaming solution. A streaming parser requires
@@ -65,7 +66,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 			JsonPath path = JsonPath.compile(reference);
 			Object val = path.read(new FileInputStream(fileName));
 
-			execute(dataset, map, performer, val);
+			totalmatches=execute(dataset, map, performer, val);
 
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(JSONPathProcessor.class.getName()).log(
@@ -74,6 +75,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 			Logger.getLogger(JSONPathProcessor.class.getName()).log(
 					Level.SEVERE, null, ex);
 		}
+		return totalmatches;
 	}
 
 	@Override
@@ -122,12 +124,13 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 		execute(dataset,map, performer, val);
 	}
 
-	private void execute(SesameDataSet dataset, TriplesMap parentTriplesMap,
+	private long execute(SesameDataSet dataset, TriplesMap parentTriplesMap,
 			RMLPerformer performer, Object node) {
 		if (node instanceof JSONObject) {
 			currentnode = node;
 			performer.perform(node, dataset, parentTriplesMap);
-		} else {
+		} else { 
+			long totalmatches=0l;
 			List<Object> nodes;
 
 			if (node instanceof JSONArray) {
@@ -147,6 +150,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 				performer.perform(object, dataset, parentTriplesMap);
 			}
 		}
+		return 10;
 	}
 
 	@Override

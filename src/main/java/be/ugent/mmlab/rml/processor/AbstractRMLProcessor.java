@@ -66,10 +66,21 @@ import be.ugent.mmlab.rml.vocabulary.VocabTrans;
  * This class contains all generic functionality for executing an iteration and
  * processing the mapping
  * 
- * @author mielvandersande, andimou
+ * @author mielvandersande, andimou, dimis
  */
 public abstract class AbstractRMLProcessor implements RMLProcessor {
-
+	protected class WrappedLong{
+		Long value;
+		public WrappedLong() {
+			this.value=0l;
+		}
+		public void increase(){
+			++this.value;
+		}
+		public Long getValue(){
+			return this.value;
+		}
+	}
 	/**
 	 * Gets the globally defined identifier-to-path map
 	 * 
@@ -1041,4 +1052,6 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 		}
 		return false;
 	}
+	
+	
 }

@@ -53,6 +53,15 @@ public class dump_rdf {
 			final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 			final ArgDecl formatArg = new ArgDecl(true, "f", "format", "output RDF Fromat");
 			final ArgDecl namespacesArg = new ArgDecl(true, "ns", "namespace", "input file of namespaces");
+			
+			final ArgDecl gml3Arg = new ArgDecl(false, "gml3", "Use gml3 reader for the geometries");
+			final ArgDecl gml2Arg = new ArgDecl(false, "gml2", "Use gml2 reader for the geometries");
+			final ArgDecl kmlArg = new ArgDecl(false, "kml", "Use kml reader for the geometries");
+			
+			final ArgDecl useReadyEOPMappingArg = new ArgDecl(false, "readyeop", "Use GeoTriples' EOP 2.0 mapping document");
+			final ArgDecl useReadyKMLMappingArg = new ArgDecl(false, "readykml", "Use GeoTriples' KML 2.2 mapping document");
+			
+			final ArgDecl inputFileMappingArg=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
 			final CommandLine cmd = new CommandLine();
 			cmd.add(rmlArg);
 			cmd.add(epsgArg);
@@ -60,6 +69,13 @@ public class dump_rdf {
 			cmd.add(formatArg);
 			cmd.add(namespacesArg);
 			
+			cmd.add(gml3Arg);
+			cmd.add(gml2Arg);
+			cmd.add(kmlArg);
+			
+			cmd.add(useReadyEOPMappingArg);
+			cmd.add(useReadyKMLMappingArg);
+			cmd.add(inputFileMappingArg);
 			try {
 				cmd.process(args);
 			} catch (IllegalArgumentException ex) {
@@ -72,7 +88,7 @@ public class dump_rdf {
 				System.exit(1);
 			}
 			
-			if (cmd.numItems() == 0) {
+			if (cmd.numItems() == 0 && !(cmd.contains(useReadyKMLMappingArg) || cmd.contains(useReadyEOPMappingArg))) {
 				usage();
 				System.exit(1);
 			}
@@ -95,7 +111,30 @@ public class dump_rdf {
 				arglist.add("-ns");
 				arglist.add(cmd.getArg(namespacesArg).getValue());
 			}
-			arglist.add(cmd.getItem(0));
+			if(cmd.contains(gml3Arg)){
+				arglist.add("-gml3");
+			}
+			if(cmd.contains(gml2Arg)){
+				arglist.add("-gml2");
+			}
+			if(cmd.contains(kmlArg)){
+				arglist.add("-kml");
+			}
+			
+			if(cmd.contains(useReadyEOPMappingArg)){
+				arglist.add("-readyeop");
+			}
+			if(cmd.contains(useReadyKMLMappingArg)){
+				arglist.add("-readykml");
+			}
+			if(cmd.contains(inputFileMappingArg)){
+				arglist.add("-i");
+				arglist.add(cmd.getArg(inputFileMappingArg).getValue());
+			}
+
+			if(!cmd.contains(useReadyEOPMappingArg) && !cmd.contains(useReadyKMLMappingArg)){
+				arglist.add(cmd.getItem(0));
+			}
 			arglist.add(cmd.getArg(outfileArg).getValue());
 			
 			pipeargs=arglist.toArray(new String[arglist.size()]);

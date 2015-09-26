@@ -28,7 +28,7 @@ public interface RMLProcessor {
      * @param map the triplemap
      * @param performer the performer handling the action done on the triplemap
      */
-    public void execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String fileName);
+    public long execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String fileName);
     
     public void execute_node(SesameDataSet dataset, String expression, TriplesMap parentTriplesMap, RMLPerformer performer, Object node, Resource subject);
     public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map, RMLPerformer performer, Object node);
@@ -69,14 +69,14 @@ public interface RMLProcessor {
     
     public QLTerm getFormulation(); //dd
 
-	public Resource processSubjectMap(SesameDataSet dataset,
-			SubjectMap subjectMap); //if we want to execute in other processor with current node
-	
-	public void setDependencyTriplesMap(TriplesMap dependencyTriplesMap);
+    public Resource processSubjectMap(SesameDataSet dataset,
+            SubjectMap subjectMap); //if we want to execute in other processor with current node
+    
+    public void setDependencyTriplesMap(TriplesMap dependencyTriplesMap);
 
-	public void setDependencyProcessor(RMLProcessor dependencyProcessor);
+    public void setDependencyProcessor(RMLProcessor dependencyProcessor);
 
-	Object getCurrentNode();
+    Object getCurrentNode();
 
-	public TriplesMap getCurrentTriplesMap();
+    public TriplesMap getCurrentTriplesMap();
 }

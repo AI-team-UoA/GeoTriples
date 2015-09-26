@@ -183,7 +183,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 	private NodeItem currentnode;
 
 	@Override
-	public void execute(final SesameDataSet dataset, final TriplesMap map,
+	public long execute(final SesameDataSet dataset, final TriplesMap map,
 			final RMLPerformer performer, String fileName) {
 		if (dependencyTriplesMap != null || dependencyProcessor != null) {
 			if (dependencyTriplesMap != null) {
@@ -210,8 +210,9 @@ public class XPathProcessor extends AbstractRMLProcessor {
 												.getReference(), ""), map,
 						performer, dependencyProcessor.getCurrentNode());
 			}
-			return;
+			return 10; //since I don't know yet how to deal with multithreading and keep total generated triples number I will return 10 in order to avoid not visiting the "child" triples maps, those that are after this XPath
 		}
+		final WrappedLong totalmatches=new WrappedLong();
 		try {
 			this.map = map;
 			String reference = getReference(map.getLogicalSource());
@@ -238,6 +239,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 				// When an XPath expression matches
 				@Override
 				public void onNodeHit(Expression expression, NodeItem nodeItem) {
+					totalmatches.increase();
 					Node node = (Node) nodeItem.xml;
 					// if(!nodeItem.namespaceURI.isEmpty())
 					// log.info("namespace? " + nodeItem.namespaceURI);
@@ -298,6 +300,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return totalmatches.getValue();
 
 	}
 
@@ -617,7 +620,15 @@ public class XPathProcessor extends AbstractRMLProcessor {
 				 * Auto-generated catch block e1.printStackTrace(); }
 				 */
 			}
-
+			if(nodes.size()>1 && expression.contains("*")){
+				String concatenatedxml="";
+				for (int i = 0; i < nodes.size(); i++) {
+					Node n = nodes.get(i);
+					concatenatedxml+=n.toXML();
+				}
+				list.add(concatenatedxml);
+				return list;
+			}
 			for (int i = 0; i < nodes.size(); i++) {
 
 				Node n = nodes.get(i);
@@ -625,7 +636,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 				// checks if the node has a value or children
 				if (!n.getValue().isEmpty() || (n.getChildCount() != 0))
 					// MVS's for extracting elements and not the string
-
+					
 					/*
 					 * if (!(n instanceof Attribute) && n.getChild(0) instanceof
 					 * Element) { list.add(n.toXML()); continue; } else {
@@ -635,7 +646,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 					for (int child = 0; child < n.getChildCount(); ++child) {
 						if (n.getChild(child) instanceof Element) {
 							list.add(n.toXML());
-							return list;
+							//return list;
 						}
 					}
 
@@ -654,10 +665,143 @@ public class XPathProcessor extends AbstractRMLProcessor {
 		return list;
 
 	}
+	
+	
+	
 
 	@Override
 	public List<Object> extractValueFromNode(Object node, String expression) {
+		if(expression.contains(Config.GEOTRIPLES_AUTO_ID) && expression.split("/").length>1){ //this is when referencing an element and ask or the GeoTriplesID
+			//used in rr:template "mpla/GeoTriplesID"
+			return extractValueFromNode((NodeItem) node, expression.replaceAll("/*"+Config.GEOTRIPLES_AUTO_ID, ""));
+		}
 		return extractValueFromNode((Node) (((NodeItem) node).xml), expression);
+	}
+	
+	
+	private List<Object> extractValueFromNode(NodeItem node, String expression) {
+		final List<Object> list = new ArrayList<>();
+
+		if (!expression.startsWith("/"))
+			expression = "/*[1]/"+expression;
+		else{
+			expression ="/*[1]"+expression;
+		}
+		geoTriplesID = 0;
+		NodeItem ni = (NodeItem) node;
+		String parentid = "";
+		Pattern MY_PATTERN = Pattern.compile("\\[\\d+\\]");
+		Matcher m = MY_PATTERN.matcher(ni.location);
+		while (m.find()) {
+			String s = m.group(0);
+			// System.out.println(s.replaceAll("\\[|\\]", ""));
+			parentid += s.replaceAll("\\[|\\]", "");
+		}
+		final String pp = parentid;
+		Node node2 = (Node) ni.xml;
+		try {
+			this.map = map;
+			// String reference = getReference(map.getLogicalSource());
+			// Inititalize the XMLDog for processing XPath
+			// an implementation of javax.xml.namespace.NamespaceContext
+			// DefaultNamespaceContext dnc = new DefaultNamespaceContext();
+			DefaultNamespaceContext dnc = get_namespaces();
+			XMLDog dog = new XMLDog(dnc);
+
+			// adding expression to the xpathprocessor
+			// System.out.println(reference + "mmmm");
+			// System.out.println(fileName + "mmmm");
+
+			// if(expression.contains("vigor"))
+			// {
+			// System.out.println("vigooorrrr");
+			// }
+			// System.out.println(dog.isAllowDefaultPrefixMapping());
+			// dog.setAllowDefaultPrefixMapping(true);
+			dog.addXPath(expression);
+
+			jlibs.xml.sax.dog.sniff.Event event = dog.createEvent();
+
+			// event.setXMLBuilder(new DOMBuilder());
+			// use XOM now
+			event.setXMLBuilder(new XOMBuilder());
+
+			event.setListener(new InstantEvaluationListener() {
+
+				// When an XPath expression matches
+				@Override
+				public void onNodeHit(Expression expression, NodeItem nodeItem) {
+					Node node = (Node) nodeItem.xml;
+					// if(!nodeItem.namespaceURI.isEmpty())
+					// log.info("namespace? " + nodeItem.namespaceURI);
+					// else
+					// log.info("no namespace.");
+					// Let the performer do its thing
+					Pattern MY_PATTERN = Pattern.compile("\\[\\d+\\]");
+					Matcher m = MY_PATTERN.matcher(nodeItem.location);
+					String id = "";
+					int i = 0;
+					while (m.find()) {
+						if (i == 0) {
+							++i;
+							continue;
+						}
+						String s = m.group(0);
+
+						// System.out.println(s.replaceAll("\\[|\\]", ""));
+						id += s.replaceAll("\\[|\\]", "");
+					}
+					// System.out.println(nodeItem.location);
+					currentnode = nodeItem;
+					Element element = new Element(Config.GEOTRIPLES_AUTO_ID, "");
+					// System.out.println("parent's id: "+pp);
+					// System.out.println("childs' id: "+id);
+					element.appendChild(String.valueOf(pp + id));
+					ParentNode domNode = (ParentNode) nodeItem.xml;
+					domNode.appendChild(element);
+
+					list.addAll(extractValueFromNode((Node)nodeItem.xml, Config.GEOTRIPLES_AUTO_ID));
+				}
+
+				@Override
+				public void finishedNodeSet(Expression expression) {
+					// System.out.println("Finished Nodeset: " +
+					// expression.getXPath());
+				}
+
+				@Override
+				public void onResult(Expression expression, Object result) {
+					// this method is called only for xpaths which returns
+					// primitive result
+					// i.e result will be one of String, Boolean, Double
+					// System.out.println("XPath: " + expression.getXPath() +
+					// " result: " + result);
+				}
+			});
+			// Execute the streaming
+			// System.out.println(node2.toXML());
+			dog.sniff(
+					event,
+					new InputSource(
+							new ByteArrayInputStream(
+									("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + node2
+											.toXML())
+											.getBytes(StandardCharsets.UTF_8))),reader.newSAXParser().getXMLReader());
+		} catch (SAXPathException ex) {
+			Logger.getLogger(XPathProcessor.class.getName()).log(Level.SEVERE,
+					null, ex);
+		} catch (XPathException ex) {
+			Logger.getLogger(XPathProcessor.class.getName()).log(Level.SEVERE,
+					null, ex);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+
 	}
 
 	@Override

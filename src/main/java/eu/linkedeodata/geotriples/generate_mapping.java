@@ -41,12 +41,13 @@ public class generate_mapping {
 	public void process(String [] args) throws Exception {
 		if (args.length >= 1) {
 			String lastToken = args[args.length -1];
-			if (lastToken.endsWith(".kml")) {
-				log.info("KML detected for processing");
-				//System.out.println("Currently KML is not implemented within WP2 (soon)");
-				(new eu.linkedeodata.geotriples.kml.generate_mapping(this.recipe,this.guiOutput)).process(args);
-			}
-			else if (lastToken.endsWith(".shp")) {
+//			if (lastToken.endsWith(".kml")) {
+//				log.info("KML detected for processing");
+//				//System.out.println("Currently KML is not implemented within WP2 (soon)");
+//				(new eu.linkedeodata.geotriples.kml.generate_mapping(this.recipe,this.guiOutput)).process(args);
+//			}
+//			else 
+			if (lastToken.endsWith(".shp")) {
 				log.info("Shapefile detected for processing");
 				if(this.recipe!=null)
 				{
@@ -61,7 +62,7 @@ public class generate_mapping {
 				log.info("GeoPDF detected for processing");
 				System.out.println("Currently GeoPDF is not implemented within WP2 (soon)");
 			}
-			else if (lastToken.endsWith(".xml") || lastToken.endsWith("gml")){
+			else if (lastToken.endsWith(".xml") || lastToken.endsWith(".gml") || lastToken.endsWith(".kml")){
 				log.info("XML detected for processing");
 				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 				final ArgDecl xsdifileArg = new ArgDecl(true, "x", "xsd", "XSD file");
