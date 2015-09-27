@@ -17,6 +17,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.SAXException;
 
 import be.ugent.mmlab.rml.core.MalformedGeometryException;
+import be.ugent.mmlab.rml.tools.CacheFifo;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -173,20 +174,29 @@ public abstract class AbstractFunction {
 					"GeoTriples cannot recognize this type of geometry");
 		}
 	}
-
+	static CacheFifo<Object,Geometry> cache=new CacheFifo<>(44); 
 	protected Geometry computeGeometry(Object object, QLTerm term)
 			throws SAXException, IOException, ParserConfigurationException,
 			NoSuchAuthorityCodeException, FactoryException,
 			MalformedGeometryException {
+		if(!term.equals(QLTerm.SHP_CLASS) && cache.containsKey(object)){
+			return cache.get(object);
+		}
 		switch (term) {
 		case SHP_CLASS:
 			return (Geometry) object;
 		case XPATH_CLASS:
-			return computeGeometry((String) object, term);
+			Geometry result1 = computeGeometry((String) object, term);
+			cache.put(object, result1);
+			return result1;
 		case CSV_CLASS:
-			return computeGeometry((String) object, term);
+			Geometry result2 = computeGeometry((String) object, term);
+			cache.put(object, result2);
+			return result2;
 		case JSONPATH_CLASS:
-			return computeGeometry((String) object, term);
+			Geometry result3 = computeGeometry((String) object, term);
+			cache.put(object, result3);
+			return result3;
 		default:
 			throw new MalformedGeometryException(
 					"GeoTriples cannot recognize this type of geometry");

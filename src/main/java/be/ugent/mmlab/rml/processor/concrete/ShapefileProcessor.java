@@ -43,7 +43,9 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 	private static Log log = LogFactory.getLog(RMLMappingFactory.class);
 	private HashMap<String, Object> currentnode;
 	protected TriplesMap map;
-
+public ShapefileProcessor() {
+	
+}
 	@Override
 	public long execute(SesameDataSet dataset, TriplesMap map,
 			RMLPerformer performer, String fileName) {
@@ -68,8 +70,14 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 			Map<String, URL> connect = new HashMap<String, URL>();
 			connect.put("url", new File(fileName).toURI().toURL());
 			DataStore dataStore = DataStoreFinder.getDataStore(connect);
-			FeatureSource<?, ?> featureSource = dataStore.getFeatureSource(new File(fileName).getName().split("\\.")[0]);
 			
+			FeatureSource<?, ?> featureSource = dataStore.getFeatureSource(new File(fileName).getName().split("\\.")[0]);
+			String epsg=org.geotools.gml2.bindings.GML2EncodingUtils
+					.epsgCode(featureSource.getSchema()
+			.getCoordinateReferenceSystem());
+			if(epsg!=null){
+				Config.EPSG_CODE=epsg;
+			}
 			FeatureCollection<?, ?> collection = featureSource.getFeatures();
 			FeatureIterator<?> iterator = collection.features();
 			

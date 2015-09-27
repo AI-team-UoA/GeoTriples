@@ -3,12 +3,12 @@ package be.ugent.mmlab.rml.core;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +28,7 @@ import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
 import be.ugent.mmlab.rml.processor.RMLProcessorFactory;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
+import be.ugent.mmlab.rml.tools.CriticalSection;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 /**
@@ -36,7 +37,7 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
  * @author mielvandersande, andimou, dimis
  */
 public class RMLEngine {
-
+	private CriticalSection cs=new CriticalSection();
     // Log
     private static Log log = LogFactory.getLog(RMLEngine.class);
     // A base IRI used in resolving relative IRIs produced by the R2RML mapping.
@@ -124,9 +125,9 @@ public class RMLEngine {
  
         generateRDFTriples(sesameDataSet, rmlMapping, filebased, source_properties);
         
-    log.info("[RMLEngine:generateRDFTriples] All triples were generated ");
+	log.info("[RMLEngine:generateRDFTriples] All triples were generated ");
         
-    long endTime = System.nanoTime();
+	long endTime = System.nanoTime();
         long duration = endTime - startTime;
         //log.debug("[RMLEngine:runRMLMapping] RML mapping done! Generated " + sesameDataSet.getSize() + " in " + ((double) duration) / 1000000000 + "s . ");
         return sesameDataSet;
@@ -160,16 +161,16 @@ public class RMLEngine {
     protected void generateRDFTriples(SesameDataSet sesameDataSet,
             RMLMapping r2rmlMapping, boolean filebased, boolean source_properties) throws SQLException, R2RMLDataError,
             UnsupportedEncodingException {
-        ExecutorService executor = Executors.newFixedThreadPool(8);
-        
+    	ExecutorService executor = Executors.newFixedThreadPool(8);
+    	
         log.debug("[RMLEngine:generateRDFTriples] Generate RDF triples... ");
         int delta = 0;
 
         RMLProcessorFactory factory = new ConcreteRMLProcessorFactory();
         List<TriplesMap> tmaps = new ArrayList<TriplesMap>(r2rmlMapping.getTriplesMaps());
-        //Collections.sort(tmaps); //TODO uncomment for serial execution!!!
+        Collections.sort(tmaps); //TODO uncomment for serial execution!!!
         for (TriplesMap triplesMap : tmaps) {
-            
+        	
             if (check_ReferencingObjectMap(r2rmlMapping, triplesMap)) 
                 continue; //i think this check is pointless /dimis
             //FileInputStream input = null;
@@ -180,25 +181,24 @@ public class RMLEngine {
             //System.out.println(ls.getReference());
             boolean shouldnotvisit=false;
             if(ls.getReferenceFormulation().equals(QLTerm.XPATH_CLASS)){
-                
-                
-                if(cacheToAvoidOpeningFiles.containsKey(logicalsource)){
-                    
-                    List<String> list = cacheToAvoidOpeningFiles.get(logicalsource);
-                    for(String sub:list){
-                        if(iteratorstr.startsWith(sub)){
-                            shouldnotvisit=true;
-                            break;
-                        }
-                    }
-                }
+            	
+            	
+            	if(cacheToAvoidOpeningFiles.containsKey(logicalsource)){
+            		
+            		List<String> list = cacheToAvoidOpeningFiles.get(logicalsource);
+            		for(String sub:list){
+            			if(iteratorstr.startsWith(sub)){
+            				shouldnotvisit=true;
+            				break;
+            			}
+            		}
+            	}
             }
             if(shouldnotvisit==true){
-                System.out.println("Should not visit");
-                System.out.flush();
-                continue;
+            	log.debug("Should not visit "+ iteratorstr);
+            	continue;
             }
-            
+            log.info("Parsing iterator "+iteratorstr);
             //need to add control if reference Formulation is not defined
             //need to add check for correct spelling, aka rml:queryLanguage and not rml:referenceFormulation otherwise breaks
             RMLProcessor processor = factory.create(triplesMap.getLogicalSource().getReferenceFormulation());
@@ -213,7 +213,7 @@ public class RMLEngine {
                     fileName = triplesMap.getLogicalSource().getIdentifier();
             else
                 //fileName = getClass().getResource(triplesMap.getLogicalSource().getIdentifier()).getFile();
-                fileName = triplesMap.getLogicalSource().getIdentifier();
+            	fileName = triplesMap.getLogicalSource().getIdentifier();
             try {
                 log.debug("[RMLEngine:generateRDFTriples] next file to be opened " + fileName);
                 //add control in case rml:source is not declared
@@ -224,16 +224,19 @@ public class RMLEngine {
                 Logger.getLogger(RMLEngine.class.getName()).log(Level.SEVERE, null, ex);
            }
 
-            //processor.execute(sesameDataSet, triplesMap, new NodeRMLPerformer(processor), fileName);
-            executor.execute(new WorkerThread(processor, sesameDataSet, triplesMap, fileName,iteratorstr));
-            /*if(sesameDataSet.getSize() - delta ==0){
-                if(!cacheToAvoidOpeningFiles.containsKey(logicalsource))
-                {
-                    cacheToAvoidOpeningFiles.put(logicalsource, new ArrayList<String>());
-                }
-                cacheToAvoidOpeningFiles.get(logicalsource).add(iteratorstr);
+            long triples=processor.execute(sesameDataSet, triplesMap, new NodeRMLPerformer(processor), fileName);
+            System.out.println("Toses tripletes: " +triples);
+            System.out.println("Current total triples: "+sesameDataSet.getSize());
+            //executor.execute(new WorkerThread(processor, sesameDataSet, triplesMap, fileName,iteratorstr));
+            //if(sesameDataSet.getSize() - delta ==0){
+            if(triples==0){
+            	if(!cacheToAvoidOpeningFiles.containsKey(logicalsource))
+            	{
+            		cacheToAvoidOpeningFiles.put(logicalsource, new ArrayList<String>());
+            	}
+            	cacheToAvoidOpeningFiles.get(logicalsource).add(iteratorstr);
             }
-            log.info("[RMLEngine:generateRDFTriples] "
+            /*log.info("[RMLEngine:generateRDFTriples] "
                     + (sesameDataSet.getSize() - delta)
                     + " triples generated for " + triplesMap.getName());
             delta = sesameDataSet.getSize();*/
@@ -245,15 +248,16 @@ public class RMLEngine {
 //            }
         }
         
-        executor.shutdown();
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        executor.shutdown();
+//        try {
+//        	executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
         if(filebased)
             try {
+            	System.out.println("This is filebased!!!!!");
                 sesameDataSet.closeRepository();
             } catch (RepositoryException ex) {
                 log.error("[RMLEngine:generateRDFTriples] Cannot close output repository", ex);
@@ -262,11 +266,11 @@ public class RMLEngine {
     public class WorkerThread implements Runnable {
 
         private String command;
-        private RMLProcessor processor;
-        private SesameDataSet dataset;
-        private TriplesMap map;
-        private String fileName;
-        private String iteratorstr;
+		private RMLProcessor processor;
+		private SesameDataSet dataset;
+		private TriplesMap map;
+		private String fileName;
+		private String iteratorstr;
 
         public WorkerThread(RMLProcessor processor,SesameDataSet dataset, TriplesMap map, String fileName,String iteratorstr ){
             this.processor=processor;
@@ -279,14 +283,34 @@ public class RMLEngine {
         @Override
         public void run() {
             
-            long triples=processor.execute(dataset, map, new NodeRMLPerformer(processor), fileName);
-            //note that this is not always return the accurate count of triples created with execute, this is by design
-            if(triples ==0){
-                if(!cacheToAvoidOpeningFiles.containsKey(fileName))
-                {
-                    cacheToAvoidOpeningFiles.put(fileName, new ArrayList<String>());
-                }
-                cacheToAvoidOpeningFiles.get(fileName).add(iteratorstr);
+        	long triples=processor.execute(dataset, map, new NodeRMLPerformer(processor), fileName);
+        	//note that this is not always return the accurate count of triples created with execute, this is by design
+        	if(triples ==0){
+        		try {
+					cs.enter_read();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+            	if(!cacheToAvoidOpeningFiles.containsKey(fileName))
+            	{
+            		try {
+            			cs.exit_read();
+						cs.enter_write();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+            		if(!cacheToAvoidOpeningFiles.containsKey(fileName))
+            			cacheToAvoidOpeningFiles.put(fileName, new ArrayList<String>());
+            		cs.exit_write();
+            	}
+            	try {
+					cs.enter_write();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+            		cacheToAvoidOpeningFiles.get(fileName).add(iteratorstr);
+            	cs.exit_write();
+            	
             }
             /*log.info("[RMLEngine:generateRDFTriples] "
                     + (triples)

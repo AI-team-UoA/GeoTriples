@@ -195,7 +195,6 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	 *            current node in iteration
 	 * @return the resulting value
 	 */
-
 	@Override
 	public List<Object> processTermMap(TermMap map, Object node,
 			TriplesMap triplesMap, Resource subject, URI predicate,
@@ -376,7 +375,6 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	public void processPredicateObjectMap(SesameDataSet dataset,
 			Resource subject, PredicateObjectMap pom, Object node,
 			TriplesMap map) {
-
 		Set<PredicateMap> predicateMaps = pom.getPredicateMaps();
 		// Go over each predicate map
 		for (PredicateMap predicateMap : predicateMaps) {
@@ -868,18 +866,22 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 					}
 
 				}
-
+				//ExecutorService executor = Executors.newFixedThreadPool(8);
 				// process the objectmaps
 				Set<ObjectMap> objectMaps = pom.getObjectMaps();
 				for (ObjectMap objectMap : objectMaps) {
+					//System.out.println(objectMap.getStringTemplate());
 					// Get the one or more objects returned by the object map
+					//executor.execute(new ObjecMapWorker(objectMap, node, map, subject, predicate, dataset, pom));
 					List<Value> objects = processObjectMap(objectMap, node,
 							map, subject, predicate, dataset);
 					for (Value object : objects) {
 						if (object.stringValue() != null) {
 							Set<GraphMap> graphs = pom.getGraphMaps();
-							if (graphs.isEmpty())
+							if (graphs.isEmpty()){
 								dataset.add(subject, predicate, object);
+							//System.out.println(dataset.getSize());
+							}
 							else
 								for (GraphMap graph : graphs) {
 									Resource graphResource = new URIImpl(graph
@@ -891,6 +893,13 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 						}
 					}
 				}
+//				executor.shutdown();
+//				try {
+//					executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 
 		}
@@ -918,7 +927,46 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 		}
 
 	}
+	protected class ObjecMapWorker implements Runnable{
+private SesameDataSet dataset;
+private URI predicate;
+private Resource subject;
+private Object node;
+private TriplesMap map;
+private ObjectMap objectMap;
+private PredicateObjectMap pom;
+public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap 
+		map, Resource subject,URI predicate,SesameDataSet dataset,PredicateObjectMap pom) {
+	this.objectMap=objectMap;
+	this.node=node;
+	this.map=map;
+	this.subject=subject;
+	this.predicate=predicate;
+	this.dataset=dataset;
+	this.pom=pom;
+}
+		@Override
+		public void run() {
+			List<Value> objects = processObjectMap(objectMap, node,
+					map, subject, predicate, dataset);
+			for (Value object : objects) {
+				if (object.stringValue() != null) {
+					Set<GraphMap> graphs = pom.getGraphMaps();
+					if (graphs.isEmpty())
+						dataset.add(subject, predicate, object);
+					else
+						for (GraphMap graph : graphs) {
+							Resource graphResource = new URIImpl(graph
+									.getConstantValue().toString());
+							dataset.add(subject, predicate, object,
+									graphResource);
+						}
 
+				}
+			}
+		}
+		
+	}
 	/**
 	 * process a predicate map
 	 * 

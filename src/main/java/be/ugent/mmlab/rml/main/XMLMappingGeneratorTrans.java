@@ -228,14 +228,17 @@ public class XMLMappingGeneratorTrans {
 					|| sge.getType().isAbstract()) {
 				continue;
 			}
+			if(sge.getName().getLocalPart().equals("RegistratiefGebied")){
+				System.out.println("TO BE DELETED");
+			}
 			if (sge.getType().getName() != null) {
 				if (typesHierarhy.contains(sge.getType().getName())) {
-					return;
+					continue;
 				}
 			}
 			else{
 				if (elementHierarhy.contains(sge.getName())) {
-					return;
+					continue;
 				}
 			}
 			if(sge.getType().getName()!=null){
@@ -945,7 +948,9 @@ public class XMLMappingGeneratorTrans {
 
 	private boolean checkIfGMLGeometry(SchemaType type) {
 		if (!type.getName().getNamespaceURI()
-				.equals("http://www.opengis.net/gml")) {
+				.equals("http://www.opengis.net/gml") && !type.getName().getNamespaceURI()
+				.equals("http://www.opengis.net/gml/3.1.1") && !!type.getName().getNamespaceURI()
+				.equals("http://www.opengis.net/gml/3.2.0")) {
 			return false;
 		}
 		return true;

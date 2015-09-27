@@ -53,32 +53,68 @@ public class XOMBuilder extends XMLBuilder {
             case NodeType.ATTRIBUTE:
                 Attribute attr = new Attribute(event.qualifiedName(), event.namespaceURI(), event.value());
                 if (curNode != null) {
-                    ((Element) curNode).addAttribute(attr);
+                	try {
+                		((Element) curNode).addAttribute(attr);
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("The element is: "+curNode.toString());
+						System.out.println("The text is: "+attr);
+					}
+                    
                 }
                 return attr;
             case NodeType.COMMENT:
                 Comment comment = new Comment(event.value());
                 if (curNode != null) {
-                    curNode.appendChild(comment);
+                	try {
+                		curNode.appendChild(comment);
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("The element is: "+curNode.toString());
+						System.out.println("The text is: "+comment);
+					}
+                    
                 }
                 return comment;
             case NodeItem.PI:
                 ProcessingInstruction pi = new ProcessingInstruction(event.localName(), event.value());
                 if (curNode != null) {
-                    curNode.appendChild(pi);
+                	try {
+                		curNode.appendChild(pi);
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("The element is: "+curNode.toString());
+						System.out.println("The text is: "+pi);
+					}
+                    
                 }
                 return pi;
             case NodeItem.TEXT:
                 Text text = new Text(event.value());
-
+if(text.getValue().replace("[nu.xom.Text:", "").replace("]","").trim().equals("\\n") || text.getValue().replace("nu.xom.Text:", "").replace("]","").trim().equals("\n") || text.getValue().replace("nu.xom.Text:", "").replace("]","").trim().equals("\r\n")){
+	return text;
+}
                 if (curNode != null && !(curNode instanceof Document)) {
-                    curNode.appendChild(text);
+                	try {
+                		curNode.appendChild(text);
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("The element is: "+curNode.toString());
+						System.out.println("The text is: "+text);
+					}
+                    
                 }
                 return text;
             case NodeItem.NAMESPACE:
 
                 if (curNode != null) {
-                    ((Element) curNode).addNamespaceDeclaration(event.localName(), event.value());
+                	try {
+                		((Element) curNode).addNamespaceDeclaration(event.localName(), event.value());
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("The element is: "+curNode.toString());
+						System.out.println("The text is: "+event.value());
+					}
                 }
                 return curNode;
         }

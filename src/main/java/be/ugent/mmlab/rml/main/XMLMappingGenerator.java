@@ -230,12 +230,12 @@ public class XMLMappingGenerator {
 			}
 			if (sge.getType().getName() != null) {
 				if (typesHierarhy.contains(sge.getType().getName())) {
-					return;
+					continue;
 				}
 			}
 			else{
 				if (elementHierarhy.contains(sge.getName())) {
-					return;
+					continue;
 				}
 			}
 			if(sge.getType().getName()!=null){

@@ -115,7 +115,8 @@ public class StdTriplesMap implements TriplesMap,Comparable<TriplesMap> {
 
 	@Override
 	public int compareTo(TriplesMap o) {
-		return getLogicalSource().getReference().compareToIgnoreCase(o.getLogicalSource().getReference());
+		//return getLogicalSource().getReference().compareToIgnoreCase(o.getLogicalSource().getReference());
+		return Integer.valueOf(getLogicalSource().getReference().length()).compareTo(Integer.valueOf((o.getLogicalSource().getReference().length())));
 	}
 
 }

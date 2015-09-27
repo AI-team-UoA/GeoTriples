@@ -66,6 +66,10 @@ public class OntologyGenerator {
 	public void createDatatypeProperty(String classname, String propertyname,
 			String datatype) {
 		OntClass c = m.getOntClass(NS + classname);
+		if(c==null){
+			createClass(classname);
+			c= m.getOntClass(NS + classname);
+		}
 		DatatypeProperty p = m.createDatatypeProperty(NS + propertyname);
 		p.addDomain(c);
 		// RDFDatatype dt =

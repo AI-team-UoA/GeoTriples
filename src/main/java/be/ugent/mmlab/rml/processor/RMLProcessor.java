@@ -69,14 +69,14 @@ public interface RMLProcessor {
     
     public QLTerm getFormulation(); //dd
 
-    public Resource processSubjectMap(SesameDataSet dataset,
-            SubjectMap subjectMap); //if we want to execute in other processor with current node
-    
-    public void setDependencyTriplesMap(TriplesMap dependencyTriplesMap);
+	public Resource processSubjectMap(SesameDataSet dataset,
+			SubjectMap subjectMap); //if we want to execute in other processor with current node
+	
+	public void setDependencyTriplesMap(TriplesMap dependencyTriplesMap);
 
-    public void setDependencyProcessor(RMLProcessor dependencyProcessor);
+	public void setDependencyProcessor(RMLProcessor dependencyProcessor);
 
-    Object getCurrentNode();
+	Object getCurrentNode();
 
-    public TriplesMap getCurrentTriplesMap();
+	public TriplesMap getCurrentTriplesMap();
 }
