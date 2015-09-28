@@ -6,6 +6,7 @@ import java.util.List;
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
 
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.SystemLoader;
@@ -35,6 +36,8 @@ public class dump_rdf {
 	{
 		this.guimapping=guimapping;
 	}
+	final CommandLine cmd = new CommandLine();
+	List<ArgDecl> argdecls=new ArrayList<ArgDecl>();
 	public void process(String [] args) throws Exception {
 		boolean shFound = false;
 		boolean rmlFound=false;
@@ -62,20 +65,41 @@ public class dump_rdf {
 			final ArgDecl useReadyKMLMappingArg = new ArgDecl(false, "readykml", "Use GeoTriples' KML 2.2 mapping document");
 			
 			final ArgDecl inputFileMappingArg=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
-			final CommandLine cmd = new CommandLine();
+			
 			cmd.add(rmlArg);
+			argdecls.add(rmlArg);
+			
 			cmd.add(epsgArg);
+			argdecls.add(epsgArg);
+			
 			cmd.add(outfileArg);
+			argdecls.add(outfileArg);
+			
 			cmd.add(formatArg);
+			argdecls.add(formatArg);
+			
 			cmd.add(namespacesArg);
+			argdecls.add(namespacesArg);
 			
 			cmd.add(gml3Arg);
+			argdecls.add(gml3Arg);
+			
 			cmd.add(gml2Arg);
+			argdecls.add(gml2Arg);
+			
 			cmd.add(kmlArg);
+			argdecls.add(kmlArg);
+			
+			
 			
 			cmd.add(useReadyEOPMappingArg);
+			argdecls.add(useReadyEOPMappingArg);
+			
 			cmd.add(useReadyKMLMappingArg);
+			argdecls.add(useReadyKMLMappingArg);
+			
 			cmd.add(inputFileMappingArg);
+			argdecls.add(inputFileMappingArg);
 			try {
 				cmd.process(args);
 			} catch (IllegalArgumentException ex) {
@@ -157,7 +181,7 @@ public class dump_rdf {
 				pipeargs=new String[]{cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 				//log.info("DERP");
 			}*/
-			
+			HelpFormatter hh=new HelpFormatter();
 			MainTrans.main(pipeargs);
 			
 			return;
@@ -211,7 +235,14 @@ public class dump_rdf {
 		}
 	}
 	
-	public static void usage() {
+	public void usage() {
+		/*System.err.println("usage:");
+		System.err.println("  dump-rdf [output-options] mappingFile");
+		System.err.println();
+		for(ArgDecl ad:argdecls){
+			
+			System.err.println(ad.toString());
+		}*/
 		System.err.println("usage:");
 		System.err.println("  dump-rdf [output-options] mappingFile");
 		System.err.println();
