@@ -1,7 +1,7 @@
 # GeoTriples
  Publishing geospatial data as Linked Open Geospatial Data 
 
-## Quickstart ##
+## Quickstart##
 Assuming git, [Maven](http://maven.apache.org/download.cgi) and [Java](https://www.java.com/en/download/) installed:
 ```bash
 $ git clone https://github.com/LinkedEOData/GeoTriples.git
@@ -48,7 +48,7 @@ the representation of a transformation function over input data. Afterwards,
 the user may edit the generated R2RML mapping document to comply with
 her requirements (e.g., use a different vocabulary).
 
-![Architecture](http://drive.google.com/uc?export=view&id=0ByyHFR-5IXfpX3ZyNF9rMTgxcHc "The architecture of GeoTriples")
+![Architecture](http://drive.google.com/uc?export=view&id=0ByyHFR-5IXfpckQzZlJoY092bkE "The architecture of GeoTriples")
 
 ### RML Processor ###
 GeoTriples now supports the [RML](http://rml.io/) mapping language by extending the [RML processor](https://github.com/mmlab/RMLProcessor) to support transformation functions.

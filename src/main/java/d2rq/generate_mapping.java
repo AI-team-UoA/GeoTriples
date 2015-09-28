@@ -80,7 +80,7 @@ public class generate_mapping extends CommandLineTool {
 			loader.setJdbcURL(cmd.getItem(0));
 		}
 		
-		if (cmd.contains(r2rmlArg)) {
+		if (cmd.contains(r2rmlArg) || true) { //geotriples only focuses on r2rm and rml so ||true
 			loader.setGenerateR2RML(true);
 		}
 		if (cmd.contains(baseIRI)) {
