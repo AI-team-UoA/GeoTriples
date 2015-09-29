@@ -64,7 +64,7 @@ public class dump_rdf {
 			final ArgDecl useReadyEOPMappingArg = new ArgDecl(false, "readyeop", "Use GeoTriples' EOP 2.0 mapping document");
 			final ArgDecl useReadyKMLMappingArg = new ArgDecl(false, "readykml", "Use GeoTriples' KML 2.2 mapping document");
 			
-			final ArgDecl inputFileMappingArg=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
+			final ArgDecl inputFile=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
 			
 			cmd.add(rmlArg);
 			argdecls.add(rmlArg);
@@ -98,8 +98,8 @@ public class dump_rdf {
 			cmd.add(useReadyKMLMappingArg);
 			argdecls.add(useReadyKMLMappingArg);
 			
-			cmd.add(inputFileMappingArg);
-			argdecls.add(inputFileMappingArg);
+			cmd.add(inputFile);
+			argdecls.add(inputFile);
 			try {
 				cmd.process(args);
 			} catch (IllegalArgumentException ex) {
@@ -151,9 +151,9 @@ public class dump_rdf {
 			if(cmd.contains(useReadyKMLMappingArg)){
 				arglist.add("-readykml");
 			}
-			if(cmd.contains(inputFileMappingArg)){
+			if(cmd.contains(inputFile)){
 				arglist.add("-i");
-				arglist.add(cmd.getArg(inputFileMappingArg).getValue());
+				arglist.add(cmd.getArg(inputFile).getValue());
 			}
 
 			if(!cmd.contains(useReadyEOPMappingArg) && !cmd.contains(useReadyKMLMappingArg)){

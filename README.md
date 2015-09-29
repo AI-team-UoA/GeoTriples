@@ -18,11 +18,15 @@ and the R2RML processor which processes an R2RML mapping and exports the RDF gra
 #### Automatic generation of R2RML mapping ####
 - Relational Database
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-u user] [-p password] [-d driver] [-b baseURI] [-o r2rmloutfile] [-r2rml] jdbcURL
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping -b baseURI [-u user] [-p password] [-d driver] [-o R2RMLoutfile] jdbcURL
 ```
 - Shapefile
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-b baseURI] [-o r2rmloutfile] fileURL
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping -b baseURI [-o R2RMLoutfile] [-rml] fileURL
+```
+- XML-like files
+```bash
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping -b baseURI [-o RMLoutfile] [-rp rootpath] [=r rootelement] [-onlyns namespace] [-ns namespaces] [-x XSDfile] fileURL
 ```
 
 #### Transformation into RDF ####
@@ -32,7 +36,11 @@ $ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] 
 ```
 - Shapefile
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] [-rml] [-s epsgcode] [-sh fileURL] inputmappingfile
+```
+- XML
+```bash
+$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] -rml inputmappingfile
 ```
 
 ### GeoTriples Architecture ###

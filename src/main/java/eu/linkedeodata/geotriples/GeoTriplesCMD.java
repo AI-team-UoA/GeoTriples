@@ -126,6 +126,11 @@ public class GeoTriplesCMD {
 		/* Shapefile mapping options*/
 		System.err.println("\tShapefile options:");
 		System.err.println("\t\t-sh source file\t\tInput Source Shapefile");
+		/* XML mapping options*/
+		System.err.println("\tXML/GML/KML options:");
+		System.err.println("\t\t-i inputfile\t\tInput XML/GML/KML file if used with the -readyeop or -readykml arguments");
+		System.err.println("\t\t-readyeop\t\tUse the embended EOP mapping of GeoTriples. You must provide the input file with -i argument");
+		System.err.println("\t\t-readykml\t\tUse the embended KML mapping of GeoTriples. You must provide the input file with -i argument");
 		
 		System.err.println("\tGeneral options:");
 		System.err.println("\t\t-o outfile\t\tOutput file name (default: stdout)");

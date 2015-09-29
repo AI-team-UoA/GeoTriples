@@ -78,6 +78,7 @@ public class MainTrans {
 	 * @throws Exception
 	 */
 	private final static Log log = LogFactory.getLog(MainTrans.class);
+
 	public static void main(String[] args) throws Exception {
 		try {
 			Object file = null;
@@ -91,21 +92,15 @@ public class MainTrans {
 			options.addOption("g", true, "Graph name");
 			options.addOption("epsg", true, "EPSG code");
 			options.addOption("f", true, "output RDF Format");
-			options.addOption("ns", true,
-					"file with namespaces for XML use only");
+			options.addOption("ns", true, "file with namespaces for XML use only");
 
-			options.addOption("gml3", false,
-					"Use gml3 reader for the geometries");
-			options.addOption("gml2", false,
-					"Use gml2 reader for the geometries");
+			options.addOption("gml3", false, "Use gml3 reader for the geometries");
+			options.addOption("gml2", false, "Use gml2 reader for the geometries");
 			options.addOption("kml", false, "Use kml reader for the geometries");
 
-			options.addOption("readyeop", false,
-					"Use GeoTriples' EOP 2.0 mapping document");
-			options.addOption("readykml", false,
-					"Use GeoTriples' KML 2.2 mapping document");
-			options.addOption("i", true,
-					"Input source. Use with -readyeop or -readykml");
+			options.addOption("readyeop", false, "Use GeoTriples' EOP 2.0 mapping document");
+			options.addOption("readykml", false, "Use GeoTriples' KML 2.2 mapping document");
+			options.addOption("i", true, "Input source. Use with -readyeop or -readykml");
 
 			// should be new DefaultParser() but requires cli 1.3 instead of
 			// clli 1.2
@@ -113,34 +108,39 @@ public class MainTrans {
 			CommandLine cmd = parser.parse(options, args);
 			// execute(args[0],args[1]);
 			// System.exit(0);
-			
+
 			if (cmd.hasOption("readykml") || cmd.hasOption("readyeop")) {
-				if(!cmd.hasOption("i")){
-            		HelpFormatter formatter = new HelpFormatter();
-            		formatter.printHelp( "GeoTriples with RML command line tool", options );
-            		System.exit(1);
-                }else{
-                	inputfile=cmd.getOptionValue("i");
-                }
-				
+				if (!cmd.hasOption("i")) {
+					HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp("GeoTriples with RML command line tool", options);
+					System.exit(1);
+				} else {
+					inputfile = cmd.getOptionValue("i");
+				}
+
 				// URL.setURLStreamHandlerFactory(new
 				// ConfigurableStreamHandlerFactory("file", new Handler()));
-				file = Thread.currentThread().getContextClassLoader()
-						.getResource("mappingkml.ttl");
-				File temp = File.createTempFile("temp-mapping.ttl", "."); 
-				
-				InputStream fis=(((URL)file).openConnection().getInputStream());
-				
-				OutputStream fos=(new FileOutputStream(temp));
-				
-				String content = IOUtils.toString(fis); 
-				//System.out.println(inputfile);
-				content = content.replaceAll("rml:source.*\n", "rr:source \""+(new File(inputfile)).getAbsolutePath()+"\";\n");
+				if (cmd.hasOption("readykml")) {
+					file = Thread.currentThread().getContextClassLoader().getResource("mappingkml.ttl");
+				} else {
+					throw new UnsupportedOperationException("Currently the -readyeop option is not supported. Please contact dimis@di.uoa.gr");
+					//file = Thread.currentThread().getContextClassLoader().getResource("mappingeop.ttl");
+				}
+				File temp = File.createTempFile("temp-mapping.ttl", ".");
+
+				InputStream fis = (((URL) file).openConnection().getInputStream());
+
+				OutputStream fos = (new FileOutputStream(temp));
+
+				String content = IOUtils.toString(fis);
+				// System.out.println(inputfile);
+				content = content.replaceAll("rml:source.*\n",
+						"rr:source \"" + (new File(inputfile)).getAbsolutePath() + "\";\n");
 				IOUtils.write(content, fos);
 				fis.close();
-			    fos.close();
-			    file=temp.getAbsolutePath();
-			    log.info("The mapping file is at: "+file);
+				fos.close();
+				file = temp.getAbsolutePath();
+				log.info("The mapping file is at: " + file);
 			} else {
 				file = args[args.length - 2];
 			}
@@ -150,7 +150,7 @@ public class MainTrans {
 			registerFunctions();
 			// but hack-fix but important
 
-			//System.out.println("mapping document " + file);
+			// System.out.println("mapping document " + file);
 			if (cmd.hasOption("epsg")) {
 				Config.EPSG_CODE = cmd.getOptionValue("epsg");
 			}
@@ -165,10 +165,8 @@ public class MainTrans {
 					format = RDFFormat.N3;
 				} else if (formatValue.equalsIgnoreCase("RDF/XML")) {
 					format = RDFFormat.RDFXML;
-				} else if (formatValue.equalsIgnoreCase("N-TRIPLE")
-						|| formatValue.equalsIgnoreCase("N-TRIPLES")
-						|| formatValue.equalsIgnoreCase("NTRIPLE")
-						|| formatValue.equalsIgnoreCase("NTRIPLES")) {
+				} else if (formatValue.equalsIgnoreCase("N-TRIPLE") || formatValue.equalsIgnoreCase("N-TRIPLES")
+						|| formatValue.equalsIgnoreCase("NTRIPLE") || formatValue.equalsIgnoreCase("NTRIPLES")) {
 					format = RDFFormat.NTRIPLES;
 				} else if (formatValue.equalsIgnoreCase("TURTLE")) {
 					format = RDFFormat.TURTLE;
@@ -193,20 +191,18 @@ public class MainTrans {
 				Config.setKML();
 
 			}
-			SesameDataSet output=null;
+			SesameDataSet output = null;
 			FileInputStream source_properties = null;
 			if (cmd.hasOption("sp")) {
-				source_properties = new FileInputStream(
-						cmd.getOptionValue("sp"));
+				source_properties = new FileInputStream(cmd.getOptionValue("sp"));
 				// System.out.println("source properties parameter is equal to "
 				// + cmd.getOptionValue("sp"));
 				// load the properties
 				RMLEngine.getFileMap().load(source_properties);
-				output=engine.runRMLMapping(mapping, graphName, outfile, true, true);
+				output = engine.runRMLMapping(mapping, graphName, outfile, true, true);
 			} else {
-				
-				 output= engine.runRMLMapping(mapping, graphName, null, false, false);
-				
+
+				output = engine.runRMLMapping(mapping, graphName, null, false, false);
 
 				// TODO: replace the above line with the two lines below:
 				/*
@@ -217,49 +213,54 @@ public class MainTrans {
 			}
 			if (cmd.hasOption("g"))
 				graphName = cmd.getOptionValue("g");
-			System.out.println("Total generated triples: "+output.getSize());
-			output.dumpRDF((outfile==null)?System.out:new PrintStream(new File(outfile)),
-					format);
+			System.out.println("Total generated triples: " + output.getSize());
+			output.dumpRDF((outfile == null) ? System.out : new PrintStream(new File(outfile)), format);
 			// System.out.println("--------------------------------------------------------------------------------");
 			// System.out.println("RML Processor");
 			// System.out.println("--------------------------------------------------------------------------------");
 			// System.out.println("");
-			// System.out.println("Usage: mvn exec:java -Dexec.args=\"<mapping_file> <output_file> [-sp source.properties] [-g <graph>]\"");
+			// System.out.println("Usage: mvn exec:java
+			// -Dexec.args=\"<mapping_file> <output_file> [-sp
+			// source.properties] [-g <graph>]\"");
 			// System.out.println("");
 			// System.out.println("With");
-			// System.out.println("    <mapping_file> = The RML mapping document conform with the RML specification (http://semweb.mmlab.be/rml/spec.html)");
-			// System.out.println("    <output_file> = The file where the output RDF triples are stored; default in Turtle (http://www.w3.org/TR/turtle/) syntax.");
-			// System.out.println("    <sources_properties> = Java properties file containing key-value pairs which configure the data sources used in the mapping file.");
-			// System.out.println("    <graph> (optional) = The named graph in which the output RDF triples are stored.");
+			// System.out.println(" <mapping_file> = The RML mapping document
+			// conform with the RML specification
+			// (http://semweb.mmlab.be/rml/spec.html)");
+			// System.out.println(" <output_file> = The file where the output
+			// RDF triples are stored; default in Turtle
+			// (http://www.w3.org/TR/turtle/) syntax.");
+			// System.out.println(" <sources_properties> = Java properties file
+			// containing key-value pairs which configure the data sources used
+			// in the mapping file.");
+			// System.out.println(" <graph> (optional) = The named graph in
+			// which the output RDF triples are stored.");
 			// System.out.println("");
-			// System.out.println("    An example '<sources_properties>' file 'sources.properties' could contain:");
+			// System.out.println(" An example '<sources_properties>' file
+			// 'sources.properties' could contain:");
 			// System.out.println("");
-			// System.out.println("    #File: s)ources.properties");
-			// System.out.println("    file1=/path/to/file1.csv");
-			// System.out.println("    file2=/path/to/file2.json");
-			// System.out.println("    file3=/path/to/file3.xml");
+			// System.out.println(" #File: s)ources.properties");
+			// System.out.println(" file1=/path/to/file1.csv");
+			// System.out.println(" file2=/path/to/file2.json");
+			// System.out.println(" file3=/path/to/file3.xml");
 			// System.out.println("--------------------------------------------------------------------------------");
 			// }
-		} catch (IOException | InvalidR2RMLStructureException
-				| InvalidR2RMLSyntaxException | R2RMLDataError
+		} catch (IOException | InvalidR2RMLStructureException | InvalidR2RMLSyntaxException | R2RMLDataError
 				| RepositoryException | RDFParseException | SQLException ex) {
 			System.out.println(ex.getMessage());
 		} catch (ParseException ex) {
-			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null,
-					ex);
+			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 	}
 
 	private static boolean execute(String mappingURL, String outputURL) {
 		try {
-			RMLMapping mapping = RMLMappingFactory
-					.extractRMLMapping(mappingURL);
+			RMLMapping mapping = RMLMappingFactory.extractRMLMapping(mappingURL);
 
 			RMLEngine engine = new RMLEngine();
 
-			SesameDataSet output = engine.runRMLMapping(mapping,
-					"http://example.com");
+			SesameDataSet output = engine.runRMLMapping(mapping, "http://example.com");
 			PrintStream ps = new PrintStream(new File("outputtriples.txt"));
 			output.dumpRDF(ps, RDFFormat.NTRIPLES);
 
@@ -267,17 +268,13 @@ public class MainTrans {
 			// desiredOutput.addFile(outputURL, RDFFormat.NTRIPLES);
 
 			return true;
-		} catch (SQLException | InvalidR2RMLStructureException
-				| InvalidR2RMLSyntaxException | R2RMLDataError
+		} catch (SQLException | InvalidR2RMLStructureException | InvalidR2RMLSyntaxException | R2RMLDataError
 				| RepositoryException | RDFParseException ex) {
-			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null,
-					ex);
+			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (UnsupportedEncodingException ex) {
-			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null,
-					ex);
+			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (IOException ex) {
-			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null,
-					ex);
+			Logger.getLogger(MainTrans.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 		return false;
@@ -288,8 +285,7 @@ public class MainTrans {
 			for (String line; (line = br.readLine()) != null;) {
 				String[] tokens = line.split(" +|\t|,|;");
 				if (tokens.length != 2) {
-					throw new Exception(
-							"File with namespaces contains a bad line");
+					throw new Exception("File with namespaces contains a bad line");
 				}
 				Config.user_namespaces.put(tokens[0], tokens[1]);
 			}
@@ -297,23 +293,19 @@ public class MainTrans {
 		}
 	}
 
-	private static void readNamespacesFromMapping(Object filepath)
-			throws Exception {
+	private static void readNamespacesFromMapping(Object filepath) throws Exception {
 		if (filepath instanceof String) {
-			try (BufferedReader br = new BufferedReader(new FileReader(
-					(String) filepath))) {
+			try (BufferedReader br = new BufferedReader(new FileReader((String) filepath))) {
 				for (String line; (line = br.readLine()) != null;) {
 					if (line.trim().startsWith("@prefix")) {
 						String[] tokens = line.split("\\s+");
 						if (tokens.length < 3) {
-							throw new Exception(
-									"Mapping file in contains a bad line with @prefix");
+							throw new Exception("Mapping file in contains a bad line with @prefix");
 						}
-						System.out.println("adding namespace "
-								+ tokens[1].replace(":", "").trim() + ": "
+						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
 								+ tokens[2].replaceAll("[<>#]", ""));
-						Config.user_namespaces.put(tokens[1].replace(":", "")
-								.trim(), tokens[2].replaceAll("[<>#]", ""));
+						Config.user_namespaces.put(tokens[1].replace(":", "").trim(),
+								tokens[2].replaceAll("[<>#]", ""));
 					}
 
 				}
@@ -321,20 +313,18 @@ public class MainTrans {
 			}
 		} else {
 			URL filenane = ((URL) filepath);
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(
-					filenane.openConnection().getInputStream()))) {
+			try (BufferedReader br = new BufferedReader(
+					new InputStreamReader(filenane.openConnection().getInputStream()))) {
 				for (String line; (line = br.readLine()) != null;) {
 					if (line.trim().startsWith("@prefix")) {
 						String[] tokens = line.split("\\s+");
 						if (tokens.length < 3) {
-							throw new Exception(
-									"Mapping file in contains a bad line with @prefix");
+							throw new Exception("Mapping file in contains a bad line with @prefix");
 						}
-						System.out.println("adding namespace "
-								+ tokens[1].replace(":", "").trim() + ": "
+						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
 								+ tokens[2].replaceAll("[<>#]", ""));
-						Config.user_namespaces.put(tokens[1].replace(":", "")
-								.trim(), tokens[2].replaceAll("[<>#]", ""));
+						Config.user_namespaces.put(tokens[1].replace(":", "").trim(),
+								tokens[2].replaceAll("[<>#]", ""));
 					}
 
 				}
@@ -346,73 +336,48 @@ public class MainTrans {
 	}
 
 	private static void registerFunctions() {
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/equi"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi"),
 				new FunctionEQUI()); // dont delete or change this line, it
 										// replaces the equi join functionality
 
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT"),
 				new FunctionAsWKT());
-		FunctionFactory
-				.registerFunction(
-						new URIImpl(
-								"http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"),
-						new FunctionHasSerialization());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/asGML"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization"),
+				new FunctionHasSerialization());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML"),
 				new FunctionAsGML());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple"),
 				new FunctionIsSimple());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty"),
 				new FunctionIsEmpty());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/is3D"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D"),
 				new FunctionIs3D());
-		FunctionFactory
-				.registerFunction(
-						new URIImpl(
-								"http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"),
-						new FunctionSpatialDimension());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/dimension"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension"),
+				new FunctionSpatialDimension());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension"),
 				new FunctionDimension());
-		FunctionFactory
-				.registerFunction(
-						new URIImpl(
-								"http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"),
-						new FunctionCoordinateDimension());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/area"),
+		FunctionFactory.registerFunction(
+				new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension"),
+				new FunctionCoordinateDimension());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area"),
 				new FunctionArea());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/length"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length"),
 				new FunctionLength());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx"),
 				new FunctionCentroidX());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"),
 				new FunctionCentroidY());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/contains"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"),
 				new FunctionContains());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/intersects"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"),
 				new FunctionIntersects());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/distance"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/distance"),
 				new FunctionDistance());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"),
 				new FunctionGreaterThan());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/add"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/add"),
 				new FunctionAdd());
-		FunctionFactory.registerFunction(new URIImpl(
-				"http://www.w3.org/ns/r2rml-ext/functions/def/subtract"),
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/subtract"),
 				new FunctionSubtract());
 
 	}

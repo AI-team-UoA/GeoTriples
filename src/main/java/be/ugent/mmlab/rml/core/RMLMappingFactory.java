@@ -179,7 +179,7 @@ public abstract class RMLMappingFactory {
 						shortcutTriple.getObject());
 			}
 		}
-		r2rmlMappingGraph.dumpRDF("processed_mapping.ttl", RDFFormat.TURTLE);
+		//r2rmlMappingGraph.dumpRDF("processed_mapping.ttl", RDFFormat.TURTLE);
 	}
 
 	/**
