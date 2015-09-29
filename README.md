@@ -12,10 +12,9 @@ $ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar [Options] [Argument]
 ```
 
 ### GeoTriples Modes ###
-GeoTriples consists of two modules. The Mapping Generator which automatically produces an R2RML mapping file according to the input source, 
-and the R2RML processor which processes an R2RML mapping and exports the RDF graph.
+GeoTriples consists of three modules. The Mapping Generator which automatically produces an R2RML/RML mapping file according to the input source, the R2RML/RML processor which processes an R2RML mapping and exports the RDF graph and the OBDA module that evaluates SPARQL/GeoSPARQL queries over a relational database.
 
-#### Automatic generation of R2RML mapping ####
+#### Automatic generation of R2RML/RML mappings ####
 - Relational Database
 ```bash
 $ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping -b baseURI [-u user] [-p password] [-d driver] [-o R2RMLoutfile] jdbcURL
@@ -44,9 +43,9 @@ $ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] 
 ```
 
 ### GeoTriples Architecture ###
-GeoTriples comprises two main
-components: the mapping generator and the R2RML processor. The mapping
-generator takes as input a data source and creates automatically an R2RML
+GeoTriples comprises three main
+components: the mapping generator, R2RML/RML processor and the [ontop-spatial](https://github.com/ConstantB/ontop-spatial) OBDA evaluator. The mapping
+generator takes as input a data source and creates automatically an R2RML or RML
 mapping that transforms it into an RDF graph. The generated mapping is
 enriched with subject and predicate-object maps, in order to take into account
 the specifities of geospatial data and cater for all transformations that are
