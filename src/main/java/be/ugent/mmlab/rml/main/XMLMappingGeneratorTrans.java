@@ -223,8 +223,10 @@ public class XMLMappingGeneratorTrans {
 			// if(i!=0)
 			// continue;
 			SchemaGlobalElement sge = globals[i];
-
-			if (sge.getType().getOuterType() != null
+System.out.println("is abstract type: "+sge.getType().isAbstract());
+System.out.println("get outer type: "+sge.getType().getOuterType());
+System.out.println(sge.getType().getOuterType().getName());
+			if ((sge.getType().getOuterType() != null && sge.getType().getName()!=null)
 					|| sge.getType().isAbstract()) {
 				continue;
 			}
@@ -561,6 +563,7 @@ public class XMLMappingGeneratorTrans {
 	}
 
 	private void printontology() throws FileNotFoundException {
+		if(ontology!=null)
 		ontology.writeToOutput(new PrintStream(ontologyOutputFile));
 	}
 

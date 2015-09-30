@@ -100,6 +100,7 @@ public class MainTrans {
 
 			options.addOption("readyeop", false, "Use GeoTriples' EOP 2.0 mapping document");
 			options.addOption("readykml", false, "Use GeoTriples' KML 2.2 mapping document");
+			options.addOption("readynetcdf", false, "Use GeoTriples' NetCDF v2.2 mapping document");
 			options.addOption("i", true, "Input source. Use with -readyeop or -readykml");
 
 			// should be new DefaultParser() but requires cli 1.3 instead of
@@ -122,9 +123,11 @@ public class MainTrans {
 				// ConfigurableStreamHandlerFactory("file", new Handler()));
 				if (cmd.hasOption("readykml")) {
 					file = Thread.currentThread().getContextClassLoader().getResource("mappingkml.ttl");
-				} else {
+				} else if(cmd.hasOption("readyeop")) {
 					throw new UnsupportedOperationException("Currently the -readyeop option is not supported. Please contact dimis@di.uoa.gr");
 					//file = Thread.currentThread().getContextClassLoader().getResource("mappingeop.ttl");
+				} else if(cmd.hasOption("readynetcdf")){
+					file = Thread.currentThread().getContextClassLoader().getResource("mappingNetCDF.ttl");
 				}
 				File temp = File.createTempFile("temp-mapping.ttl", ".");
 

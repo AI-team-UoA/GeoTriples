@@ -540,6 +540,7 @@ public class XMLMappingGenerator {
 	}
 
 	private void printontology() throws FileNotFoundException {
+		if(ontology!=null)
 		ontology.writeToOutput(new PrintStream(ontologyOutputFile));
 	}
 

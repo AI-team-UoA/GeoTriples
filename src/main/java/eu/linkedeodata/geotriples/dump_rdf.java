@@ -63,6 +63,7 @@ public class dump_rdf {
 			
 			final ArgDecl useReadyEOPMappingArg = new ArgDecl(false, "readyeop", "Use GeoTriples' EOP 2.0 mapping document");
 			final ArgDecl useReadyKMLMappingArg = new ArgDecl(false, "readykml", "Use GeoTriples' KML 2.2 mapping document");
+			final ArgDecl useReadyNetCDFMappingArg = new ArgDecl(false, "readynetcdf", "Use GeoTriples' NetCDF 2.2 mapping document");
 			
 			final ArgDecl inputFile=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
 			
@@ -97,6 +98,9 @@ public class dump_rdf {
 			
 			cmd.add(useReadyKMLMappingArg);
 			argdecls.add(useReadyKMLMappingArg);
+			
+			cmd.add(useReadyNetCDFMappingArg);
+			argdecls.add(useReadyNetCDFMappingArg);
 			
 			cmd.add(inputFile);
 			argdecls.add(inputFile);
@@ -150,6 +154,9 @@ public class dump_rdf {
 			}
 			if(cmd.contains(useReadyKMLMappingArg)){
 				arglist.add("-readykml");
+			}
+			if(cmd.contains(useReadyKMLMappingArg)){
+				arglist.add("-readynetcdf");
 			}
 			if(cmd.contains(inputFile)){
 				arglist.add("-i");
