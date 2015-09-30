@@ -84,7 +84,7 @@ public class MainTrans {
 			Object file = null;
 			String outfile = null, inputfile = null;
 			String graphName = "";
-			RDFFormat format = RDFFormat.N3;
+			RDFFormat format = RDFFormat.NTRIPLES;
 			// create Options object
 			Options options = new Options();
 			// add options
