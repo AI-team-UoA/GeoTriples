@@ -51,9 +51,9 @@ public class D2RQMappingStyle implements MappingStyle {
 		model.setNsPrefix("geof", "http://www.opengis.net/def/function/geosparql/");
 		model.setNsPrefix("vocab", vocabBaseIRI);
 		generator = new MappingGenerator(this, connection);
-		generator.setGenerateLabelBridges(true);
+		generator.setGenerateLabelBridges(false);
 		generator.setHandleLinkTables(true);
-		generator.setGenerateDefinitionLabels(true);
+		generator.setGenerateDefinitionLabels(false);
 		generator.setServeVocabulary(true);
 		generator.setSkipForeignKeyTargetColumns(true);
 		generator.setUseUniqueKeysAsEntityID(true);

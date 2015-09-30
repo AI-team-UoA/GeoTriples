@@ -50,7 +50,7 @@ public class GeneralMappingGenerator {
 	private final GeneralConnection connection;
 	private final List<TableName> tablesWithoutUniqueKey = new ArrayList<TableName>();
 	private Filter filter = Filter.ALL;
-	private boolean generateLabelBridges = true;
+	private boolean generateLabelBridges = false;
 	private boolean handleLinkTables = true;
 	private boolean skipForeignKeyTargetColumns = true;
 	private boolean useUniqueKeysAsEntityID = true;
@@ -60,7 +60,7 @@ public class GeneralMappingGenerator {
 	protected final PrefixMapping prefixes = new PrefixMappingImpl();
 	protected Target target;
 	protected boolean serveVocabulary = true;
-	protected boolean generateDefinitionLabels = true;
+	protected boolean generateDefinitionLabels = false;
 	protected boolean generateClasses = true;
 	protected TableDef thematicLogicalTable = null;
 	protected TableDef geometricLogicalTable = null;

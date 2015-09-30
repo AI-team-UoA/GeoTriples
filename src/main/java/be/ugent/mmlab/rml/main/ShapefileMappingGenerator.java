@@ -79,10 +79,11 @@ public class ShapefileMappingGenerator {
 						+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
 
 			}
-			triplesMaps.put(typeName,
-					triplesMaps.get(typeName) + printPredicateObjectMap(true, "shpGeometry",
-							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
-							typeName, true));
+//			triplesMaps.put(typeName,
+//					triplesMaps.get(typeName) + printPredicateObjectMap(true, "hasGeometry",
+//							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
+//							typeName, true));
+			printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null, null,"ogc:", null,typeName, true, false);
 			triplesMaps.put(typeNameGeo, "");
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource("$"));
@@ -261,6 +262,7 @@ public class ShapefileMappingGenerator {
 		// null,
 		// "ogc", "asGML", "",true));
 		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
+		sb.append(printPredicateObjectMap("isEmpty", "the_geom", "xsd:boolean", null, "ogc", "isEmpty", "", true));
 		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
 		sb.append(printPredicateObjectMap("hasSerialization", "the_geom", "ogc:wktLiteral", null, "ogc",
 				"hasSerialization", "", true));

@@ -52,8 +52,8 @@ public class MappingGenerator {
 	private Filter filter = Filter.ALL;
 	private boolean finished = false;
 	private boolean generateClasses = true;
-	private boolean generateLabelBridges = true;
-	private boolean generateDefinitionLabels = true;
+	private boolean generateLabelBridges = false;
+	private boolean generateDefinitionLabels = false;
 	private boolean handleLinkTables = true;
 	private boolean serveVocabulary = true;
 	private boolean skipForeignKeyTargetColumns = true;
@@ -600,6 +600,8 @@ public class MappingGenerator {
 		ColumnDef spatialDimension = new ColumnDef(Identifier.create(true, "spatialDimension"), new SQLExactNumeric("int",Types.INTEGER, false), false);
 		ColumnDef isEmpty = new ColumnDef(Identifier.create(true, "isEmpty"), new SQLBoolean("Boolean"), false);
 		ColumnDef isSimple = new ColumnDef(Identifier.create(true, "isSimple"), new SQLBoolean("Boolean"), false);
+		ColumnDef is3D = new ColumnDef(Identifier.create(true, "is3D"), new SQLBoolean("Boolean"), false);
+		ColumnDef hasSerialization = new ColumnDef(Identifier.create(true, "hasSerialization"), new WKTLiteral("wktLiteral"), false);
 		ColumnDef asWKT = new ColumnDef(Identifier.create(true, "asWKT"), new WKTLiteral("wktLiteral"), false);
 		//Key primaryKey = Key.create(id.getName());
 		//columns.add(id);
@@ -608,6 +610,8 @@ public class MappingGenerator {
 		columns.add(spatialDimension);
 		columns.add(isEmpty);
 		columns.add(isSimple);
+		columns.add(is3D);
+		columns.add(hasSerialization);
 		columns.add(asWKT);
 		Identifier ident = Identifier.createDelimited(tableName.getTable().getCanonicalName() + "Geo");
 		TableDef table = new TableDef(TableName.create(auxTable.getName().getCatalog(), auxTable.getName().getSchema(), ident), columns, null, new HashSet<Key>(), new HashSet<ForeignKey>());
@@ -659,9 +663,13 @@ public class MappingGenerator {
 				iriTemplate = style.getGeometryIRITemplate(auxTable, key);
 			/*}*/
 			
-			String query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_coorddim(" + geoColumn + ") as \"coordinateDimension\", st_coorddim(" + geoColumn + ") as \"spatialDimension\", CASE WHEN st_issimple(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isSimple\", CASE WHEN st_isempty(" + geoColumn + ") THEN 'true' ELSE 'false' END as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'> \' ,st_astext(" + geoColumn + ")) as \"asWKT\" FROM " + tableName.toString();
+			String query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_coorddim(" + geoColumn
+					+ ") as \"coordinateDimension\", st_coorddim(" + geoColumn
+					+ ") as \"spatialDimension\", CASE WHEN st_issimple(" + geoColumn
+					+ ") THEN 'true' ELSE 'false' END as \"isSimple\", CASE WHEN st_isempty(" + geoColumn
+					+ ") THEN 'true' ELSE 'false' END as \"isEmpty\", CASE WHEN st_coordim("+geoColumn+")=3 THEN 'true' ELSE 'false' END as \"is3D\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'> \' ,st_astext(" + geoColumn + ")) as \"asWKT\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/\', ST_SRID(" + geoColumn + "), \'> \' ,st_astext(" + geoColumn + ")) as \"hasSerialization\" FROM " + tableName.toString();
 			if (sqlConnection.getJdbcURL().contains("monetdb")) {
-				query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_dimension(" + geoColumn + ") as \"coordinateDimension\", st_dimension(" + geoColumn + ") as \"spatialDimension\",  st_issimple(" + geoColumn + ") as \"isSimple\", st_isempty(" + geoColumn + ") as \"isEmpty\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +"> \' , REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', '')) as \"asWKT\" FROM " + tableName.toString();
+				query = "SELECT *," + " st_dimension(" + geoColumn + ") as \"dimension\", st_dimension(" + geoColumn + ") as \"coordinateDimension\", st_dimension(" + geoColumn + ") as \"spatialDimension\",  st_issimple(" + geoColumn + ") as \"isSimple\", st_isempty(" + geoColumn + ") as \"isEmpty\", CASE WHEN st_dimension("+geoColumn+")=3 THEN 'true' ELSE 'false' END as \"is3D\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +"> \' , REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', '')) as \"asWKT\", CONCAT(\'<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE +"> \' , REPLACE(CAST(" + geoColumn + " AS TEXT), '\"', '')) as \"hasSerialization\" FROM " + tableName.toString();
 			}
 			target.generateGeoEntities(class_, table.getName(), 
 					iriTemplate, blankNodeColumns, query);
