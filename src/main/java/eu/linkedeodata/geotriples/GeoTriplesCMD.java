@@ -1,5 +1,6 @@
 package eu.linkedeodata.geotriples;
 
+import java.io.FileOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ public class GeoTriplesCMD {
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
+		//FileOutputStream logfile=new FileOutputStream(new File())
 	}
 
 	public static void usage() {

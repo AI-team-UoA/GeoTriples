@@ -225,8 +225,8 @@ public class RMLEngine {
            }
 
             long triples=processor.execute(sesameDataSet, triplesMap, new NodeRMLPerformer(processor), fileName);
-            System.out.println("Toses tripletes: " +triples);
-            System.out.println("Current total triples: "+sesameDataSet.getSize());
+            //System.out.println("Toses tripletes: " +triples);
+            //System.out.println("Current total triples: "+sesameDataSet.getSize());
             //executor.execute(new WorkerThread(processor, sesameDataSet, triplesMap, fileName,iteratorstr));
             //if(sesameDataSet.getSize() - delta ==0){
             if(triples==0){

@@ -332,7 +332,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(dataset.getSize());
+		//System.out.println(dataset.getSize());
 		return totalmatches.getValue();
 
 	}

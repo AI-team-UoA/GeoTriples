@@ -33,12 +33,9 @@ public class ShapefileMappingGenerator {
 	OntologyGenerator ontology = null;
 	private String pathToShapefile;
 
-	public ShapefileMappingGenerator(String shapefilefilename,
-			String outputfile, String baseiri,
-			String ontologyOutputFile)
-			throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException, ClassCastException, FileNotFoundException,
-			XmlException, IOException {
+	public ShapefileMappingGenerator(String shapefilefilename, String outputfile, String baseiri,
+			String ontologyOutputFile) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+					ClassCastException, FileNotFoundException, XmlException, IOException {
 		System.out.println("shapefilefilename=" + shapefilefilename);
 		System.out.println("outputfile=" + outputfile);
 		System.out.println("baseiri" + baseiri);
@@ -62,58 +59,46 @@ public class ShapefileMappingGenerator {
 		String[] typeNames = dataStore.getTypeNames();
 		for (int i = 0; i < typeNames.length; ++i) {
 			String typeName = typeNames[i];
-			triplesMaps.put(typeName,"");
-			triplesMaps.put(typeName, triplesMaps.get(typeName)
-					+ printTriplesMap(typeName));
-			triplesMaps.put(typeName, triplesMaps.get(typeName)
-					+ printLogicalSource("$"));
-			triplesMaps.put(typeName, triplesMaps.get(typeName)
-					+ printSubjectMap(baseURI, typeName));
-			FeatureSource<?, ?> featureSource = dataStore
-					.getFeatureSource(typeName);
+			triplesMaps.put(typeName, "");
+			triplesMaps.put(typeName, triplesMaps.get(typeName) + printTriplesMap(typeName));
+			triplesMaps.put(typeName, triplesMaps.get(typeName) + printLogicalSource("$"));
+			triplesMaps.put(typeName, triplesMaps.get(typeName) + printSubjectMap(baseURI, typeName));
+			FeatureSource<?, ?> featureSource = dataStore.getFeatureSource(typeName);
 
 			FeatureType ft = featureSource.getSchema();
 			String typeNameGeo = typeNames[i] + "_Geometry";
 			for (PropertyDescriptor property : ft.getDescriptors()) {
 
 				String identifier = property.getName().getLocalPart();
-				if(identifier.equals("the_geom")){
+				if (identifier.equals("the_geom")) {
 					continue;
 				}
-				String datatype = TranslateDataTypeToXSD((property.getType()
-						.getBinding().getName()));
+				String datatype = TranslateDataTypeToXSD((property.getType().getBinding().getName()));
 
-				triplesMaps.put(
-						typeName,
-						triplesMaps.get(typeName)
-								+ printPredicateObjectMap( identifier,
-										identifier, datatype, typeName));
+				triplesMaps.put(typeName, triplesMaps.get(typeName)
+						+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
 
 			}
-			triplesMaps.put(
-					typeName,
-					triplesMaps.get(typeName)
-							+ printPredicateObjectMap( true,"shpGeometry",
-									baseURI + (baseURI.endsWith("/") ? "" : "/")+typeNameGeo+"/{GeoTriplesID}", null, typeName,true));
-			triplesMaps.put(typeNameGeo,"");
-			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo)
-					+ printTriplesMap(typeNameGeo));
-			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo)
-					+ printLogicalSource("$"));
-			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo)
-					+ printSubjectMap(baseURI, typeNameGeo,null,false));
-			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo)
-					+ printGEOPredicateObjectMaps());
+			triplesMaps.put(typeName,
+					triplesMaps.get(typeName) + printPredicateObjectMap(true, "shpGeometry",
+							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
+							typeName, true));
+			triplesMaps.put(typeNameGeo, "");
+			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
+			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource("$"));
+			triplesMaps.put(typeNameGeo,
+					triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeNameGeo, null, false));
+			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
 		}
 		printmapping();
 		printontology();
 	}
 
 	private void printontology() throws FileNotFoundException {
-		if(ontologyOutputFile!=null){
+		if (ontologyOutputFile != null) {
 			ontology.writeToOutput(new PrintStream(ontologyOutputFile));
 		}
-		
+
 	}
 
 	private void printmapping() throws FileNotFoundException {
@@ -121,19 +106,15 @@ public class ShapefileMappingGenerator {
 		out.println("@prefix rr: <http://www.w3.org/ns/r2rml#>.\n"
 				+ "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
 				+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
-				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n"
-				+ "@prefix ex: <http://www.example.com/> .\n"
-				+ "@base <http://geotriples.eu/base> .\n"
-				+ "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
+				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n" + "@prefix ex: <http://www.example.com/> .\n"
+				+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
 				+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
-				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n"
-				+ "@prefix schema: <http://schema.org/>.\n"
+				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n" + "@prefix schema: <http://schema.org/>.\n"
 				+ "@prefix onto: <" + baseURI + "ontology#>.\n");
-		
+
 		for (String triplesMap : triplesMaps.keySet()) {
 			log.debug("TRIPLES MAP: " + triplesMap);
-			if (triplesMaps.get(triplesMap).isEmpty()
-					|| triplesMaps.get(triplesMap).equals("null")
+			if (triplesMaps.get(triplesMap).isEmpty() || triplesMaps.get(triplesMap).equals("null")
 					|| triplesMaps.get(triplesMap) == null) {
 				continue;
 			}
@@ -144,11 +125,7 @@ public class ShapefileMappingGenerator {
 			 * ("/hma:maskMembers/hma:MaskFeature/a:extentOf")){
 			 * System.out.println(triplesMaps .get(triplesMap)); }
 			 */
-			out.println(triplesMaps
-					.get(triplesMap)
-					.trim()
-					.substring(0,
-							triplesMaps.get(triplesMap).trim().length() - 1)
+			out.println(triplesMaps.get(triplesMap).trim().substring(0, triplesMaps.get(triplesMap).trim().length() - 1)
 					+ ".\n");
 
 			// log.debug("END TRIPLES MAP: "+triplesMap);
@@ -156,8 +133,7 @@ public class ShapefileMappingGenerator {
 		out.close();
 	}
 
-	public static String TranslateDataTypeToXSD(String name)
-			throws UnsupportedDataTypeException {
+	public static String TranslateDataTypeToXSD(String name) throws UnsupportedDataTypeException {
 		if (name.contains(".")) {
 			String[] tokens = name.split("[.]");
 			name = tokens[tokens.length - 1];
@@ -175,39 +151,36 @@ public class ShapefileMappingGenerator {
 		} else if (name.equals("Date")) { // TODO to be checked !! date xsd??
 			return "xsd:datetime";
 		} else {
-			throw new UnsupportedDataTypeException("Datatype '" + name
-					+ "' is not supported!");
+			throw new UnsupportedDataTypeException("Datatype '" + name + "' is not supported!");
 		}
 	}
-	private String printPredicateObjectMap(boolean isTemplate,String predicate, String reference,
-			String type, String classname,boolean isSubTypeOfGeometryClass) {
-		return printPredicateObjectMap(isTemplate,predicate, reference, type, null, null,
-				null, classname, false,isSubTypeOfGeometryClass);
+
+	private String printPredicateObjectMap(boolean isTemplate, String predicate, String reference, String type,
+			String classname, boolean isSubTypeOfGeometryClass) {
+		return printPredicateObjectMap(isTemplate, predicate, reference, type, null, null, null, classname, false,
+				isSubTypeOfGeometryClass);
 	}
-	private String printPredicateObjectMap(String predicate, String reference,
-			String type, String classname) {
-		return printPredicateObjectMap(false,predicate, reference, type, null, null,
-				null, classname, false,false);
+
+	private String printPredicateObjectMap(String predicate, String reference, String type, String classname) {
+		return printPredicateObjectMap(false, predicate, reference, type, null, null, null, classname, false, false);
 	}
-	private String printPredicateObjectMap(String predicate, String reference,
-			String type, String typeprefix, String predicatedprefix,
-			String function, String classname, boolean isgeometrypredicate){
-		return printPredicateObjectMap(false,predicate,reference,
-				type, typeprefix, predicatedprefix,
-				function, classname, isgeometrypredicate,false);
+
+	private String printPredicateObjectMap(String predicate, String reference, String type, String typeprefix,
+			String predicatedprefix, String function, String classname, boolean isgeometrypredicate) {
+		return printPredicateObjectMap(false, predicate, reference, type, typeprefix, predicatedprefix, function,
+				classname, isgeometrypredicate, false);
 	}
-	private String printPredicateObjectMap(boolean isTemplate,String predicate, String reference,
-			String type, String typeprefix, String predicatedprefix,
-			String function, String classname, boolean isgeometrypredicate,boolean isSubtypeOfGeometryClass) {
+
+	private String printPredicateObjectMap(boolean isTemplate, String predicate, String reference, String type,
+			String typeprefix, String predicatedprefix, String function, String classname, boolean isgeometrypredicate,
+			boolean isSubtypeOfGeometryClass) {
 		predicate = predicate.replace(".", "");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:predicateObjectMap [\n");
-		sb.append("\trr:predicateMap [ rr:constant "
-				+ ((predicatedprefix == null) ? "onto" : (predicatedprefix))
-				+ ":");
+		sb.append(
+				"\trr:predicateMap [ rr:constant " + ((predicatedprefix == null) ? "onto" : (predicatedprefix)) + ":");
 		if (!isgeometrypredicate) {
-			predicate = "has"
-					+ WordUtils.capitalize(predicate, new char[] { '-' });
+			predicate = "has" + WordUtils.capitalize(predicate, new char[] { '-' });
 		}
 		sb.append(predicate + " ];\n");
 		sb.append("\trr:objectMap [\n");
@@ -220,20 +193,18 @@ public class ShapefileMappingGenerator {
 			sb.append("rml:reference \"" + reference + "\"; ] );\n");
 		} else { // we have simple reference
 			if (ontology != null && !isgeometrypredicate) {
-				ontology.createDatatypeProperty(
-						classname,
-						"has"
-								+ WordUtils.capitalize(predicate,
-										new char[] { '-' }), type);
+				ontology.createDatatypeProperty(classname, "has" + WordUtils.capitalize(predicate, new char[] { '-' }),
+						type);
 			}
-			sb.append("\t\t"+(isTemplate?"rr:template":"rml:reference")+" \"" + reference + "\";\n");
+			sb.append("\t\t" + (isTemplate ? "rr:template" : "rml:reference") + " \"" + reference + "\";\n");
 		}
-		if(isSubtypeOfGeometryClass){
-			ontology.createObjectProperty(classname,predicate ,
-					classname+"_Geometry", true);
-			if (true) {
-				ontology.addFeatureAsSuperClass(classname);
-				ontology.createGeometryClass(classname+"_Geometry");
+		if (ontology != null) {
+			if (isSubtypeOfGeometryClass) {
+				ontology.createObjectProperty(classname, predicate, classname + "_Geometry", true);
+				if (true) {
+					ontology.addFeatureAsSuperClass(classname);
+					ontology.createGeometryClass(classname + "_Geometry");
+				}
 			}
 		}
 		sb.append("\t];\n");
@@ -254,13 +225,11 @@ public class ShapefileMappingGenerator {
 		return printSubjectMap(baseuri, classname, null, false);
 	}
 
-	private String printSubjectMap(String baseuri, String classname,
-			boolean isGeometrySubClass) {
+	private String printSubjectMap(String baseuri, String classname, boolean isGeometrySubClass) {
 		return printSubjectMap(baseuri, classname, null, isGeometrySubClass);
 	}
 
-	private String printSubjectMap(String baseuri, String classname,
-			String classprefix, boolean isGeometrySubClass) {
+	private String printSubjectMap(String baseuri, String classname, String classprefix, boolean isGeometrySubClass) {
 		classname = classname.replace(".", "");
 		if (ontology != null) {
 			if (isGeometrySubClass) {
@@ -272,9 +241,8 @@ public class ShapefileMappingGenerator {
 		String base = baseuri + (baseuri.endsWith("/") ? "" : "/");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:subjectMap [\n");
-		sb.append("\trr:template \"" + base +classname+ "/{GeoTriplesID}\";\n");
-		sb.append("\trr:class " + (classprefix != null ? classprefix : "onto")
-				+ ":" + classname + ";\n");
+		sb.append("\trr:template \"" + base + classname + "/{GeoTriplesID}\";\n");
+		sb.append("\trr:class " + (classprefix != null ? classprefix : "onto") + ":" + classname + ";\n");
 		sb.append("];\n");
 		return sb.toString();
 	}
@@ -287,36 +255,32 @@ public class ShapefileMappingGenerator {
 
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(printPredicateObjectMap("dimension", "the_geom", "xsd:integer",
-				null, "ogc", "dimension", "", true));
-		sb.append(printPredicateObjectMap("asWKT", "the_geom", "ogc:wktLiteral", null,
-				"ogc", "asWKT", "", true));
+		sb.append(printPredicateObjectMap("dimension", "the_geom", "xsd:integer", null, "ogc", "dimension", "", true));
+		sb.append(printPredicateObjectMap("asWKT", "the_geom", "ogc:wktLiteral", null, "ogc", "asWKT", "", true));
 		// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
 		// null,
 		// "ogc", "asGML", "",true));
-		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null,
-				"ogc", "is3D", "", true));
-		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null,
-				"ogc", "isSimple", "", true));
-		sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
-				"ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
-		sb.append(printPredicateObjectMap("coordinateDimension", "the_geom",
-				"xsd:integer", null, "ogc", "coordinateDimension", "", true));
-		sb.append(printPredicateObjectMap("spatialDimension", "the_geom",
-				"xsd:integer", null, "ogc", "spatialDimension", "", true));
+		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
+		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
+		sb.append(printPredicateObjectMap("hasSerialization", "the_geom", "ogc:wktLiteral", null, "ogc",
+				"hasSerialization", "", true));
+		sb.append(printPredicateObjectMap("coordinateDimension", "the_geom", "xsd:integer", null, "ogc",
+				"coordinateDimension", "", true));
+		sb.append(printPredicateObjectMap("spatialDimension", "the_geom", "xsd:integer", null, "ogc",
+				"spatialDimension", "", true));
 		// TODO write all the GeoSPARQL properties
 		return sb.toString();
 	}
-	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ClassCastException, FileNotFoundException, XmlException, IOException {
+
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, ClassCastException, FileNotFoundException, XmlException, IOException {
 		if (args.length < 3) {
-			System.err
-					.println("Please give arguments, eg <shapefile> <outputfile> <baseiri> [out-ontologyfile]");
+			System.err.println("Please give arguments, eg <shapefile> <outputfile> <baseiri> [out-ontologyfile]");
 			System.exit(1);
 		}
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
-		ShapefileMappingGenerator m = new ShapefileMappingGenerator(args[0], args[1],
-				args[2],
+		ShapefileMappingGenerator m = new ShapefileMappingGenerator(args[0], args[1], args[2],
 				(args.length > 3) ? args[3] : null);
 		m.run();
 	}
