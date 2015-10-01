@@ -83,7 +83,8 @@ public class ShapefileMappingGenerator {
 //					triplesMaps.get(typeName) + printPredicateObjectMap(true, "hasGeometry",
 //							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
 //							typeName, true));
-			printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null, null,"ogc:", null,typeName, true, false);
+			triplesMaps.put(typeName,
+					triplesMaps.get(typeName) +printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null, null,"ogc", null,typeName, true, false));
 			triplesMaps.put(typeNameGeo, "");
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource("$"));

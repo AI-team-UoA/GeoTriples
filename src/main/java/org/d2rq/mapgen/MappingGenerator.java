@@ -556,8 +556,10 @@ public class MappingGenerator {
 						style.getForeignKeyProperty(tableName, fk), 
 						tableName, fk);
 			}
-			
-			if (hasGeom) {
+			if (hasGeom){				
+				((R2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
+			}
+			if (false && hasGeom) {
 				
 				/*if (key == null) {
 					Key themKey = table.getPrimaryKey();

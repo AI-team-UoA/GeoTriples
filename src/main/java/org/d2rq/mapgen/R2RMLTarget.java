@@ -126,6 +126,13 @@ public class R2RMLTarget implements Target {
 						createTermMap(labelTemplate, TermType.LITERAL)));
 	}
 	
+	public void generateTemplatePredicateObjectMap(Property property,TemplateValueMaker template,
+			TableName tableName){
+		addPredicateObjectMap(tableName, 
+				createPredicateObjectMap(property, 
+						createTermMap(template, TermType.IRI)));
+	}
+	
 	private ReferencingObjectMap createRefObjectMap(TableName tableName, Key localKey, Key foreignKey, TableName foreignTable) {
 		ReferencingObjectMap result = new ReferencingObjectMap();
 		result.setParentTriplesMap(getTriplesMapResource(foreignTable));
