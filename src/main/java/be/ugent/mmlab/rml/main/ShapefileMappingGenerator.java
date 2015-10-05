@@ -68,7 +68,7 @@ public class ShapefileMappingGenerator {
 			String typeName = typeNames[i];
 			triplesMaps.put(typeName, "");
 			triplesMaps.put(typeName, triplesMaps.get(typeName) + printTriplesMap(typeName));
-			triplesMaps.put(typeName, triplesMaps.get(typeName) + printLogicalSource("$"));
+			triplesMaps.put(typeName, triplesMaps.get(typeName) + printLogicalSource(typeName));
 			triplesMaps.put(typeName, triplesMaps.get(typeName) + printSubjectMap(baseURI, typeName));
 			FeatureSource<?, ?> featureSource = dataStore.getFeatureSource(typeName);
 
@@ -94,7 +94,7 @@ public class ShapefileMappingGenerator {
 					triplesMaps.get(typeName) +printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName + "/Geometry/{GeoTriplesID}", null, null,"ogc", null,typeName, true, false));
 			triplesMaps.put(typeNameGeo, "");
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
-			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource("$"));
+			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource(typeName));
 			triplesMaps.put(typeNameGeo,
 					triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
