@@ -67,7 +67,17 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[Shapefile Processor] filename " + fileName);
 			System.out.println("Using GDAL as the Shapefile Reader");
+			ogr.DontUseExceptions();
 
+			/*
+			 * --------------------------------------------------------------------
+			 */
+			/* Register format(s). */
+			/*
+			 * --------------------------------------------------------------------
+			 */
+			if (ogr.GetDriverCount() == 0)
+				ogr.RegisterAll();
 			String pszDataSource = null;
 			Vector papszLayers = new Vector();
 			DataSource poDS;
