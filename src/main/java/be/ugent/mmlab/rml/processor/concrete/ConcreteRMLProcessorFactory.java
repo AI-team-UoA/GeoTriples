@@ -26,7 +26,8 @@ public class ConcreteRMLProcessorFactory implements RMLProcessorFactory{
             case JSONPATH_CLASS:
                 return new JSONPathProcessor();
             case SHP_CLASS:
-                return new ShapefileProcessor();
+            	return new ShapefileProcessorGDAL();
+                //return new ShapefileProcessor();
             case SQL_CLASS:
                 return new DatabaseProcessor();
         }
