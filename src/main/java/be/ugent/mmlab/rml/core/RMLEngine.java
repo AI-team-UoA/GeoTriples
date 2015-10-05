@@ -18,6 +18,7 @@ import net.antidot.semantic.rdf.rdb2rdf.r2rml.exception.R2RMLDataError;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFFormat;
 
 import be.ugent.mmlab.rml.dataset.FileSesameDataset;
 import be.ugent.mmlab.rml.model.LogicalSource;
@@ -70,9 +71,9 @@ public class RMLEngine {
      * @throws UnsupportedEncodingException
      */
     public SesameDataSet runRMLMapping(RMLMapping rmlMapping,
-            String baseIRI) throws SQLException,
+            String baseIRI,RDFFormat format) throws SQLException,
             R2RMLDataError, UnsupportedEncodingException {
-        return runRMLMapping(rmlMapping, baseIRI, null, false, false);
+        return runRMLMapping(rmlMapping, baseIRI, null, false, false,format);
     }
 
     /**
@@ -81,13 +82,14 @@ public class RMLEngine {
      * @param baseIRI base URI of the resulting RDF
      * @param pathToNativeStore path if triples have to be stored in sesame
      * triple store instead of memory
+     * @param format 
      * @return
      * @throws SQLException
      * @throws R2RMLDataError
      * @throws UnsupportedEncodingException
      */
     public SesameDataSet runRMLMapping(RMLMapping rmlMapping,
-            String baseIRI, String pathToNativeStore, boolean filebased, boolean source_properties) throws SQLException,
+            String baseIRI, String pathToNativeStore, boolean filebased, boolean source_properties, RDFFormat format) throws SQLException,
             R2RMLDataError, UnsupportedEncodingException {
         RMLEngine.source_properties = source_properties;
         long startTime = System.nanoTime();
@@ -109,11 +111,11 @@ public class RMLEngine {
         if (filebased) {
             log.debug("[RMLEngine:runRMLMapping] Use direct file "
                     + pathToNativeStore);
-            sesameDataSet = new FileSesameDataset(pathToNativeStore);
-        } else if (pathToNativeStore != null) { // Check if use of native store is required
-            log.debug("[RMLEngine:runRMLMapping] Use native store "
-                    + pathToNativeStore);
-            sesameDataSet = new SesameDataSet(pathToNativeStore, false);
+            sesameDataSet = new FileSesameDataset(pathToNativeStore,format);
+//        } else if (pathToNativeStore != null) { // Check if use of native store is required
+//            log.debug("[RMLEngine:runRMLMapping] Use native store "
+//                    + pathToNativeStore);
+//            sesameDataSet = new SesameDataSet(pathToNativeStore, false);
         } else {
             log.debug("[RMLEngine:runRMLMapping] Use default store (memory) ");
             //Repository rr= new SailRepository( new MemoryStore() );
@@ -129,7 +131,7 @@ public class RMLEngine {
         
 	long endTime = System.nanoTime();
         long duration = endTime - startTime;
-        //log.debug("[RMLEngine:runRMLMapping] RML mapping done! Generated " + sesameDataSet.getSize() + " in " + ((double) duration) / 1000000000 + "s . ");
+        log.debug("[RMLEngine:runRMLMapping] RML mapping done! Generated " + sesameDataSet.getSize() + " in " + ((double) duration) / 1000000000 + "s . ");
         return sesameDataSet;
     }
     //changed to protected by dimis
@@ -257,7 +259,7 @@ public class RMLEngine {
 //		}
         if(filebased)
             try {
-            	System.out.println("This is filebased!!!!!");
+            	log.debug("Closing repository..");
                 sesameDataSet.closeRepository();
             } catch (RepositoryException ex) {
                 log.error("[RMLEngine:generateRDFTriples] Cannot close output repository", ex);

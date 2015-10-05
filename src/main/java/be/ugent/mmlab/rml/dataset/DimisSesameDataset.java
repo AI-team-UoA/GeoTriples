@@ -35,6 +35,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
+import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
@@ -517,6 +518,7 @@ public class DimisSesameDataset extends SesameDataSet  {
 			try {
 				TupleQuery query = con.prepareTupleQuery(
 						org.openrdf.query.QueryLanguage.SPARQL, qs);
+				//System.exit(0);
 				TupleQueryResult qres = query.evaluate();
 				ArrayList<HashMap<String, Value>> reslist = new ArrayList<HashMap<String, Value>>();
 				while (qres.hasNext()) {
@@ -750,5 +752,9 @@ public class DimisSesameDataset extends SesameDataSet  {
 			log.debug("[SesameDataSet:isEqualTo] No same size : "
 					+ dataSet.getSize() + " != " + getSize());
 		return dataSet.getSize() == getSize();
+	}
+	public static void main(String[] args) {
+		DimisSesameDataset r = new DimisSesameDataset();
+		r.runSPARQL("select * where{?a ?b ?c. ?c <http://mpla/p> ?x}");
 	}
 }

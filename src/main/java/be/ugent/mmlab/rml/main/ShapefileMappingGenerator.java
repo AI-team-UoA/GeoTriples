@@ -19,6 +19,11 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+
+import com.hp.hpl.jena.query.Query;
 
 import be.ugent.mmlab.rml.core.OntologyGenerator;
 
@@ -45,6 +50,8 @@ public class ShapefileMappingGenerator {
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";
 		}
+		
+		
 		this.outputfile = new File(outputfile);
 		if (ontologyOutputFile != null) {
 			this.ontologyOutputFile = new File(ontologyOutputFile);
@@ -74,7 +81,7 @@ public class ShapefileMappingGenerator {
 					continue;
 				}
 				String datatype = TranslateDataTypeToXSD((property.getType().getBinding().getName()));
-
+				Query q=new Query();
 				triplesMaps.put(typeName, triplesMaps.get(typeName)
 						+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
 
@@ -84,12 +91,12 @@ public class ShapefileMappingGenerator {
 //							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
 //							typeName, true));
 			triplesMaps.put(typeName,
-					triplesMaps.get(typeName) +printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null, null,"ogc", null,typeName, true, false));
+					triplesMaps.get(typeName) +printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName + "/Geometry/{GeoTriplesID}", null, null,"ogc", null,typeName, true, false));
 			triplesMaps.put(typeNameGeo, "");
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource("$"));
 			triplesMaps.put(typeNameGeo,
-					triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeNameGeo, null, false));
+					triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
 		}
 		printmapping();
@@ -234,16 +241,16 @@ public class ShapefileMappingGenerator {
 	private String printSubjectMap(String baseuri, String classname, String classprefix, boolean isGeometrySubClass) {
 		classname = classname.replace(".", "");
 		if (ontology != null) {
-			if (isGeometrySubClass) {
+			/*if (isGeometrySubClass) {
 				ontology.createGeometryClass(classname);
 			} else {
 				ontology.createClass(classname);
-			}
+			}*/
 		}
 		String base = baseuri + (baseuri.endsWith("/") ? "" : "/");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:subjectMap [\n");
-		sb.append("\trr:template \"" + base + classname + "/{GeoTriplesID}\";\n");
+		sb.append("\trr:template \"" + base + classname +(isGeometrySubClass?"/Geometry/":"/id/")+"{GeoTriplesID}\";\n");
 		sb.append("\trr:class " + (classprefix != null ? classprefix : "onto") + ":" + classname + ";\n");
 		sb.append("];\n");
 		return sb.toString();

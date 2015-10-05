@@ -202,10 +202,9 @@ public class MainTrans {
 				// + cmd.getOptionValue("sp"));
 				// load the properties
 				RMLEngine.getFileMap().load(source_properties);
-				output = engine.runRMLMapping(mapping, graphName, outfile, true, true);
+				output = engine.runRMLMapping(mapping, graphName, outfile, true, true,format);
 			} else {
-
-				output = engine.runRMLMapping(mapping, graphName, null, false, false);
+				output = engine.runRMLMapping(mapping, graphName, outfile, (outfile!=null), false,format);
 
 				// TODO: replace the above line with the two lines below:
 				/*
@@ -216,8 +215,10 @@ public class MainTrans {
 			}
 			if (cmd.hasOption("g"))
 				graphName = cmd.getOptionValue("g");
-			System.out.println("Total generated triples: " + output.getSize());
-			output.dumpRDF((outfile == null) ? System.out : new PrintStream(new File(outfile)), format);
+			if(outfile==null){
+				output.dumpRDF(System.out ,format);
+			}
+			//output.dumpRDF((outfile == null) ? System.out : new PrintStream(new File(outfile)), format);
 			// System.out.println("--------------------------------------------------------------------------------");
 			// System.out.println("RML Processor");
 			// System.out.println("--------------------------------------------------------------------------------");
@@ -263,7 +264,7 @@ public class MainTrans {
 
 			RMLEngine engine = new RMLEngine();
 
-			SesameDataSet output = engine.runRMLMapping(mapping, "http://example.com");
+			SesameDataSet output = engine.runRMLMapping(mapping, "http://example.com",RDFFormat.NTRIPLES);
 			PrintStream ps = new PrintStream(new File("outputtriples.txt"));
 			output.dumpRDF(ps, RDFFormat.NTRIPLES);
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +41,8 @@ import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+
 /**
  *
  * @author mielvandersande
@@ -57,9 +59,8 @@ public class FileSesameDataset extends SesameDataSet {
     
     private int size = 0;
 
-    public FileSesameDataset(String target) {
-
-        this.target = new File(target);
+    private void init(String target,RDFFormat format) {
+    	this.target = new File(target);
 
         try {
             fw = new BufferedWriter(new FileWriter(target));
@@ -70,6 +71,14 @@ public class FileSesameDataset extends SesameDataSet {
             log.error("", ex);
         } 
 
+    }
+    public FileSesameDataset(String target) {
+    	this.format=RDFFormat.NTRIPLES;
+        init(target, format);
+    }
+    public FileSesameDataset(String target,RDFFormat format) {
+    	this.format=format;
+        init(target, format);
     }
 
     /**
@@ -426,4 +435,9 @@ public class FileSesameDataset extends SesameDataSet {
         result += "}";
         return result;
     }
+    
+    public void setFormat(RDFFormat format){
+    	this.format=format;
+    }
 }
+

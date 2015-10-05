@@ -48,10 +48,10 @@ public class NodeRMLPerformer implements RMLPerformer{
         Resource subject = processor.processSubjectMap(dataset, map.getSubjectMap(), node);
         processor.processSubjectTypeMap(dataset, subject, map.getSubjectMap(), node);
         if (subject == null){
-            System.out.println();
-            System.out.println(map.getSubjectMap().getStringTemplate());
-            System.out.println(((Node)((NodeItem)node).xml).toXML());
-            System.out.println("OPA");
+//            System.out.println();
+//            System.out.println(map.getSubjectMap().getStringTemplate());
+//            System.out.println(((Node)((NodeItem)node).xml).toXML());
+//            System.out.println("OPA");
             return;
         }
         Set<GraphMap> graph = map.getSubjectMap().getGraphMaps();

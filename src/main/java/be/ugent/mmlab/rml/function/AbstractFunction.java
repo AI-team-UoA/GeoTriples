@@ -184,6 +184,7 @@ public abstract class AbstractFunction {
 		}
 		switch (term) {
 		case SHP_CLASS:
+			//return (org.gdal.ogr.Geometry) object;
 			return (Geometry) object;
 		case XPATH_CLASS:
 			Geometry result1 = computeGeometry((String) object, term);
