@@ -19,25 +19,24 @@ import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-
 public class FunctionHasSerialization extends GeometryFunction implements Function {
-	
+
 	@Override
-	public List<? extends Object> execute(
-			List<? extends Object> arguments,List<? extends QLTerm> qlterms) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+	public List<? extends Object> execute(List<? extends Object> arguments, List<? extends QLTerm> qlterms)
+			throws SAXException, IOException, ParserConfigurationException, FactoryException,
+			MalformedGeometryException {
 		List<String> valueList = new ArrayList<>();
-		
-		if(qlterms.get(0).equals(QLTerm.SHP_CLASS) && arguments.get(0) instanceof org.gdal.ogr.Geometry ){
-			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )arguments.get(0);
-			valueList.add("<http://www.opengis.net/def/crs/EPSG/0/"+gdalgeom.GetSpatialReference().GetAttrValue("AUTHORITY", 1)+ "> "+gdalgeom.ExportToWkt());
+
+		if (qlterms.get(0).equals(QLTerm.SHP_CLASS) && arguments.get(0) instanceof org.gdal.ogr.Geometry) {
+			org.gdal.ogr.Geometry gdalgeom = (org.gdal.ogr.Geometry) arguments.get(0);
+			valueList.add("<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE + "> " + gdalgeom.ExportToWkt());
 			return valueList;
 		}
-		
+
 		Geometry geometry = computeGeometry(arguments.get(0), qlterms.get(0));
-		valueList.add(GTransormationFunctions.hasSerialization(
-				(Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE)));
+		valueList.add(
+				GTransormationFunctions.hasSerialization((Geometry) geometry, CRS.decode("EPSG:" + Config.EPSG_CODE)));
 		return valueList;
 	}
-
 
 }

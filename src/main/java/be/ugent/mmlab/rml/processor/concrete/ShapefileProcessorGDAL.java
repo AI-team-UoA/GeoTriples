@@ -127,11 +127,12 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 				{
 					continue;
 				}
+				Config.EPSG_CODE=poLayer.GetSpatialRef().GetAttrValue("AUTHORITY", 1);
 
-				// System.out.println(poLayer.GetSpatialRef().GetAttrValue("AUTHORITY",
-				// 1));
+				// System.out.println(poLayer.GetSpatialRef().GetAttrValue("AUTHORITY", 1));
 				KeyGenerator keygen = new KeyGenerator();
 				Feature feature;
+				
 				for (int f = 0; f < poLayer.GetFeatureCount(); ++f) {
 					// while ((feature = poLayer.GetNextFeature()) != null) {
 					feature = poLayer.GetNextFeature();
