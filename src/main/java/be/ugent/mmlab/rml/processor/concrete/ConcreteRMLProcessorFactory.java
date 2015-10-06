@@ -1,5 +1,6 @@
 package be.ugent.mmlab.rml.processor.concrete;
 
+import be.ugent.mmlab.rml.function.Config;
 import be.ugent.mmlab.rml.processor.RMLProcessor;
 import be.ugent.mmlab.rml.processor.RMLProcessorFactory;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
@@ -26,8 +27,10 @@ public class ConcreteRMLProcessorFactory implements RMLProcessorFactory{
             case JSONPATH_CLASS:
                 return new JSONPathProcessor();
             case SHP_CLASS:
-            	return new ShapefileProcessorGDAL();
-                //return new ShapefileProcessor();
+            	if(Config.useDGALLibrary)
+            		return new ShapefileProcessorGDAL();
+            	else
+            		return new ShapefileProcessor();
             case SQL_CLASS:
                 return new DatabaseProcessor();
         }

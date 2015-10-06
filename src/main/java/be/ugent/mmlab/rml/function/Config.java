@@ -12,6 +12,7 @@ public class Config {
 	public static boolean useGML3=true;
 	public static boolean useGML2=false;
 	public static boolean useKML_22=false;
+	public static boolean useDGALLibrary=false;
 	public static final HashMap<String, String> user_namespaces=new HashMap<String, String>();
 	public static final String GEOTRIPLES_AUTO_ID = "GeoTriplesID";
 	public static void setGML3() {
@@ -28,5 +29,8 @@ public class Config {
 		useGML3=false;
 		useGML2=false;
 		useKML_22=true;
+	}
+	public static void setGDAL() {
+		useDGALLibrary=true;
 	}
 }

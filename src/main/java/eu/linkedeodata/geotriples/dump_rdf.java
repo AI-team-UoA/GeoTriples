@@ -66,7 +66,7 @@ public class dump_rdf {
 			final ArgDecl useReadyNetCDFMappingArg = new ArgDecl(false, "readynetcdf", "Use GeoTriples' NetCDF 2.2 mapping document");
 			
 			final ArgDecl inputFile=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
-			
+			final ArgDecl useGDALLibraryArg = new ArgDecl(false, "gdal", "Use GDAL as the library for the manipulation of the Geometries (Default is GeoTools)");
 			cmd.add(rmlArg);
 			argdecls.add(rmlArg);
 			
@@ -101,6 +101,9 @@ public class dump_rdf {
 			
 			cmd.add(useReadyNetCDFMappingArg);
 			argdecls.add(useReadyNetCDFMappingArg);
+			
+			cmd.add(useGDALLibraryArg);
+			argdecls.add(useGDALLibraryArg);
 			
 			cmd.add(inputFile);
 			argdecls.add(inputFile);
@@ -157,6 +160,9 @@ public class dump_rdf {
 			}
 			if(cmd.contains(useReadyKMLMappingArg)){
 				arglist.add("-readynetcdf");
+			}
+			if(cmd.contains(useGDALLibraryArg)){
+				arglist.add("-gdal");
 			}
 			if(cmd.contains(inputFile)){
 				arglist.add("-i");
