@@ -1,4 +1,4 @@
-package be.ugent.mmlab.rml.main;
+package be.ugent.mmlab.rml.mapgen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -138,7 +138,7 @@ public class SQLMappingGenerator {
 		out.println("@prefix rr: <http://www.w3.org/ns/r2rml#>.\n"
 				+ "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
 				+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
-				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n" + "@prefix ex: <http://www.example.com/> .\n"
+				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n" 
 				+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
 				+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
 				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n" + "@prefix schema: <http://schema.org/>.\n"

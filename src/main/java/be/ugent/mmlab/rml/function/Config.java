@@ -13,6 +13,7 @@ public class Config {
 	public static boolean useGML2=false;
 	public static boolean useKML_22=false;
 	public static boolean useDGALLibrary=false;
+	public static boolean useOldDBProcessor=false;
 	public static final HashMap<String, String> user_namespaces=new HashMap<String, String>();
 	public static final String GEOTRIPLES_AUTO_ID = "GeoTriplesID";
 	public static void setGML3() {
@@ -32,5 +33,8 @@ public class Config {
 	}
 	public static void setGDAL() {
 		useDGALLibrary=true;
+	}
+	public static void setOldDBProcessor() {
+		useOldDBProcessor=true;
 	}
 }

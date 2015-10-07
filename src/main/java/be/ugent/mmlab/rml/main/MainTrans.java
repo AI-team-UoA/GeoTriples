@@ -103,6 +103,7 @@ public class MainTrans {
 			options.addOption("readynetcdf", false, "Use GeoTriples' NetCDF v2.2 mapping document");
 			options.addOption("i", true, "Input source. Use with -readyeop or -readykml");
 			options.addOption("gdal", false, "Use GDAL as the library for the manipulation of the Geometries");
+			options.addOption("olddbprocessor", false, "Use old db processor");
 
 			// should be new DefaultParser() but requires cli 1.3 instead of
 			// clli 1.2
@@ -197,8 +198,11 @@ public class MainTrans {
 			}
 			if (cmd.hasOption("gdal")) {
 				Config.setGDAL();
-
 			}
+			if(cmd.hasOption("olddbprocessor")){
+				Config.setOldDBProcessor();
+			}
+			
 			SesameDataSet output = null;
 			FileInputStream source_properties = null;
 			if (cmd.hasOption("sp")) {

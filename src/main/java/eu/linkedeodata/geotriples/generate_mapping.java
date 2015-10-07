@@ -9,9 +9,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.mapgen.MappingGenerator;
 
-import be.ugent.mmlab.rml.main.SQLMappingGenerator;
-import be.ugent.mmlab.rml.main.ShapefileMappingGenerator;
-import be.ugent.mmlab.rml.main.XMLMappingGeneratorTrans;
+import be.ugent.mmlab.rml.mapgen.SQLMappingGenerator;
+import be.ugent.mmlab.rml.mapgen.ShapefileMappingGenerator;
+import be.ugent.mmlab.rml.mapgen.XMLMappingGeneratorTrans;
 import eu.linkedeodata.geotriples.gui.RecipeMapping;
 
 /**

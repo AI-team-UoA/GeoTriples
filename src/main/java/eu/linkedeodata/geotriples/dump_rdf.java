@@ -67,6 +67,7 @@ public class dump_rdf {
 			
 			final ArgDecl inputFile=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
 			final ArgDecl useGDALLibraryArg = new ArgDecl(false, "gdal", "Use GDAL as the library for the manipulation of the Geometries (Default is GeoTools)");
+			final ArgDecl useOldDBProcessorArg = new ArgDecl(false, "olddbprocessor", "Use old DB processor, it executes only one query per triples map with all projections in place, the alternative is to pose multiple queries with one projection at a time over the effective query");
 			cmd.add(rmlArg);
 			argdecls.add(rmlArg);
 			
@@ -104,6 +105,9 @@ public class dump_rdf {
 			
 			cmd.add(useGDALLibraryArg);
 			argdecls.add(useGDALLibraryArg);
+			
+			cmd.add(useOldDBProcessorArg);
+			argdecls.add(useOldDBProcessorArg);
 			
 			cmd.add(inputFile);
 			argdecls.add(inputFile);
@@ -163,6 +167,9 @@ public class dump_rdf {
 			}
 			if(cmd.contains(useGDALLibraryArg)){
 				arglist.add("-gdal");
+			}
+			if(cmd.contains(useOldDBProcessorArg)){
+				arglist.add("-olddbprocessor");
 			}
 			if(cmd.contains(inputFile)){
 				arglist.add("-i");
