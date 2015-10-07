@@ -32,7 +32,8 @@ public class ConcreteRMLProcessorFactory implements RMLProcessorFactory{
             	else
             		return new ShapefileProcessor();
             case SQL_CLASS:
-                return new DatabaseProcessor();
+            	return new DatabaseProcessorWithManyQueries();
+                //return new DatabaseProcessor();
         }
         return null;
     }

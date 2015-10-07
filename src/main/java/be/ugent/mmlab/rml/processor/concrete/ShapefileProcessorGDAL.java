@@ -63,10 +63,8 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 		final WrappedLong totalmatches = new WrappedLong();
 		
 			this.map = map;
-			// TODO: add character guessing
-			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[Shapefile Processor] filename " + fileName);
-			System.out.println("Using GDAL as the Shapefile Reader");
+			log.info("[Shapefile Processor] Using GDAL library.");
 			ogr.DontUseExceptions();
 
 			/*
