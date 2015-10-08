@@ -122,7 +122,7 @@ public class SQLMappingGenerator {
 					triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
 					triplesMaps.put(typeNameGeo,
 							triplesMaps.get(typeNameGeo) + printLogicalSource(
-									"SELECT *, st_dimension(geom) as \\\"dimension\\\", st_dimension(geom) as \\\"coordinateDimension\\\", st_dimension(geom) as \\\"spatialDimension\\\",  st_issimple(geom) as \\\"isSimple\\\", st_isempty(geom) as \\\"isEmpty\\\", CASE WHEN st_dimension(geom)=3 THEN 'true' ELSE 'false' END as \\\"is3D\\\", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '\\\"', '')) as \\\"asWKT\\\", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '\\\"', '')) as \\\"hasSerialization\\\" FROM "
+									"SELECT *, st_dimension(geom) as \\\"dimension\\\", st_dimension(geom) as \\\"coordinateDimension\\\", st_dimension(geom) as \\\"spatialDimension\\\",  st_issimple(geom) as \\\"isSimple\\\", st_isempty(geom) as \\\"isEmpty\\\", CASE WHEN st_dimension(geom)=3 THEN 'true' ELSE 'false' END as \\\"is3D\\\", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '\\\"', '')) as \\\"asWKT\\\" FROM "
 											+ typeName + ";"));
 					triplesMaps.put(typeNameGeo,
 							triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true, primarykey));
