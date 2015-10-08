@@ -27,9 +27,9 @@ public class RowHandler {
 			row.addPair("asWKT",
 					"<http://www.opengis.net/def/crs/EPSG/0/" + crs
 							+ ">" + wkt_writer.write(geometry));
-			row.addPair("hasSerialization",
+			/*row.addPair("hasSerialization",
 					"<http://www.opengis.net/def/crs/EPSG/0/" + crs
-							+ ">" + wkt_writer.write(geometry));
+							+ ">" + wkt_writer.write(geometry));*/
 			// newrow.addPair("hasSerialization",
 			// wkt_writer.write(geometry));
 			gml_writer.setSrsName(crs);
@@ -48,9 +48,9 @@ public class RowHandler {
 			row.addPair("asWKT",
 					"<http://www.opengis.net/def/crs/EPSG/0/" + crs
 							+ ">" + wkt_writer.write(geometry));
-			row.addPair("hasSerialization",
+			/*row.addPair("hasSerialization",
 					"<http://www.opengis.net/def/crs/EPSG/0/" + crs
-							+ ">" + wkt_writer.write(geometry));
+							+ ">" + wkt_writer.write(geometry));*/
 			// newrow.addPair("hasSerialization",
 			// wkt_writer.write(geometry));
 			gml_writer

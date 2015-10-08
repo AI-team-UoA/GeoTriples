@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.apache.xmlbeans.XmlException;
 import org.d2rq.db.SQLConnection;
 import org.d2rq.db.op.TableOp;
 import org.d2rq.db.schema.ColumnName;
+import org.d2rq.db.schema.Identifier;
+import org.d2rq.db.schema.Key;
+import org.d2rq.db.schema.TableDef;
 import org.d2rq.db.schema.TableName;
 import org.d2rq.db.types.DataType;
 
@@ -88,11 +92,20 @@ public class SQLMappingGenerator {
 				}
 			}
 			TableOp tabledef = connection.getTable(tablename);
+			Key key = findBestKey(tabledef.getTableDefinition());
+			if (key == null) {
+				key = makeKey(tabledef.getTableDefinition());
+			}
+			String primarykey = key.getColumns().get(0).getName();
+			for (int i = 1; i < key.getColumns().size(); ++i) {
+				String c = key.getColumns().get(i).getName();
+				primarykey += ("/" + c);
+			}
 			triplesMaps.put(typeName, "");
 			triplesMaps.put(typeName, triplesMaps.get(typeName) + printTriplesMap(typeName));
 			triplesMaps.put(typeName,
 					triplesMaps.get(typeName) + printLogicalSource("SELECT * FROM " + typeName + ";"));
-			triplesMaps.put(typeName, triplesMaps.get(typeName) + printSubjectMap(baseURI, typeName));
+			triplesMaps.put(typeName, triplesMaps.get(typeName) + printSubjectMap(baseURI, typeName, primarykey));
 
 			String typeNameGeo = typeName + "_Geometry";
 			List<ColumnName> columnnames = tabledef.getColumns();
@@ -101,9 +114,9 @@ public class SQLMappingGenerator {
 				String identifier = columnname.getColumn().getName();
 				if (identifier.equals("geom")) {
 					triplesMaps.put(typeName,
-							triplesMaps.get(typeName) + printPredicateObjectMap(true, "hasGeometry",
-									baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName
-											+ "/Geometry/{GeoTriplesID}",
+							triplesMaps.get(typeName) + printPredicateObjectMap(true,
+									"hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName
+											+ "/Geometry/{" + primarykey + "}",
 									null, null, "ogc", null, typeName, true, false));
 					triplesMaps.put(typeNameGeo, "");
 					triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
@@ -112,13 +125,15 @@ public class SQLMappingGenerator {
 									"SELECT *, st_dimension(geom) as \\\"dimension\\\", st_dimension(geom) as \\\"coordinateDimension\\\", st_dimension(geom) as \\\"spatialDimension\\\",  st_issimple(geom) as \\\"isSimple\\\", st_isempty(geom) as \\\"isEmpty\\\", CASE WHEN st_dimension(geom)=3 THEN 'true' ELSE 'false' END as \\\"is3D\\\", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '\\\"', '')) as \\\"asWKT\\\", CONCAT('<http://www.opengis.net/def/crs/EPSG/0/4326> ' , REPLACE(CAST(geom AS TEXT), '\\\"', '')) as \\\"hasSerialization\\\" FROM "
 											+ typeName + ";"));
 					triplesMaps.put(typeNameGeo,
-							triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
+							triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true, primarykey));
 					triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
 				} else {
-					String datatype = "<" + TypeMapper.getInstance().getSafeTypeByName(columntype.rdfType()).getURI()
-							+ ">";
-					triplesMaps.put(typeName, triplesMaps.get(typeName)
-							+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
+					if (!key.getColumns().contains(Identifier.createDelimited(identifier))) {
+						String datatype = "<"
+								+ TypeMapper.getInstance().getSafeTypeByName(columntype.rdfType()).getURI() + ">";
+						triplesMaps.put(typeName, triplesMaps.get(typeName)
+								+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
+					}
 				}
 
 			}
@@ -239,15 +254,16 @@ public class SQLMappingGenerator {
 		return sb.toString();
 	}
 
-	private String printSubjectMap(String baseuri, String classname) {
-		return printSubjectMap(baseuri, classname, null, false);
+	private String printSubjectMap(String baseuri, String classname, String primarykey) {
+		return printSubjectMap(baseuri, classname, null, false, primarykey);
 	}
 
 	private String printSubjectMap(String baseuri, String classname, boolean isGeometrySubClass) {
-		return printSubjectMap(baseuri, classname, null, isGeometrySubClass);
+		return printSubjectMap(baseuri, classname, null, isGeometrySubClass, null);
 	}
 
-	private String printSubjectMap(String baseuri, String classname, String classprefix, boolean isGeometrySubClass) {
+	private String printSubjectMap(String baseuri, String classname, String classprefix, boolean isGeometrySubClass,
+			String primarykey) {
 		classname = classname.replace(".", "");
 		if (ontology != null) {
 			/*
@@ -259,8 +275,8 @@ public class SQLMappingGenerator {
 		String base = baseuri + (baseuri.endsWith("/") ? "" : "/");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:subjectMap [\n");
-		sb.append("\trr:template \"" + base + classname + (isGeometrySubClass ? "/Geometry/" : "/id/")
-				+ "{GeoTriplesID}\";\n");
+		sb.append("\trr:template \"" + base + classname + (isGeometrySubClass ? "/Geometry/" : "/id/") + "{"
+				+ ((primarykey == null) ? "GeoTriplesID" : primarykey) + "}\";\n");
 		sb.append("\trr:class " + (classprefix != null ? classprefix : "onto") + ":" + classname + ";\n");
 		sb.append("];\n");
 		return sb.toString();
@@ -282,8 +298,10 @@ public class SQLMappingGenerator {
 		sb.append(printPredicateObjectMap("is3D", "is3D", "xsd:boolean", null, "ogc", null, "", true));
 		sb.append(printPredicateObjectMap("isEmpty", "isEmpty", "xsd:boolean", null, "ogc", null, "", true));
 		sb.append(printPredicateObjectMap("isSimple", "isSimple", "xsd:boolean", null, "ogc", null, "", true));
-		sb.append(printPredicateObjectMap("hasSerialization", "hasSerialization", "ogc:wktLiteral", null, "ogc", null,
-				"", true));
+		/*
+		 * sb.append(printPredicateObjectMap("hasSerialization",
+		 * "hasSerialization", "ogc:wktLiteral", null, "ogc", null, "", true));
+		 */
 		sb.append(printPredicateObjectMap("coordinateDimension", "coordinateDimension", "xsd:integer", null, "ogc",
 				null, "", true));
 		sb.append(printPredicateObjectMap("spatialDimension", "spatialDimension", "xsd:integer", null, "ogc", null, "",
@@ -301,7 +319,27 @@ public class SQLMappingGenerator {
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
 		SQLMappingGenerator m = new SQLMappingGenerator(args[0], args[1], args[2], args[3], args[4],
-				(args.length > 5) ? args[5] : null,(args.length > 6) ? args[6] : null);
+				(args.length > 5) ? args[5] : null, (args.length > 6) ? args[6] : null);
 		m.run();
+	}
+
+	private Key findBestKey(TableDef table) {
+		if (table.getPrimaryKey() != null) {
+			return table.getPrimaryKey();
+		}
+		for (Key uniqueKey : table.getUniqueKeys()) {
+			return uniqueKey;
+		}
+		return null;
+	}
+
+	private Key makeKey(TableDef table) {
+		ArrayList<Identifier> temp = new ArrayList<Identifier>();
+		for (Identifier partKey : table.getColumnNames()) {
+			if (!partKey.getName().equalsIgnoreCase("geom")) {
+				temp.add(partKey);
+			}
+		}
+		return Key.createFromIdentifiers(temp);
 	}
 }

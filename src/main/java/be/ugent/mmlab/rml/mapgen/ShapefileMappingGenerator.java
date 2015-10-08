@@ -272,8 +272,8 @@ public class ShapefileMappingGenerator {
 		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
 		sb.append(printPredicateObjectMap("isEmpty", "the_geom", "xsd:boolean", null, "ogc", "isEmpty", "", true));
 		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
-		sb.append(printPredicateObjectMap("hasSerialization", "the_geom", "ogc:wktLiteral", null, "ogc",
-				"hasSerialization", "", true));
+		/*sb.append(printPredicateObjectMap("hasSerialization", "the_geom", "ogc:wktLiteral", null, "ogc",
+				"hasSerialization", "", true));*/
 		sb.append(printPredicateObjectMap("coordinateDimension", "the_geom", "xsd:integer", null, "ogc",
 				"coordinateDimension", "", true));
 		sb.append(printPredicateObjectMap("spatialDimension", "the_geom", "xsd:integer", null, "ogc",

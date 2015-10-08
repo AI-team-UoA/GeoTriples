@@ -318,11 +318,11 @@ public class GeneralMappingGenerator {
 //					GEOMETRY_FUNCTIONS_DATATYPES.asWKT,
 //					GEOMETRY_FUNCTIONS.asWKT);
 
-			property = style.getCustomColumnProperty(tableName,
+			/*property = style.getCustomColumnProperty(tableName,
 					Identifier.createDelimited("hasSerialization"),true);
 			argumentMap=new ArrayList<TermMap>();
 			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
-			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.hasSerialization, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization);
+			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.hasSerialization, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization);*/
 //			target.generateGeometryColumnProperty(property, tableName,
 //					Identifier.createDelimited("the_geom"),
 //					GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization,
