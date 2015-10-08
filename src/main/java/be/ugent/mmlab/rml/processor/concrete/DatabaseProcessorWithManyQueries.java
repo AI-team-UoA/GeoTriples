@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
 
 /**
  * 
@@ -83,12 +85,12 @@ public class DatabaseProcessorWithManyQueries extends AbstractRMLProcessor {
 			 * DriverManager.registerDriver((Driver)Class.forName(
 			 * "org.hsqldb.jdbcDriver").newInstance());
 			 */
-			
+
 			// stm.setFetchSize(10000);
 			List<Connection> allcons = new ArrayList<>();
 			List<Statement> allstm = new ArrayList<>();
 			List<ResultSet> allresults = new ArrayList<>();
-			List<String> references = getColumnsReferencesFromTriplesMap(map);
+			Set<String> references = getColumnsReferencesFromTriplesMap(map);
 			String effective_query = map.getLogicalSource().getReference();
 			if (effective_query.endsWith(";"))
 				effective_query = effective_query.substring(0, effective_query.length() - 1);
@@ -97,10 +99,10 @@ public class DatabaseProcessorWithManyQueries extends AbstractRMLProcessor {
 				Statement stm = con.createStatement();
 				allstm.add(stm);
 				allcons.add(con);
-				String newquery="SELECT \"effective_query\".\"" + reference + "\" FROM (" + effective_query + ") as effective_query";
-				log.info("[Executing query] "+newquery);
-				ResultSet results = stm
-						.executeQuery(newquery);
+				String newquery = "SELECT \"effective_query\".\"" + reference + "\" FROM (" + effective_query
+						+ ") as effective_query";
+				log.info("[Executing query] " + newquery);
+				ResultSet results = stm.executeQuery(newquery);
 				allresults.add(results);
 			}
 
@@ -216,17 +218,23 @@ public class DatabaseProcessorWithManyQueries extends AbstractRMLProcessor {
 		return map;
 	}
 
-	private List<String> getColumnsReferencesFromTriplesMap(TriplesMap tm) {
-		List<String> results = new ArrayList<>();
+	private Set<String> getColumnsReferencesFromTriplesMap(TriplesMap tm) {
+		Set<String> results = new HashSet<>();
 		for (PredicateObjectMap pom : tm.getPredicateObjectMaps()) {
 			for (ObjectMap om : pom.getObjectMaps()) {
 				if (om.getTermMapType().equals(TermMapType.REFERENCE_VALUED)) {
 					ReferenceIdentifier r = om.getReferenceValue();
-					
-					//System.out.println(r.toString());
+
+					// System.out.println(r.toString());
 					results.add(r.toString());
 				}
 			}
+		}
+		Set<String> cols = R2RMLToolkit.extractColumnNamesFromStringTemplate(tm.getSubjectMap().getStringTemplate());
+		for (String c : cols) {
+			if (c.equals("GeoTriplesID"))
+				continue;
+			results.add(c);
 		}
 		return results;
 	}
