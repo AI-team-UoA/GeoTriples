@@ -37,6 +37,7 @@ public abstract class ShapefileCommandLineTool {
 	 * a new cmd line parameter for default EPSG code in case none is found
 	 */
 	protected final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
+	protected final ArgDecl gdalArg = new ArgDecl(false, "gdal", "gdal");
 	/*\dimis changed from SystemLoader to GenericLoader ,and SystemLoader to SystemLoader_pyravlos*/
 	//private final GenericSystemLoader loader = new SystemLoader();
 	private ShapefileSystemLoader loader = new ShapefileSystemLoader();
@@ -91,7 +92,7 @@ public abstract class ShapefileCommandLineTool {
 		cmd.add(shapefileArg);
 		
 		cmd.add(epsgArg);
-		
+		cmd.add(gdalArg);
 		initArgs(cmd);
 		try {
 			cmd.process(args);
@@ -104,6 +105,9 @@ public abstract class ShapefileCommandLineTool {
 		}
 		if (cmd.hasArg(debugArg)) {
 			Log4jHelper.setDebugLogging();
+		}
+		if (cmd.hasArg(gdalArg)) {
+			be.ugent.mmlab.rml.function.Config.setGDAL();
 		}
 		
 		if (cmd.contains(shapefileArg)) {

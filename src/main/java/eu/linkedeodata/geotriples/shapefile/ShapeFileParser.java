@@ -42,10 +42,10 @@ import eu.linkedeodata.geotriples.RowHandler;
 import eu.linkedeodata.geotriples.TableDefUtils;
 
 public class ShapeFileParser implements GeneralParser {
-	private File shapefile;
-	private String primarykey;
-	private CoordinateReferenceSystem crs;
-	private String crsstring;
+	protected File shapefile;
+	protected String primarykey;
+	protected CoordinateReferenceSystem crs;
+	protected String crsstring;
 	
 	public String getCrsString(){
 		return  crsstring;

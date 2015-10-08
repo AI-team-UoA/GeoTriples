@@ -102,92 +102,92 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 				System.exit(1);
 			}
 
-			int nLayerCount = 0;
-			Layer[] papoLayers = null;
-			if (papszLayers.size() == 0) {
-				nLayerCount = poDS.GetLayerCount();
-				papoLayers = new Layer[nLayerCount];
+		int nLayerCount = 0;
+		Layer[] papoLayers = null;
+		if (papszLayers.size() == 0) {
+			nLayerCount = poDS.GetLayerCount();
+			papoLayers = new Layer[nLayerCount];
 
-				for (int iLayer = 0; iLayer < nLayerCount; iLayer++) {
-					Layer poLayer = poDS.GetLayer(iLayer);
-
-					if (poLayer == null) {
-						System.err.println("FAILURE: Couldn't fetch advertised layer " + iLayer + "!");
-						System.exit(1);
-					}
-
-					papoLayers[iLayer] = poLayer;
-				}
-			}
 			for (int iLayer = 0; iLayer < nLayerCount; iLayer++) {
-				Layer poLayer = papoLayers[iLayer];
-				if (!poLayer.GetName().equals(map.getLogicalSource().getReference()))
-				{
-					continue;
-				}
-				Config.EPSG_CODE=poLayer.GetSpatialRef().GetAttrValue("AUTHORITY", 1);
+				Layer poLayer = poDS.GetLayer(iLayer);
 
-				// System.out.println(poLayer.GetSpatialRef().GetAttrValue("AUTHORITY", 1));
-				KeyGenerator keygen = new KeyGenerator();
-				Feature feature;
-				
-				for (int f = 0; f < poLayer.GetFeatureCount(); ++f) {
-					// while ((feature = poLayer.GetNextFeature()) != null) {
-					feature = poLayer.GetNextFeature();
-					totalmatches.increase();
-					HashMap<String, Object> row = new HashMap<>();
-					int fieldssize = feature.GetFieldCount();
-					for (int i = 0; i < fieldssize; ++i) {
-						String type = feature.GetFieldDefnRef(i).GetFieldTypeName(feature.GetFieldType(i));
-						if (type.equals("String")) {
-							row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsString(i));
-							// System.out.println(feature.GetFieldAsString(i));
-						} else if (type.equals("StringList")) {
-							// System.out.println(feature.GetFieldAsStringList(i));
-							// for (String s : feature.GetFieldAsStringList(i))
-							// {
-							// System.out.print(s);
-							// System.out.println();
-							// }
-						} else if (type.equals("Integer")) {
-							row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsInteger(i));
-							// System.out.println(feature.GetFieldAsInteger(i));
-						} else if (type.equals("IntegerList")) {
-							// for (Integer s :
-							// feature.GetFieldAsIntegerList(i)) {
-							// System.out.print(s);
-							// System.out.println();
-							// }
-						} else if (type.equals("Real")) {
-							row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsDouble(i));
-							// System.out.println(feature.GetFieldAsDouble(i));
-						} else if (type.equals("RealList")) {
-							// System.out.println(feature.GetFieldAsDoubleList(i));
-						} /*
-							 * else if (type.equals("(unknown)")) {
-							 * System.out.println(feature.GetGeometryRef()); }
-							 */
-
-						// System.out.println(feature.GetFieldAsString(i));
-						// System.out.println(feature.GetFieldAsInteger(i));
-
-					}
-					Geometry geom = feature.GetGeometryRef();
-					row.put("the_geom", geom);
-					try {
-						row.put(Config.GEOTRIPLES_AUTO_ID, keygen.Generate());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					// System.out.println(geom.ExportToWkt());
-					currentnode = row;
-					performer.perform(row, dataset, map);
-					feature.delete();
-					feature = null;
+				if (poLayer == null) {
+					System.err.println("FAILURE: Couldn't fetch advertised layer " + iLayer + "!");
+					System.exit(1);
 				}
 
+				papoLayers[iLayer] = poLayer;
 			}
+		}
+		for (int iLayer = 0; iLayer < nLayerCount; iLayer++) {
+			Layer poLayer = papoLayers[iLayer];
+			if (!poLayer.GetName().equals(map.getLogicalSource().getReference())) {
+				continue;
+			}
+			Config.EPSG_CODE = poLayer.GetSpatialRef().GetAttrValue("AUTHORITY", 1);
+
+			// System.out.println(poLayer.GetSpatialRef().GetAttrValue("AUTHORITY",
+			// 1));
+			KeyGenerator keygen = new KeyGenerator();
+			Feature feature;
+
+			for (int f = 0; f < poLayer.GetFeatureCount(); ++f) {
+				// while ((feature = poLayer.GetNextFeature()) != null) {
+				feature = poLayer.GetNextFeature();
+				totalmatches.increase();
+				HashMap<String, Object> row = new HashMap<>();
+				int fieldssize = feature.GetFieldCount();
+				for (int i = 0; i < fieldssize; ++i) {
+					String type = feature.GetFieldDefnRef(i).GetFieldTypeName(feature.GetFieldType(i));
+					if (type.equals("String")) {
+						row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsString(i));
+						// System.out.println(feature.GetFieldAsString(i));
+					} else if (type.equals("StringList")) {
+						// System.out.println(feature.GetFieldAsStringList(i));
+						// for (String s : feature.GetFieldAsStringList(i))
+						// {
+						// System.out.print(s);
+						// System.out.println();
+						// }
+					} else if (type.equals("Integer")) {
+						row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsInteger(i));
+						// System.out.println(feature.GetFieldAsInteger(i));
+					} else if (type.equals("IntegerList")) {
+						// for (Integer s :
+						// feature.GetFieldAsIntegerList(i)) {
+						// System.out.print(s);
+						// System.out.println();
+						// }
+					} else if (type.equals("Real")) {
+						row.put(feature.GetFieldDefnRef(i).GetName(), feature.GetFieldAsDouble(i));
+						// System.out.println(feature.GetFieldAsDouble(i));
+					} else if (type.equals("RealList")) {
+						// System.out.println(feature.GetFieldAsDoubleList(i));
+					} /*
+						 * else if (type.equals("(unknown)")) {
+						 * System.out.println(feature.GetGeometryRef()); }
+						 */
+
+					// System.out.println(feature.GetFieldAsString(i));
+					// System.out.println(feature.GetFieldAsInteger(i));
+
+				}
+				Geometry geom = feature.GetGeometryRef();
+				row.put("the_geom", geom);
+				try {
+					row.put(Config.GEOTRIPLES_AUTO_ID, keygen.Generate());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// System.out.println(geom.ExportToWkt());
+				currentnode = row;
+				performer.perform(row, dataset, map);
+				feature.delete();
+				feature = null;
+			}
+
+		}
 
 			
 		return totalmatches.getValue();
