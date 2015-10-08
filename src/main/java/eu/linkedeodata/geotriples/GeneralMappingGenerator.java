@@ -555,7 +555,7 @@ public class GeneralMappingGenerator {
 //											thematicLogicalTable.getName(),
 //											geometricLogicalTable.getName(),
 //											themKey, geoKey);
-							((R2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
+							((GeneralR2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
 							// d2.1 \dimis thewrw oti afto (to join) einai pio
 							// diskolo kai de xreiazetai kai anyhow den doulevei
 							// akrivws ekso apo to for ftiaxnw ena template kai
@@ -617,7 +617,7 @@ public class GeneralMappingGenerator {
 //										thematicLogicalTable.getName(),
 //										geometricLogicalTable.getName(),
 //										themKey, geoKey);
-						((R2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
+						((GeneralR2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
 						// d2.1 \dimis thewrw oti afto (to join) einai pio
 						// diskolo kai de xreiazetai kai anyhow den doulevei
 						// akrivws ekso apo to for ftiaxnw ena template kai

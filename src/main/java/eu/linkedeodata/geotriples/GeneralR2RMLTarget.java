@@ -345,7 +345,12 @@ public class GeneralR2RMLTarget implements Target {
 		mapping.predicateObjectMaps().put(poMapResource, poMap);
 		mapping.triplesMaps().get(getTriplesMapResource(tableName)).getPredicateObjectMaps().add(poMapResource);
 	}
-	
+	public void generateTemplatePredicateObjectMap(Property property,TemplateValueMaker template,
+			TableName tableName){
+		addPredicateObjectMap(tableName, 
+				createPredicateObjectMap(property, 
+						createTermMap(template, TermType.IRI)));
+	}
 	private TemplateValueMaker toTemplate(TableName tableName, List<Identifier> columns) {
 		TemplateValueMaker.Builder builder = TemplateValueMaker.builder();
 		for (ColumnName column: tableName.qualifyIdentifiers(columns)) {
