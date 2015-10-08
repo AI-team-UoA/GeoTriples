@@ -19,6 +19,7 @@ import org.d2rq.db.types.DataType;
 import org.d2rq.db.vendor.Vendor;
 import org.d2rq.lang.Microsyntax;
 import org.d2rq.mapgen.Filter;
+import org.d2rq.mapgen.R2RMLTarget;
 import org.d2rq.mapgen.Target;
 import org.d2rq.r2rml.ColumnNameR2RML;
 import org.d2rq.r2rml.ConstantIRI;
@@ -327,11 +328,11 @@ public class GeneralMappingGenerator {
 //					GEOMETRY_FUNCTIONS_DATATYPES.hasSerialization,
 //					GEOMETRY_FUNCTIONS.hasSerialization);
 
-			property = style.getCustomColumnProperty(tableName,
-					Identifier.createDelimited("asGML"),true);
-			argumentMap=new ArrayList<TermMap>();
-			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
-			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.asGML, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.asGML);
+//			property = style.getCustomColumnProperty(tableName,
+//					Identifier.createDelimited("asGML"),true);
+//			argumentMap=new ArrayList<TermMap>();
+//			argumentMap.add(createTermMap(Identifier.createDelimited("the_geom")));
+//			target.generateTransformationProperty(property, tableName, GEOMETRY_FUNCTIONS.asGML, argumentMap ,GEOMETRY_FUNCTIONS_DATATYPES.asGML);
 //			target.generateGeometryColumnProperty(property, tableName,
 //					Identifier.createDelimited("the_geom"),
 //					GEOMETRY_FUNCTIONS_DATATYPES.asGML,
@@ -396,18 +397,18 @@ public class GeneralMappingGenerator {
 //					GEOMETRY_FUNCTIONS_DATATYPES.coordinateDimension,
 //					GEOMETRY_FUNCTIONS.coordinateDimension);
 			}
-			for (ForeignKey fk : table.getForeignKeys()) {
-				if (!filter.matches(fk.getReferencedTable())
-						|| !filter.matchesAll(tableName, fk.getLocalColumns())
-						|| !filter.matchesAll(fk.getReferencedTable(),
-								fk.getReferencedColumns())) {
-					log.info("Skipping foreign key: " + fk);
-					continue;
-				}
-				target.generateRefProperty(
-						style.getForeignKeyProperty(tableName, fk), tableName,
-						fk);
-			}
+//			for (ForeignKey fk : table.getForeignKeys()) {
+//				if (!filter.matches(fk.getReferencedTable())
+//						|| !filter.matchesAll(tableName, fk.getLocalColumns())
+//						|| !filter.matchesAll(fk.getReferencedTable(),
+//								fk.getReferencedColumns())) {
+//					log.info("Skipping foreign key: " + fk);
+//					continue;
+//				}
+//				target.generateRefProperty(
+//						style.getForeignKeyProperty(tableName, fk), tableName,
+//						fk);
+//			}
 		}
 	}
 
@@ -544,16 +545,17 @@ public class GeneralMappingGenerator {
 								continue;
 							}
 							//otherwise we want geosparql which means join conditions between the two virtual tables
-							Key geoKey = Key.create(Identifier
-									.createDelimited("gid"));
-							Key themKey = Key.create(Identifier
-									.createDelimited("gid"));
-							((GeneralR2RMLTarget) target)
-									.generateLinkPredicateObjectMap(
-											style.getLinkGeometryPropetry(null),
-											thematicLogicalTable.getName(),
-											geometricLogicalTable.getName(),
-											themKey, geoKey);
+//							Key geoKey = Key.create(Identifier
+//									.createDelimited("gid"));
+//							Key themKey = Key.create(Identifier
+//									.createDelimited("gid"));
+//							((GeneralR2RMLTarget) target)
+//									.generateLinkPredicateObjectMap(
+//											style.getLinkGeometryPropetry(null),
+//											thematicLogicalTable.getName(),
+//											geometricLogicalTable.getName(),
+//											themKey, geoKey);
+							((R2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
 							// d2.1 \dimis thewrw oti afto (to join) einai pio
 							// diskolo kai de xreiazetai kai anyhow den doulevei
 							// akrivws ekso apo to for ftiaxnw ena template kai
@@ -605,16 +607,17 @@ public class GeneralMappingGenerator {
 							continue;
 						}
 						//otherwise we want geosparql which means join conditions between the two virtual tables
-						Key geoKey = Key.create(Identifier
-								.createDelimited("gid"));
-						Key themKey = Key.create(Identifier
-								.createDelimited("gid"));
-						((GeneralR2RMLTarget) target)
-								.generateLinkPredicateObjectMap(
-										style.getLinkGeometryPropetry(null),
-										thematicLogicalTable.getName(),
-										geometricLogicalTable.getName(),
-										themKey, geoKey);
+//						Key geoKey = Key.create(Identifier
+//								.createDelimited("gid"));
+//						Key themKey = Key.create(Identifier
+//								.createDelimited("gid"));
+//						((GeneralR2RMLTarget) target)
+//								.generateLinkPredicateObjectMap(
+//										style.getLinkGeometryPropetry(null),
+//										thematicLogicalTable.getName(),
+//										geometricLogicalTable.getName(),
+//										themKey, geoKey);
+						((R2RMLTarget)target).generateTemplatePredicateObjectMap(style.getLinkGeometryPropetry(null),style.getGeometryIRITemplate(table, key) , tableName);
 						// d2.1 \dimis thewrw oti afto (to join) einai pio
 						// diskolo kai de xreiazetai kai anyhow den doulevei
 						// akrivws ekso apo to for ftiaxnw ena template kai
