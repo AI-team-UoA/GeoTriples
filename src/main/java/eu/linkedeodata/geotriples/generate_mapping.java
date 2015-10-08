@@ -8,6 +8,7 @@ import jena.cmdline.CommandLine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.mapgen.MappingGenerator;
+import org.geotools.gml3.Circle.Arc;
 
 import be.ugent.mmlab.rml.mapgen.SQLMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.ShapefileMappingGenerator;
@@ -150,7 +151,8 @@ public class generate_mapping {
 					final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 					final ArgDecl usernameArg = new ArgDecl(true, "u", "username", "username");
 					final ArgDecl passwordArg = new ArgDecl(true, "p", "password", "password");
-					final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
+					final ArgDecl isRMLarg = new ArgDecl(false, "rml");
+					final ArgDecl onlytableOutArg = new ArgDecl(true, "table");
 					final CommandLine cmd = new CommandLine();
 					cmd.add(baseIRIArg);
 					cmd.add(outfileArg);
@@ -158,8 +160,9 @@ public class generate_mapping {
 					cmd.add(isRMLarg);
 					cmd.add(usernameArg);
 					cmd.add(passwordArg);
+					cmd.add(onlytableOutArg);
 					cmd.process(args);
-					new SQLMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(usernameArg), cmd.getValue(passwordArg), cmd.getValue(ontologyOutArg)).run();;
+					new SQLMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(usernameArg), cmd.getValue(passwordArg), cmd.getValue(ontologyOutArg),cmd.getValue(onlytableOutArg)).run();;
 				} else {
 					(new d2rq.generate_mapping()).process(args);
 				}

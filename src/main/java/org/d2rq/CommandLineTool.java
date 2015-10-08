@@ -51,6 +51,8 @@ public abstract class CommandLineTool {
 	private boolean supportImplicitJdbcURL = true;
 	private int minArguments = 0;
 	private int maxArguments = 1;
+
+	
 	
 	public abstract void usage();
 
@@ -150,8 +152,9 @@ public abstract class CommandLineTool {
 				includes.add(new FilterParser(spec).parseSchemaFilter());
 			}
 			if (cmd.contains(tablesArg)) {
-				String spec = withIndirection(cmd.getArg(tablesArg).getValue());
-				includes.add(new FilterParser(spec).parseTableFilter(true));
+				/*String spec = withIndirection(cmd.getArg(tablesArg).getValue());
+				includes.add(new FilterParser(spec).parseTableFilter(true));*/
+				loader.setOnlyTable(cmd.getArg(tablesArg).getValue());
 			}
 			if (cmd.contains(columnsArg)) {
 				String spec = withIndirection(cmd.getArg(columnsArg).getValue());

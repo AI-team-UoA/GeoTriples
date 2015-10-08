@@ -34,16 +34,19 @@ public class SQLMappingGenerator {
 	private String jdbcURL;
 	private String password;
 	private String username;
+	private String table = null;
 
 	public SQLMappingGenerator(String jdbcURL, String outputfile, String baseiri, String username, String password,
-			String ontologyOutputFile) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-					ClassCastException, FileNotFoundException, XmlException, IOException {
-		log.warn("Join conditions have not been implemented yet. If you need JoinConditions please use the same command without -rml argument.");
+			String ontologyOutputFile, String table) throws ClassNotFoundException, InstantiationException,
+					IllegalAccessException, ClassCastException, FileNotFoundException, XmlException, IOException {
+		log.warn(
+				"Join conditions have not been implemented yet. If you need JoinConditions please use the same command without -rml argument.");
 		System.out.println("jdbc URL=" + jdbcURL);
 		System.out.println("outputfile=" + outputfile);
 		System.out.println("baseiri" + baseiri);
 		System.out.println("username " + username);
 		System.out.println("password " + password);
+		System.out.println("only table " + table);
 		this.jdbcURL = jdbcURL;
 		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
 		this.baseURI = baseiri;
@@ -52,7 +55,7 @@ public class SQLMappingGenerator {
 		}
 		this.username = username;
 		this.password = password;
-
+		this.table = table;
 		this.outputfile = new File(outputfile);
 		if (ontologyOutputFile != null) {
 			this.ontologyOutputFile = new File(ontologyOutputFile);
@@ -61,14 +64,13 @@ public class SQLMappingGenerator {
 	}
 
 	public void run() throws IOException {
-		
-		String jdbcDriver="";
+
+		String jdbcDriver = "";
 		if (jdbcURL.contains("monetdb")) {
-    		jdbcDriver = "org.postgresql.Driver";
-    	}
-    	else if (jdbcURL.contains("postgres")) {
-    		jdbcDriver = "nl.cwi.monetdb.jdbc.MonetDriver";
-    	}
+			jdbcDriver = "org.postgresql.Driver";
+		} else if (jdbcURL.contains("postgres")) {
+			jdbcDriver = "nl.cwi.monetdb.jdbc.MonetDriver";
+		}
 		SQLConnection connection = new SQLConnection(jdbcURL, jdbcDriver, username, password);
 		Collection<TableName> tablenames = null;
 		try {
@@ -80,6 +82,11 @@ public class SQLMappingGenerator {
 		for (TableName tablename : tablenames) {
 
 			String typeName = tablename.getTable().getName();
+			if (table != null) {
+				if (!typeName.equalsIgnoreCase(table)) {
+					continue;
+				}
+			}
 			TableOp tabledef = connection.getTable(tablename);
 			triplesMaps.put(typeName, "");
 			triplesMaps.put(typeName, triplesMaps.get(typeName) + printTriplesMap(typeName));
@@ -108,7 +115,8 @@ public class SQLMappingGenerator {
 							triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
 					triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
 				} else {
-					String datatype = "<"+TypeMapper.getInstance().getSafeTypeByName(columntype.rdfType()).getURI()+">";
+					String datatype = "<" + TypeMapper.getInstance().getSafeTypeByName(columntype.rdfType()).getURI()
+							+ ">";
 					triplesMaps.put(typeName, triplesMaps.get(typeName)
 							+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
 				}
@@ -135,14 +143,14 @@ public class SQLMappingGenerator {
 
 	private void printmapping() throws FileNotFoundException {
 		PrintStream out = new PrintStream(outputfile);
-		out.println("@prefix rr: <http://www.w3.org/ns/r2rml#>.\n"
-				+ "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
-				+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
-				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n" 
-				+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
-				+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
-				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n" + "@prefix schema: <http://schema.org/>.\n"
-				+ "@prefix onto: <" + baseURI + "ontology#>.\n");
+		out.println(
+				"@prefix rr: <http://www.w3.org/ns/r2rml#>.\n" + "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
+						+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
+						+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n"
+						+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
+						+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
+						+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n"
+						+ "@prefix schema: <http://schema.org/>.\n" + "@prefix onto: <" + baseURI + "ontology#>.\n");
 
 		for (String triplesMap : triplesMaps.keySet()) {
 			log.debug("TRIPLES MAP: " + triplesMap);
@@ -293,7 +301,7 @@ public class SQLMappingGenerator {
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
 		SQLMappingGenerator m = new SQLMappingGenerator(args[0], args[1], args[2], args[3], args[4],
-				(args.length > 5) ? args[5] : null);
+				(args.length > 5) ? args[5] : null,(args.length > 6) ? args[6] : null);
 		m.run();
 	}
 }

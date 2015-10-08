@@ -125,7 +125,10 @@ public class SystemLoader {
 	private Report report = null;
 	private MappingWriter writer = null;
 	private MappingLanguage mappingLanguage = null;
-	
+	private String onlytable=null;
+	public void setOnlyTable(String onlytable){
+		this.onlytable=onlytable;
+	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -270,6 +273,9 @@ public class SystemLoader {
 							getResourceBaseURI(), "change_it").getMappingGenerator();
 			if (filter != null) {
 				generator.setFilter(filter);
+			}
+			if(onlytable!=null){
+				generator.setOnlyTable(onlytable);
 			}
 			if (sqlScript != null) {
 				// If there's a startup SQL script, copy its name into the generated mapping

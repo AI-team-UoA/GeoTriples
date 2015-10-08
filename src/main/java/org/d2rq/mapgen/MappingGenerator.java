@@ -62,6 +62,8 @@ public class MappingGenerator {
 	private URI startupSQLScript;
 	private Target target;
 	private TableDef geoTable = null;
+
+	private String onlytable=null;
 	
 	public MappingGenerator(MappingStyle style, SQLConnection sqlConnection) {
 		this.style = style;
@@ -74,6 +76,10 @@ public class MappingGenerator {
 	
 	public void setStartupSQLScript(URI uri) {
 		startupSQLScript = uri;
+	}
+	
+	public void setOnlyTable(String onlytable){
+		this.onlytable=onlytable;
 	}
 	
 	/**
@@ -144,7 +150,13 @@ public class MappingGenerator {
 			//ignore meta-tables in the mapping
 			if (!filter.matches(tableName) || tableName.getTable().getName().equals("geography_columns") || tableName.getTable().getName().equals("spatial_ref_sys") || tableName.getTable().getName().equals("geometry_columns")) {
 				log.info("Skipping table " + tableName);
+				System.out.println("Skipping table " + tableName);
 				continue;
+			}
+			if(onlytable!=null){
+				if(!onlytable.equalsIgnoreCase(tableName.getTable().getName())){
+					continue;
+				}
 			}
 			tableNames.add(tableName);
 		}
@@ -400,6 +412,7 @@ public class MappingGenerator {
 
 		//SQLOp op = sqlConnection.getSelectStatement("");
 		//but first create its geometry view?
+		//if(!filter.matches(tableName) )return;
 		if (handleLinkTables && isLinkTable(table)) {
 			Iterator<ForeignKey> it = table.getForeignKeys().iterator();
 			ForeignKey fk1 = it.next();
