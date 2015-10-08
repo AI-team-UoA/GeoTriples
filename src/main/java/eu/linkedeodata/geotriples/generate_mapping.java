@@ -151,7 +151,7 @@ public class generate_mapping {
 					final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 					final ArgDecl usernameArg = new ArgDecl(true, "u", "username", "username");
 					final ArgDecl passwordArg = new ArgDecl(true, "p", "password", "password");
-					final ArgDecl isRMLarg = new ArgDecl(false, "rml");
+					final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
 					final ArgDecl onlytableOutArg = new ArgDecl(true, "table");
 					final CommandLine cmd = new CommandLine();
 					cmd.add(baseIRIArg);
