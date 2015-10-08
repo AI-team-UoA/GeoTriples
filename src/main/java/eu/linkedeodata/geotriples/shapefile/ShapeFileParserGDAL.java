@@ -5,7 +5,6 @@
 package eu.linkedeodata.geotriples.shapefile;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +44,7 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 	private Map<String, List<GeneralResultRow>> cacheList = new HashMap<String, List<GeneralResultRow>>();
 
 	public ShapeFileParserGDAL(File shapefile, String primkey) {
-		super(shapefile,primkey);
+		super(shapefile, primkey);
 	}
 
 	public ShapeFileParserGDAL(File shapefile) {
@@ -147,7 +146,7 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 		String pszDataSource = null;
 		Vector papszLayers = new Vector();
 		DataSource poDS;
-		pszDataSource = shapefile.toURI().toURL().toString();
+		pszDataSource = shapefile.getAbsolutePath();
 		poDS = ogr.Open(pszDataSource, false);
 
 		/*
@@ -265,8 +264,7 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 			}
 			return newresult;
 		}
-		
-		
+
 		ogr.DontUseExceptions();
 
 		/*
@@ -281,12 +279,9 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 		String pszDataSource = null;
 		Vector papszLayers = new Vector();
 		DataSource poDS;
-		try {
-			pszDataSource = shapefile.toURI().toURL().toString();
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
+		pszDataSource = shapefile.getAbsolutePath();
+
 		poDS = ogr.Open(pszDataSource, false);
 
 		/*
@@ -340,7 +335,7 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 				break;
 			}
 		}
-		
+
 		return getData(tablename, primkey);
 	}
 
