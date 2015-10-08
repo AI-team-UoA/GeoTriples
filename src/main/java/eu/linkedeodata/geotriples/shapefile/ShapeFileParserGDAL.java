@@ -118,8 +118,8 @@ public class ShapeFileParserGDAL extends ShapeFileParser implements GeneralParse
 			}
 			// System.out.println(geom.ExportToWkt());
 
-			feature.delete();
-			feature = null;
+			//feature.delete();
+			//feature = null;
 			resultlist.add(newrow);
 		}
 		return resultlist;
