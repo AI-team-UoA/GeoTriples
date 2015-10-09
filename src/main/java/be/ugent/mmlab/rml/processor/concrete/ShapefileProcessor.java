@@ -21,9 +21,11 @@ import org.geotools.data.store.ContentDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.type.FeatureTypeFactoryImpl;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
+import org.opengis.referencing.FactoryException;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 
@@ -90,8 +92,19 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 					.getFeatureSource(map.getLogicalSource().getReference());
 			String epsg = org.geotools.gml2.bindings.GML2EncodingUtils
 					.epsgCode(featureSource.getSchema().getCoordinateReferenceSystem());
+			
+			
 			if (epsg != null) {
 				Config.EPSG_CODE = epsg;
+			}else{
+				try {
+					int code=CRS.lookupEpsgCode(featureSource.getSchema().getCoordinateReferenceSystem(), true);
+					//System.out.println("the code is: "+code);
+					Config.EPSG_CODE = String.valueOf(code);
+				} catch (FactoryException e1) {
+					// TODO Auto-generated catch block
+					//e1.printStackTrace();
+				}
 			}
 
 			FeatureCollection<?, ?> collection = featureSource.getFeatures();

@@ -36,7 +36,6 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 	protected TriplesMap map;
 
 	public DatabaseProcessor() {
-
 	}
 
 	@Override

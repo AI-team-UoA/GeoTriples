@@ -25,11 +25,13 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -85,6 +87,15 @@ public class ShapeFileParser implements GeneralParser {
 				.epsgCode(this.crs);
 		if (crs == null) {
 			crs = "" + Config.EPSG_CODE + "";
+		}else{
+			try {
+				int code=CRS.lookupEpsgCode(featureSource.getSchema().getCoordinateReferenceSystem(), true);
+				//System.out.println("the code is: "+code);
+				crs = String.valueOf(code);
+			} catch (FactoryException e1) {
+				// TODO Auto-generated catch block
+				//e1.printStackTrace();
+			}
 		}
 		this.crsstring=crs;
 		
