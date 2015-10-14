@@ -8,6 +8,9 @@ $ git clone https://github.com/LinkedEOData/GeoTriples.git
 $ cd GeoTriples
 $ mvn package
 $ java -jar target/geotriples-<version>-cmd.jar [Options] [Argument]
+
+[Optional: Add an alias for executing the jar file with command `geotriples-cmd`]
+$ echo "alias geotriples-cmd='java -jar `pwd`/target/geotriples-<version>-cmd.jar'" >> ~/.bashrc
 ```
 
 ### GeoTriples Modes ###
@@ -16,29 +19,29 @@ GeoTriples consists of three modules. The Mapping Generator which automatically 
 #### Automatic generation of R2RML/RML mappings ####
 - Relational Database 
 ```bash
-$ java -jar target/geotriples-<version>-cmd.jar generate_mapping -b baseURI [-u user] [-p password] [-d driver] [-o mappingFile] [-rml] jdbcURL
+$ geotriples-cmd generate_mapping -b baseURI [-u user] [-p password] [-d driver] [-o mappingFile] [-rml] jdbcURL
 ```
 - Shapefile
 ```bash
-$ java -jar target/geotriples-<version>-cmd.jar generate_mapping -b baseURI [-o mappingFile] [-rml] fileURL
+$ geotriples-cmd generate_mapping -b baseURI [-o mappingFile] [-rml] fileURL
 ```
 - XML files (Only RML mappings)
 ```bash
-$ java -jar target/geotriples-<version>-cmd.jar generate_mapping -b baseURI [-o RMLmappingFile] [-rp rootpath] [-r rootelement] [-onlyns namespace] [-ns namespaces] [-x XSDfile] fileURL
+$ geotriples-cmd generate_mapping -b baseURI [-o RMLmappingFile] [-rp rootpath] [-r rootelement] [-onlyns namespace] [-ns namespaces] [-x XSDfile] fileURL
 ```
 
 #### Transformation into RDF ####
 - Relational Database
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile]  -u user -p password -d driver -j jdbcURL inputmappingfile
+$ geotriples-cmd dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile]  -u user -p password -d driver -j jdbcURL inputmappingfile
 ```
 - Shapefile
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] [-sh fileURL] inputmappingfile
+$ geotriples-cmd dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] [-sh fileURL] inputmappingfile
 ```
-- XML (using RML processor)
+- XML/JSON (using RML processor)
 ```bash
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf  -rml [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] inputRMLmappingfile
+$ geotriples-cmd dump_rdf  -rml [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] inputRMLmappingfile
 ```
 
 ### GeoTriples Architecture ###
@@ -152,45 +155,4 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
 ```
 
 This mapping contains two triples maps: <#Field> and <#FieldGeometry>. Both triples maps uses an XPath iterator, denoted by `rml:referenceFormulation`, as the base iterator pattern that will be used by the mapping processor module for the generation of the graph. The `rml:reference` is used instead of `rr:column` R2RML's property . The value of `rml:reference` property extends the iterator in order to point at an element.
-
-##Transformation of TalkingFields XML files ([Project LEO](http://linkedeodata.eu))##
-You can transform any talkingfields xml file into RDF using the custom [mapping file](https://github.com/LinkedEOData/GeoTriples/blob/master/resources/rml/talkingfields-rml/example.rml.ttl) that we developed for the talkingfields project. In GeoTriple's command line interface you have to only use the -rml option to enable the RML processor.
-This mapping can transform into RDF the talkingfield XML files that have been given to us and does not cover the complete ontology.
-
-<p>A typical rml-execution is the following</p>
-```bash
-$ java -jar target/geotriples-<version>-cmd.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 talkingfields.mapping.ttl
-```
-
-- Note that there is *no input file* as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property `rml:source`.
-For example a mapping for the example-tf.xml talkingfields file should have triples maps starting with 
-```
-rml:logicalSource [
-rml:source "example-tf.xml";
-```
-- It's better to use the full path of source file because relative paths are evaluated against the working direcotry; not the mapping file's directory.
-
-### Test an example ###
-Go to directory that contains the RML mapping and talkingfields XML files
-
-```bash
-$ cd resources/rml/talkingfields-rml/
-```
-
-Then invoke the RML processor with the RML mapping 
-
-```bash
-$ java -jar target/geotriples-<version>-cmd.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 tf.rml.ttl
-```
-
-That's it! The output RDF graph is in the talkingfields.graph.nt file, in the same directory.
-
-
-
-
-
-
-
-
-
 
