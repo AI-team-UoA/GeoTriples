@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -216,10 +217,19 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 		// return null;
 		return map;
 	}
-
+	public static byte[] toByteArray(double value) {
+	    byte[] bytes = new byte[8];
+	    ByteBuffer.wrap(bytes).putDouble(value);
+	    return bytes;
+	}
 	public static void main(String[] args) {
-		double d = 4799826.0986166212;
-		System.out.println(d);
+		double d = 4799826.0986166214570499999999999;
+		System.out.printf("%.18f\n", d);
+		//byte[] array=toByteArray(d);
+		/*for(int i=0;i<8;++i){
+			System.out.printf("%d ",array[i]);
+		}*/
+		System.out.println(Long.toBinaryString(Double.doubleToRawLongBits(d)));
 
 	}
 }

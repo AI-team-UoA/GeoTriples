@@ -136,7 +136,7 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	@Override
 	public TriplesMap getCurrentTriplesMap(){
 		try {
-			throw new Exception("Bug, it shouldn't use this function from ShapefileProcessor");
+			throw new Exception("Bug, it shouldn't use this function from CSVProcessor");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
