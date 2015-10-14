@@ -31,30 +31,37 @@
 
 <div class="highlight highlight-source-shell"><pre>$ git clone https://github.com/LinkedEOData/GeoTriples.git
 $ <span class="pl-c1">cd</span> GeoTriples
-$ mvn initialize
 $ mvn package
-$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar [Options] [Argument]</pre></div>
+$ java -jar target/geotriples-<span class="pl-k">&lt;</span>version<span class="pl-k">&gt;</span>-cmd.jar [Options] [Argument]
+
+[Optional: Add an <span class="pl-c1">alias</span> <span class="pl-k">for</span> <span class="pl-smi">executing</span> the jar file with <span class="pl-c1">command</span> <span class="pl-s"><span class="pl-pds">`</span>geotriples-cmd<span class="pl-pds">`</span></span>]
+$ <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>alias geotriples-cmd='java -jar <span class="pl-s"><span class="pl-pds">`</span><span class="pl-c1">pwd</span><span class="pl-pds">`</span></span>/target/geotriples-&lt;version&gt;-cmd.jar'<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-k">~</span>/.bashrc</pre></div>
 
 <h3>
 <a id="geotriples-modes" class="anchor" href="#geotriples-modes" aria-hidden="true"><span class="octicon octicon-link"></span></a>GeoTriples Modes</h3>
 
-<p>GeoTriples consists of two modules. The Mapping Generator which automatically produces an R2RML mapping file according to the input source, 
-and the R2RML processor which processes an R2RML mapping and exports the RDF graph.</p>
+<p>GeoTriples consists of three modules. The Mapping Generator which automatically produces an R2RML/RML mapping file according to the input source's schema, the R2RML/RML processor which processes an R2RML/RML mapping and generates an RDF graph, and finally the Ontology Based Data Access (OBDA) module that evaluates stSPARQL/GeoSPARQL queries over a relational database.</p>
 
 <h4>
-<a id="automatic-generation-of-r2rml-mapping" class="anchor" href="#automatic-generation-of-r2rml-mapping" aria-hidden="true"><span class="octicon octicon-link"></span></a>Automatic generation of R2RML mapping</h4>
+<a id="automatic-generation-of-r2rmlrml-mappings" class="anchor" href="#automatic-generation-of-r2rmlrml-mappings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Automatic generation of R2RML/RML mappings</h4>
 
 <ul>
-<li>Relational Database</li>
+<li>Relational Database </li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre>$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-u user] [-p password] [-d driver] [-b baseURI] [-o r2rmloutfile] [-r2rml] jdbcURL</pre></div>
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd generate_mapping -b baseURI [-u user] [-p password] [-d driver] [-o mappingFile] [-rml] jdbcURL</pre></div>
 
 <ul>
 <li>Shapefile</li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre>$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar generate_mapping [-b baseURI] [-o r2rmloutfile] fileURL</pre></div>
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd generate_mapping -b baseURI [-o mappingFile] [-rml] fileURL</pre></div>
+
+<ul>
+<li>XML files (Only RML mappings)</li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd generate_mapping -b baseURI [-o RMLmappingFile] [-rp rootpath] [-r rootelement] [-onlyns namespace] [-ns namespaces] [-x XSDfile] fileURL</pre></div>
 
 <h4>
 <a id="transformation-into-rdf" class="anchor" href="#transformation-into-rdf" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformation into RDF</h4>
@@ -63,20 +70,26 @@ and the R2RML processor which processes an R2RML mapping and exports the RDF gra
 <li>Relational Database</li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre>$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -u user -p password -d driver -j jdbcURL inputmappingfile</pre></div>
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile]  -u user -p password -d driver -j jdbcURL inputmappingfile</pre></div>
 
 <ul>
 <li>Shapefile</li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre>$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf [-f format] [-b baseURI] [-o rdfoutfile] -sh fileURL inputmappingfile</pre></div>
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd dump_rdf [-rml] [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] [-sh fileURL] inputmappingfile</pre></div>
+
+<ul>
+<li>XML/JSON (using RML processor)</li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>$ geotriples-cmd dump_rdf  -rml [-f format] [-b baseURI] [-o rdfoutfile] [-s epsgcode] inputRMLmappingfile</pre></div>
 
 <h3>
 <a id="geotriples-architecture" class="anchor" href="#geotriples-architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>GeoTriples Architecture</h3>
 
-<p>GeoTriples comprises two main
-components: the mapping generator and the R2RML processor. The mapping
-generator takes as input a data source and creates automatically an R2RML
+<p>GeoTriples comprises three main
+components: the mapping generator, R2RML/RML processor and the <a href="https://github.com/ConstantB/ontop-spatial">ontop-spatial</a> OBDA evaluator. The mapping
+generator takes as input a data source and creates automatically an R2RML or RML
 mapping that transforms it into an RDF graph. The generated mapping is
 enriched with subject and predicate-object maps, in order to take into account
 the specifities of geospatial data and cater for all transformations that are
@@ -86,93 +99,105 @@ the representation of a transformation function over input data. Afterwards,
 the user may edit the generated R2RML mapping document to comply with
 her requirements (e.g., use a different vocabulary).</p>
 
-<p><img src="http://drive.google.com/uc?export=view&amp;id=0ByyHFR-5IXfpX3ZyNF9rMTgxcHc" alt="Architecture" title="The architecture of GeoTriples"></p>
+<p><img src="http://drive.google.com/uc?export=view&amp;id=0ByyHFR-5IXfpdHhWOERNNUxsNVE" alt="Architecture" title="The architecture of GeoTriples"></p>
 
 <h3>
 <a id="rml-processor" class="anchor" href="#rml-processor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RML Processor</h3>
 
-<p>GeoTriples now supports the <a href="http://rml.io/">RML</a> mapping language by extending the <a href="https://github.com/mmlab/RMLProcessor">RML processor</a> to support transformation functions.
+<p>GeoTriples now supports the <a href="http://rml.io/">RML</a> mapping language by extending the <a href="https://github.com/mmlab/RMLProcessor">RML processor</a> to address the spatial information.
 <a href="http://rml.io/">RML</a> is a mapping language, very similar to <a href="http://www.w3.org/TR/r2rml/">R2RML</a>. The main difference is that RML is designed to allow the process of data that <em>do not necessarily</em> rely in tables and thus not having an explicit iteration pattern.</p>
 
-<p>For example, the books.xml (see below) cannot be iterated in a row by row fashion, because it has nested elements.</p>
+<p>For example, the farms.xml (see below) cannot be iterated in per row fashion, because it has nested elements.</p>
 
-<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">Books</span>&gt;
-    &lt;<span class="pl-ent">Book</span>&gt;
-        &lt;<span class="pl-ent">Name</span>&gt;The Global Minotaur: America, the True Causes of the Financial Crisis and the Future of the World Economy&lt;/<span class="pl-ent">Name</span>&gt;
-        &lt;<span class="pl-ent">Pages</span>&gt;700&lt;/<span class="pl-ent">Pages</span>&gt;
-        &lt;<span class="pl-ent">Author</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>&gt;
-            &lt;<span class="pl-ent">Name</span>&gt;Yanis&lt;/<span class="pl-ent">Name</span>&gt;
-            &lt;<span class="pl-ent">Surname</span>&gt;Varoufakis&lt;/<span class="pl-ent">Surname</span>&gt;
-            &lt;<span class="pl-ent">Address</span>&gt;
-                &lt;<span class="pl-ent">Street</span>&gt;Unknown&lt;/<span class="pl-ent">Street</span>&gt;
-                &lt;<span class="pl-ent">Country</span>&gt;Greece&lt;/<span class="pl-ent">Country</span>&gt;
-            &lt;/<span class="pl-ent">Address</span>&gt;
-        &lt;/<span class="pl-ent">Author</span>&gt;
-    &lt;/<span class="pl-ent">Book</span>&gt;
-&lt;/<span class="pl-ent">Books</span>&gt;</pre></div>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">Farm</span>&gt;
+   &lt;<span class="pl-ent">Field</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>&gt;
+      &lt;<span class="pl-ent">Vigor</span>&gt;4&lt;/<span class="pl-ent">Vigor</span>&gt;
+      &lt;<span class="pl-ent">Farmer</span>&gt;John Vl&lt;/<span class="pl-ent">Farmer</span>&gt;
+      &lt;<span class="pl-ent">Geometry</span>&gt;
+       &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
+         &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
+           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt; 
+             &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;0,0 100,0 100,100 0,100 0,0&lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt; 
+           &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
+         &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
+       &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
+      &lt;/<span class="pl-ent">Geometry</span>&gt;
+   &lt;/<span class="pl-ent">Field</span>&gt;
+   &lt;<span class="pl-ent">Field</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>&gt;
+      &lt;<span class="pl-ent">Vigor</span>&gt;1&lt;/<span class="pl-ent">Vigor</span>&gt;
+      &lt;<span class="pl-ent">Farmer</span>&gt;Harper Lee&lt;/<span class="pl-ent">Farmer</span>&gt;
+      &lt;<span class="pl-ent">Geometry</span> <span class="pl-e">id</span>=1&gt;
+       &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
+         &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
+           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt; 
+             &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;100,100 200,100 200,200 100,200 100,100&lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;
+           &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
+         &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
+       &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
+      &lt;/<span class="pl-ent">Geometry</span>&gt;
+   &lt;/<span class="pl-ent">Field</span>&gt;
+   &lt;<span class="pl-ent">Field</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>&gt;
+      &lt;<span class="pl-ent">Vigor</span>&gt;3&lt;/<span class="pl-ent">Vigor</span>&gt;
+      &lt;<span class="pl-ent">Farmer</span>&gt;Bruce Pom&lt;/<span class="pl-ent">Farmer</span>&gt;
+   &lt;/<span class="pl-ent">Field</span>&gt;
+&lt;/<span class="pl-ent">Farm</span>&gt;</pre></div>
 
-<p>R2RML uses <code>rr:tableName</code> to define the table from the input file or the relational database as the source table for the mappings. RML has the equivalent rml:source to define the source file as the source for the mappings.
+<p>R2RML uses the property <code>rr:tableName</code> to define which table from the input file or the relational database it going to be used as the source table for the mappings. RML has the equivalent <code>rml:source</code> to define the source for the mappings. The source can be a JDBC URL for a relational database, a Shapefile, an XML, JSON or CSV file. 
 The iterator property <code>rml:iterator</code> defines the iterating pattern in order to process non-relational structured files. For the above example the iterator should be an XPath query.</p>
 
 <p>An example RML mapping can be the following</p>
 
-<pre><code>&lt;#Authors&gt;
+<pre><code>&lt;#Field&gt;
     rml:logicalSource [
-        rml:source "books.xml";
-        rml:referenceFormulation ql:XPath;
-        rml:iterator "/Books/Book" ];
+     rml:source "/fields.xml";
+     rml:referenceFormulation ql:XPath;
+     rml:iterator "/Farm/Field"];
 
     rr:subjectMap [ 
-        rr:template "http://example.com/Author/{@id}" ];
+     rr:class ont:Farm; 
+     rr:class ogc:Feature;
+     rr:template "http://data.linkedeodata.eu/Field/id/{@id}"];
 
     rr:predicateObjectMap [ 
-        rr:predicate ex:location;
-        rr:objectMap [ 
-        rml:reference "Pages" ] ].
+     rr:predicate ont:hasVigor; 
+     rr:objectMap [
+       rml:reference "Vigor"]];
 
     rr:predicateObjectMap [ 
-        rr:predicate ex:location;
-        rr:objectMap [ 
-        rml:reference "Author/Name" ] ].
+     rr:predicate ont:hasFarmer;
+     rr:objectMap [ 
+       rml:reference "Farmer"]].
+
+    rr:predicateObjectMap [ 
+     rr:predicate ogc:hasGeometry;
+     rr:objectMap [ 
+       rr:template "http://data.linkedeodata.eu/FieldGeometry/id/{Geometry/@id}"]].
+
+&lt;#FieldGeometry&gt;
+    rml:logicalSource [
+     rml:source "/fields.xml";
+     rml:referenceFormulation ql:XPath;
+     rml:iterator "/Farm/Field/Geometry"];
+
+    rr:subjectMap [ 
+     rr:class ont:FieldGeometry; 
+     rr:class ogc:Geometry
+     rr:template "http://data.linkedeodata.eu/FieldGeometry/id/{@id}"];
+
+    rr:predicateObjectMap [ 
+     rr:predicate ogc:dimension; 
+     rr:objectMap [
+       rrx:function rrxf:dimension;
+       rrx:argumentMap ([rml:reference "*"]) ];
+
+    rr:predicateObjectMap [ 
+     rr:predicate ogc:asWKT; 
+     rr:objectMap [
+       rrx:function rrxf:asWKT;
+       rrx:argumentMap ([rml:reference "*"]) ].
 </code></pre>
 
-<p>This mapping  uses an XPath iterator denoted by <code>rml:referenceFormulation</code> as the base iterator pattern for the processor. The <code>rml:reference</code> is used instead of <code>rr:column</code> R2RML's property . It extends the iterator in order to point at an element.</p>
-
-<h2>
-<a id="transformation-of-talkingfields-xml-files-project-leo" class="anchor" href="#transformation-of-talkingfields-xml-files-project-leo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformation of TalkingFields XML files (<a href="http://linkedeodata.eu">Project LEO</a>)</h2>
-
-<p>You can transform any talkingfields xml file into RDF using the custom <a href="https://github.com/LinkedEOData/GeoTriples/blob/master/resources/rml/talkingfields-rml/example.rml.ttl">mapping file</a> that we developed for the talkingfields project. In GeoTriple's command line interface you have to only use the -rml option to enable the RML processor.
-This mapping can transform into RDF the talkingfield XML files that have been given to us and does not cover the complete ontology.</p>
-
-<p>A typical rml-execution is the following</p>
-
-<div class="highlight highlight-source-shell"><pre>$ java -jar target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 talkingfields.mapping.ttl</pre></div>
-
-<ul>
-<li>Note that there is <em>no input file</em> as you might expect using the GeoTriples with the default R2RML processor, because RML mappings are self-contained, meaning that they read the input from the special property <code>rml:source</code>.
-For example a mapping for the example-tf.xml talkingfields file should have triples maps starting with </li>
-</ul>
-
-<pre><code>rml:logicalSource [
-rml:source "example-tf.xml";
-</code></pre>
-
-<ul>
-<li>It's better to use the full path of source file because relative paths are evaluated against the working direcotry; not the mapping file's directory.</li>
-</ul>
-
-<h3>
-<a id="test-an-example" class="anchor" href="#test-an-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test an example</h3>
-
-<p>Go to directory that contains the RML mapping and talkingfields XML files</p>
-
-<div class="highlight highlight-source-shell"><pre>$ <span class="pl-c1">cd</span> resources/rml/talkingfields-rml/</pre></div>
-
-<p>Then invoke the RML processor with the RML mapping </p>
-
-<div class="highlight highlight-source-shell"><pre>$ java -jar ../../../target/geotriples-1.0-SNAPSHOT-cmd.one-jar.jar dump_rdf -rml -o talkingfields.graph.nt -s 32633 tf.rml.ttl</pre></div>
-
-<p>That's it! The RDF graph is in the talkingfields.graph.nt file, in the same directory.</p>
+<p>This mapping contains two triples maps: &lt;#Field&gt; and &lt;#FieldGeometry&gt;. Both triples maps uses an XPath iterator, denoted by <code>rml:referenceFormulation</code>, as the base iterator pattern that will be used by the mapping processor module for the generation of the graph. The <code>rml:reference</code> is used instead of <code>rr:column</code> R2RML's property . The value of <code>rml:reference</code> property extends the iterator in order to point at an element.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/LinkedEOData/GeoTriples">GeoTriples</a> is maintained by <a href="https://github.com/LinkedEOData">LinkedEOData</a>.</span>
