@@ -9,7 +9,7 @@ $ cd GeoTriples
 $ mvn package
 $ java -jar target/geotriples-<version>-cmd.jar [Options] [Argument]
 
-[Optional: Add an alias for executing the jar file with command `geotriples-cmd`]
+# [Optional: Add an alias for executing the jar file with command `geotriples-cmd`]
 $ echo "alias geotriples-cmd='java -jar `pwd`/target/geotriples-<version>-cmd.jar'" >> ~/.bashrc
 ```
 
@@ -60,8 +60,8 @@ her requirements (e.g., use a different vocabulary).
 ![Architecture](http://drive.google.com/uc?export=view&id=0ByyHFR-5IXfpdHhWOERNNUxsNVE "The architecture of GeoTriples")
 
 ### RML Processor ###
-GeoTriples now supports the [RML](http://rml.io/) mapping language by extending the [RML processor](https://github.com/mmlab/RMLProcessor) to address the spatial information.
-[RML](http://rml.io/) is a mapping language, very similar to [R2RML](http://www.w3.org/TR/r2rml/). The main difference is that RML is designed to allow the process of data that *do not necessarily* rely in tables and thus not having an explicit iteration pattern.
+GeoTriples now supports an extended versio of [RML](http://rml.io/) mapping language by extending the [RML processor](https://github.com/mmlab/RMLProcessor) to address the spatial information.
+[RML](http://rml.io/) is defined as a superset language of [R2RML](http://www.w3.org/TR/r2rml/). The strong point of RML, is that is designed to allow the process of data that *do not necessarily* rely in tables and thus not having an explicit iteration pattern.
 
 For example, the farms.xml (see below) cannot be iterated in per row fashion, because it has nested elements.
 ```xml
@@ -156,3 +156,14 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
 
 This mapping contains two triples maps: <#Field> and <#FieldGeometry>. Both triples maps uses an XPath iterator, denoted by `rml:referenceFormulation`, as the base iterator pattern that will be used by the mapping processor module for the generation of the graph. The `rml:reference` is used instead of `rr:column` R2RML's property . The value of `rml:reference` property extends the iterator in order to point at an element.
 
+## Combine heterogeneous data, extract topological relations ##
+RML can be used to combine heterogeneous data by generating links between resources that share a same attribute.
+
+For example, if you have a Shapefile that contains a field named A, and this field is being used as an `reference key` B to a JSON file, then you can use the RML join conditions to generate links between these two datasets.
+
+GeoTriples implements an extended version of Join Condition class allowing for the generation of links that are not depending on equality of two values, but on the result of a function. Currently, GeoTriples implements the following GeoSPARQL functions:
+<ol>
+  <li>sfIntersects</li>
+  <li>sfContains</li>
+  <li>sfTouches</li>
+</ol>
