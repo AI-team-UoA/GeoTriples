@@ -51,9 +51,12 @@ import be.ugent.mmlab.rml.function.FunctionCentroidX;
 import be.ugent.mmlab.rml.function.FunctionCentroidY;
 import be.ugent.mmlab.rml.function.FunctionContains;
 import be.ugent.mmlab.rml.function.FunctionCoordinateDimension;
+import be.ugent.mmlab.rml.function.FunctionCrosses;
 import be.ugent.mmlab.rml.function.FunctionDimension;
+import be.ugent.mmlab.rml.function.FunctionDisjoint;
 import be.ugent.mmlab.rml.function.FunctionDistance;
 import be.ugent.mmlab.rml.function.FunctionEQUI;
+import be.ugent.mmlab.rml.function.FunctionEquals;
 import be.ugent.mmlab.rml.function.FunctionFactory;
 import be.ugent.mmlab.rml.function.FunctionGreaterThan;
 import be.ugent.mmlab.rml.function.FunctionHasSerialization;
@@ -62,8 +65,11 @@ import be.ugent.mmlab.rml.function.FunctionIs3D;
 import be.ugent.mmlab.rml.function.FunctionIsEmpty;
 import be.ugent.mmlab.rml.function.FunctionIsSimple;
 import be.ugent.mmlab.rml.function.FunctionLength;
+import be.ugent.mmlab.rml.function.FunctionOverlaps;
 import be.ugent.mmlab.rml.function.FunctionSpatialDimension;
 import be.ugent.mmlab.rml.function.FunctionSubtract;
+import be.ugent.mmlab.rml.function.FunctionTouches;
+import be.ugent.mmlab.rml.function.FunctionWithin;
 import be.ugent.mmlab.rml.model.RMLMapping;
 
 /**
@@ -380,10 +386,44 @@ public class MainTrans {
 				new FunctionCentroidX());
 		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy"),
 				new FunctionCentroidY());
+		
+		/*Tolopogical Relations RRXF namespace*/
 		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/contains"),
 				new FunctionContains());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equals"),
+				new FunctionEquals());
 		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/intersects"),
 				new FunctionIntersects());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/disjoint"),
+				new FunctionDisjoint());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/within"),
+				new FunctionWithin());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/touches"),
+				new FunctionTouches());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/crosses"),
+				new FunctionCrosses());
+		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/overlaps"),
+				new FunctionOverlaps());
+		
+		/*Tolopogical Relations GeoSPARQL*/
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfContains"),
+				new FunctionContains());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfEquals"),
+				new FunctionEquals());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfIntersects"),
+				new FunctionIntersects());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfDisjoint"),
+				new FunctionDisjoint());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfWithin"),
+				new FunctionWithin());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfTouches"),
+				new FunctionTouches());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfCrosses"),
+				new FunctionCrosses());
+		FunctionFactory.registerFunction(new URIImpl("http://www.opengis.net/def/geosparql/functions/sfOverlaps"),
+				new FunctionOverlaps());
+		
+		/*Some other functions*/
 		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/distance"),
 				new FunctionDistance());
 		FunctionFactory.registerFunction(new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/greaterThan"),
