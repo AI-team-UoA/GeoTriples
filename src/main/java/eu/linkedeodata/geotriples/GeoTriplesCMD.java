@@ -47,7 +47,8 @@ public class GeoTriplesCMD {
 			usage();
 		}
 		long endTime = System.currentTimeMillis();
-		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
+//		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
+		System.out.println("Took " + (endTime - startTime)  + " msec");
 		//FileOutputStream logfile=new FileOutputStream(new File())
 	}
 
