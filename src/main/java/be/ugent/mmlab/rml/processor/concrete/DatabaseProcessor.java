@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,12 +20,17 @@ import org.openrdf.model.URI;
 import be.ugent.mmlab.rml.core.DependencyRMLPerformer;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.model.ObjectMap;
+import be.ugent.mmlab.rml.model.PredicateObjectMap;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
+import be.ugent.mmlab.rml.model.TermMap.TermMapType;
+import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
+import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
 
 /**
  * 
@@ -63,17 +70,43 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 			// TODO: add character guessing
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[Database Processor] url " + fileName);
-			
-			DriverManager.registerDriver((Driver)Class.forName("nl.cwi.monetdb.jdbc.MonetDriver").newInstance());
-			DriverManager.registerDriver((Driver)Class.forName("org.postgresql.Driver").newInstance());
-			/*DriverManager.registerDriver((Driver)Class.forName("com.mysql.jdbc.Driver").newInstance());
-			DriverManager.registerDriver((Driver)Class.forName("org.hsqldb.jdbcDriver").newInstance());*/
+
+			DriverManager.registerDriver((Driver) Class.forName("nl.cwi.monetdb.jdbc.MonetDriver").newInstance());
+			DriverManager.registerDriver((Driver) Class.forName("org.postgresql.Driver").newInstance());
+			/*
+			 * DriverManager.registerDriver((Driver)Class.forName(
+			 * "com.mysql.jdbc.Driver").newInstance());
+			 * DriverManager.registerDriver((Driver)Class.forName(
+			 * "org.hsqldb.jdbcDriver").newInstance());
+			 */
+
 			Connection con = DriverManager.getConnection(fileName);
 			Statement stm = con.createStatement();
-			//stm.setFetchSize(10000);
-			ResultSet results = stm.executeQuery(map.getLogicalSource().getReference());
-			
-			
+
+			Set<String> references = getColumnsReferencesFromTriplesMap(map);
+			String effective_query = map.getLogicalSource().getReference();
+			if (effective_query.endsWith(";"))
+				effective_query = effective_query.substring(0, effective_query.length() - 1);
+			String newquery = "SELECT";
+			boolean isfirst = true;
+			for (String reference : references) {
+
+				if (!isfirst) {
+					newquery += " ,\"effective_query\".\"" + reference + "\"";
+				} else {
+					newquery += " \"effective_query\".\"" + reference + "\"";
+				}
+				isfirst = false;
+
+			}
+
+			newquery += " FROM (" + effective_query + ") as effective_query";
+
+			// stm.setFetchSize(10000);
+			// ResultSet results =
+			// stm.executeQuery(map.getLogicalSource().getReference());
+			ResultSet results = stm.executeQuery(newquery);
+
 			try {
 				// Iterate the rows
 				while (results.next()) {
@@ -93,7 +126,7 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 		} catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			if(e1 instanceof ClassNotFoundException){
+			if (e1 instanceof ClassNotFoundException) {
 				log.error("GeoTriples couldn't find the MonetDB jdbc Driver class (nl.cwi.monetdb.jdbc.MonetDriver)");
 				System.exit(13);
 			}
@@ -127,9 +160,9 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 	public void execute_node(SesameDataSet dataset, String expression, TriplesMap parentTriplesMap,
 			RMLPerformer performer, Object node, Resource subject) {
 		throw new UnsupportedOperationException("[execute_node] Not applicable for Database sources, yet."); // To
-																											// change
-																											// body
-																											// of
+																												// change
+																												// body
+																												// of
 		// generated methods, choose
 		// Tools | Templates.
 	}
@@ -179,5 +212,26 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 		// }
 		// return null;
 		return map;
+	}
+
+	private Set<String> getColumnsReferencesFromTriplesMap(TriplesMap tm) {
+		Set<String> results = new HashSet<>();
+		for (PredicateObjectMap pom : tm.getPredicateObjectMaps()) {
+			for (ObjectMap om : pom.getObjectMaps()) {
+				if (om.getTermMapType().equals(TermMapType.REFERENCE_VALUED)) {
+					ReferenceIdentifier r = om.getReferenceValue();
+
+					// System.out.println(r.toString());
+					results.add(r.toString());
+				}
+			}
+		}
+		Set<String> cols = R2RMLToolkit.extractColumnNamesFromStringTemplate(tm.getSubjectMap().getStringTemplate());
+		for (String c : cols) {
+			if (c.equals("GeoTriplesID"))
+				continue;
+			results.add(c);
+		}
+		return results;
 	}
 }
