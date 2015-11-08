@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>stR2RML and stRML</title>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
+            async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "unofficial",
+          shortName:  "unicorn-dahuts",
+          editors: [
+                {   name:       "Kostis Kyzirakos, Dimitrianos Savva",
+                    url:        "http://linkedeodata.github.eu/GeoTriples/spec",
+                    company:    "CWI, University of Athens",
+                    companyURL: "http://cwi.nl/, http://uoa.gr/" }
+          ],
+          previousMaturity: "FPWD",
+          previousPublishDate:  "2015-11-08",
+          wg:           "Linked EO Data",
+          wgURI:        "http://www.w3.org/2017/cryptozoology/",
+          wgPublicList: "public-animals",
+          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
+      };
+    </script>
+    <link rel="stylesheet" type="text/css" href=
+  "http://www.w3.org/StyleSheets/TR/W3C-REC.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+        dfn { color: navy; font-weight: bold; }
+        pre { margin-left: 0; padding: 0 2em; }
+        dt { margin-top: 0.8em; }
+        th, td { padding: 0.3em 0.5em; }
+        cite { font-style: normal }
+        th { text-align: left; }
+        h2, h3 { margin-top: 2em; }
+        em.rfc2119 { text-transform: lowercase; font-variant: small-caps; font-style: normal; }
+        figure { margin: 2em 0; text-align: center; }
+        .figure .caption { margin-top: 1.6em; }
+        table.term-index th code { font-weight: normal; }
+        table.term-index th, table.term-index td { padding: 0.1em 0.5em; }
+        .issue { background-color: #fdd; border: 1px solid #800; margin: 1em 0em; padding: 1em; page-break-inside: avoid ; font-style: italic; }
+        .issue a.tracker { font-style: normal; font-weight: bold; }
+        .note { background: #e2fff0; border: 2px solid #cff6d9; margin: 1em 0em 0em; padding: 1em; }
+        .note:before { background: #fff; border: 1px solid #cff6d9; content: "Note"; display: block; font-weight: bold; margin: -1.5em 0 0.5em 0; padding: 0.2em 0.8em; width: 2.5em; }
+        .ex-data, table.ex-data th, table.ex-data td { background: #cee; border: 1px solid #acc; }
+        table.ex-data { border-collapse: collapse; margin-bottom: 1.5em; }
+        table.ex-data caption, table.ex-data th, table.ex-data td { font-family: monospace; }
+        table.ex-data caption, table.ex-data th { font-size: 125%; }
+        table.ex-data caption { font-weight: bold; }
+        table.ex-data th small, table.ex-data caption small { display: block; font-size: 65%; font-weight: normal; }
+        pre.vocab, pre.ex-mapping, pre.ex-output, pre.ex-sql { margin-top: 1.5em; padding: 1em; }
+        pre.vocab:before, pre.ex-mapping:before, pre.ex-output:before, pre.ex-sql:before { background: white; display: block; font-family: sans-serif; font-size: 90%; margin: -1.7em 0 0.5em 0; padding: 0.2em 0.4em; }
+        pre.vocab { background: #d4dddd; }
+        pre.vocab, pre.vocab:before { border: 1px solid #bbb; }
+        pre.vocab:before { color: #888; content: "R2RML vocabulary definition"; width: 13em; }
+        pre.ex-mapping, pre.ex-sql { background: #eeb; }
+        pre.ex-mapping, pre.ex-mapping:before, pre.ex-sql, pre.ex-sql:before { border: 1px solid #cc9; }
+        pre.ex-mapping:before { color: #996; content: "Example stR2RML mapping"; width: 12em; }
+        pre.ex-sql:before { color: #996; content: "Example SQL query"; width: 9em; }
+        .ex-output { background: #cfc; }
+        .ex-output, .ex-output:before, .ex-output th, .ex-output td { border: 1px solid #aca; }
+        pre.ex-output:before { color: #797; content: "Example output data"; width: 9.5em; }
+        .toc ul { list-style-type: none; }
+        .toc > li { font-weight: bold; margin-bottom: 0.8em; }
+        .toc li li { font-weight: normal; }
+  /*]]>*/
+  </style>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        This document describes stR2RML and stRML that are extension of R2RML and RML.
+      </p>
+    </section>
+
+    <section id='sotd'>
+      <p>
+        This document has been developed in the concept of LEO and MELODIES projects. It is a draft document and may be used as reference material or cited from another document.
+      </p>
+    </section>
+    
+    <section class='informative'>
+      <h2>Introduction</h2>
+      <p>
+        This specification describes stR2RML and stRML that are languages based on the R2RML and RML mapping languages.
+      </p>
+      <p>
+        It decided to use ReSpec, they went to Last Call inside of a quarter and to
+        Rec within six months. They spent most of the rest of their chartered time
+        having fun in exotic places.
+      </p>
+      <p>
+        The End.
+      </p>
+      <section><h2>Document Conventions</h2>
+        <p>In this document, examples assume the following namespace prefix bindings unless
+    otherwise stated:</p>
+
+    <table rules="all" summary="list of prefixes used in the document">
+      <tr>
+        <th>Prefix</th>
+
+        <th>IRI</th>
+      </tr>
+
+      <tr>
+        <td><code>rr:</code></td>
+
+        <td><code>http://www.w3.org/ns/r2rml#</code></td>
+      </tr>
+
+      <tr>
+        <td><code>rdf:</code></td>
+
+        <td><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></td>
+      </tr>
+
+      <tr>
+        <td><code>rdfs:</code></td>
+
+        <td><code>http://www.w3.org/2000/01/rdf-schema#</code></td>
+      </tr>
+
+      <tr>
+        <td><code>xsd:</code></td>
+
+        <td><code>http://www.w3.org/2001/XMLSchema#</code></td>
+      </tr>
+
+      <tr>
+        <td><code>ex:</code></td>
+
+        <td><code>http://example.com/ns#</code></td>
+      </tr>
+    </table>
+
+    <p>Throughout the document, boxes containing Turtle markup and SQL data will appear.
+    These boxes are color-coded. Gray boxes contain RDFS definitions of R2RML vocabulary
+    terms:</p>
+    <pre class="vocab">
+# This box contains RDFS definitions of R2RML vocabulary terms
+</pre>
+
+    <p>Yellow boxes contain example fragments of R2RML mappings in Turtle syntax:</p>
+    <pre class="ex-mapping">
+# This box contains example R2RML mappings
+</pre>
+
+    <p>Blue tables contain example input into an R2RML mapping:</p>
+    <table class="ex-data">
+      <caption>EXAMPLE</caption>
+      <tr><th>ID <small>INTEGER PRIMARY KEY</small></th><th>DESC <small>VARCHAR(100)</small></th></tr>
+      <tr><td>1</td><td>This is an example input table.</td></tr>
+      <tr><td>2</td><td>The table name is EXAMPLE.</td></tr>
+      <tr><td>3</td><td>It has six rows.</td></tr>
+      <tr><td>4</td><td>It has two columns, ID and DESC.</td></tr>
+      <tr><td>5</td><td>ID is the table's primary key and of type INTEGER.</td></tr>
+      <tr><td>6</td><td>DESC is of type VARCHAR(100)</td></tr>
+    </table>
+
+    <p>Green boxes contain example output:</p>
+
+    <pre class="ex-output">
+# This box contains example output RDF triples or fragments
+</pre>
+      </section>
+
+    </section>
+    
+    
+    <section>
+      <h2>Vocabulary</h2>
+      <p>
+        The stRML vocabulary namespace is <code>http://linkedeodata.eu/ns/strml#</code>
+      </p>
+      <p>The stRML vocabulary preferred prefix is the <code>rrx</code>.</p>
+      <p>The stRML vocabulary consists of the RML specific defined classes but also includes all the [<cite><a class="bibref" href="http://rml.io/spec.html#vocabulary">RML classes</a></cite>]</p>
+      <ul>
+        <li><code>rr:TriplesMap</code> is the class of triples maps as defined by R2RML.</li>
+        <li><code>rml:LogicalSource</code> is the class of logical sources as defined by RML.</li>
+        <li><code>rml:BaseSource</code> is the class of data sources used as input source as defined by RML.</li>
+        <li><code>rrx:TermMap</code> is the extended R2RML's rr:TermMap class. It has four subclasses:
+          <ul>
+            <li><code>rr:SubjectMap</code> is the class of subject maps.
+            <li><code>rr:PredicateMap</code> is the class of predicate maps.
+            <li><code>rr:ObjectMap</code> is the class of object maps.
+            <li><code>rr:GraphMap</code> is the class of graph maps.
+            <li><code>rr:PredicateObjectMap</code> is the class of predicate-object maps.
+          </ul>
+        </li>
+        <li><code>rr:Join</code> is the class of join conditions.
+        <li><code>rml:referenceFormulation</code> is the class of supported reference formulations as defined by RML.
+      </ul>
+    </section>
+
+
+
+
+      <section>
+        <h2>Creating RDF Terms with Term Maps</h2>
+        <figure><img width="35%" height="35%" src="http://drive.google.com/uc?export=view&id=0ByyHFR-5IXfpM3hfQ1E0Rm5LRWs"/><figcaption>The properties of the extended R2RML term map</figcaption></figure>
+        <p>
+          A <a href="http://www.w3.org/TR/r2rml/#dfn-term-map">term map</a> must be exactly one of the following:
+          <ul>
+            <li>a <a href="http://www.w3.org/TR/r2rml/#dfn-constant-valued-term-map">constant-valued term map</a>,</li>
+            <li>a <a href="http://www.w3.org/TR/r2rml/#dfn-column-valued-term-map">column-valued term map</a>,</li>
+            <li>a <a href="http://www.w3.org/TR/r2rml/#dfn-template-valued-term-map">template-valued term map</a>,</li>
+            <li>a <a href="#dfn-template-valued-term-map">transformation-valued term map</a>.</li>
+          </ul>
+
+          <section>
+            <h2>From a Transformation (strr:function,strr:argumentMap)</h2>
+            A <dfn>transformation-valued term map</dfn> is a <a href="http://www.w3.org/TR/r2rml/#dfn-term-map">term map</a> that is represented by a resource that:
+            <ul>
+              <li>has exactly one rr:function property, whose value MUST be a valid <a href="http://www.w3.org/2001/sw/DataAccess/rq23/rq24.html#rIRIrefOrFunction">IRIrefOrFunction</a>.</li>
+              <li>has exactly one rr:argumentMap property, whose value MUST be an <a href="http://www.w3.org/TR/rdf-schema/#ch_list">RDF list</a> which contains zero or more <a href="http://www.w3.org/TR/r2rml/#dfn-term-map">term maps</a></li>
+            </ul>
+              <p>
+                The following example defines an object map that generates literals from the DNAME column of some logical table.
+              </p> 
+              <pre class="ex-mapping">
+               sdfsdg
+              </pre>
+          </section>
+          
+        </p>
+      </section>
+      <section>
+        <h2>Dahut</h2>
+        <p>
+          An <dfn>rrx:function</dfn> is an Alpine animal with legs shorter on one side
+          than on the other in order to better walk around the mountain. There
+          are two types, with varying on chirality. It is not to be confused 
+          with the chamois, a mythical mountain animal with two legs of the same
+          size — a logical impossibility that will be clear to anyone who has been
+          mountain climbing.
+        </p>
+        <p>
+          Further discussion of the <a>dahut</a> can be found in [[!SVGMOBILE12]].
+        </p>
+      </section>
+    </section>
+  </body>
+  <div id="tof"/>
+</html>
