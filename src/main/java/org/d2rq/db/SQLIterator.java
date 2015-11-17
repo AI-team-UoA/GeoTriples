@@ -16,6 +16,8 @@ import org.d2rq.lang.Database;
 import com.hp.hpl.jena.query.QueryCancelledException;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
+
 
 /**
  * Executes an SQL query and delivers result rows as an iterator over {@link ResultRow}s.
@@ -50,8 +52,15 @@ public class SQLIterator implements ClosableIterator<ResultRow> {
 			return false;
 		}
 		if (prefetchedRow == null) {
+			long startTime = System.nanoTime();
 		    ensureQueryExecuted();
 			tryFetchNextRow();
+			long endTime = System.nanoTime();
+
+			double duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			PrintTimeStats.addDuration(duration);
+			PrintTimeStats.printTime("Read line from results of a query", duration);
+			
 		}
 		return prefetchedRow != null;
 	}

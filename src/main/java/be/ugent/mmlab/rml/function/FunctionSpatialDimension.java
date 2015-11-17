@@ -15,6 +15,7 @@ import org.openrdf.model.impl.LiteralImpl;
 import org.xml.sax.SAXException;
 
 import be.ugent.mmlab.rml.core.MalformedGeometryException;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -28,14 +29,34 @@ public class FunctionSpatialDimension extends GeometryFunction implements Functi
 		List<String> valueList = new ArrayList<>();
 		
 		if(qlterms.get(0).equals(QLTerm.SHP_CLASS) && arguments.get(0) instanceof org.gdal.ogr.Geometry ){
+			long startTime = System.nanoTime();
 			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )arguments.get(0);
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			PrintTimeStats.printTime("Compute Geometry", duration);
+			
+			startTime = System.nanoTime();
 			valueList.add(String.valueOf(gdalgeom.GetDimension()));
+			endTime = System.nanoTime();
+			duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			PrintTimeStats.printTime("Compute function spatialDimension", duration);
+			
 			return valueList;
 		}
 		
+		long startTime = System.nanoTime();
 		Geometry geometry = computeGeometry(arguments.get(0), qlterms.get(0));
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+		PrintTimeStats.printTime("Compute Geometry", duration);
+		
+		startTime = System.nanoTime();
 		valueList.add(GTransormationFunctions.spatialDimension(
 				(Geometry) geometry));
+		endTime = System.nanoTime();
+		duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+		PrintTimeStats.printTime("Compute function spatialDimension", duration);
+		
 		return valueList;
 	}
 

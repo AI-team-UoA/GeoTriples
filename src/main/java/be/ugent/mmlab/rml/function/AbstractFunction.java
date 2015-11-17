@@ -179,6 +179,7 @@ public abstract class AbstractFunction {
 			throws SAXException, IOException, ParserConfigurationException,
 			NoSuchAuthorityCodeException, FactoryException,
 			MalformedGeometryException {
+		
 		if(!term.equals(QLTerm.SHP_CLASS) && cache.containsKey(object)){
 			return cache.get(object);
 		}
@@ -202,6 +203,7 @@ public abstract class AbstractFunction {
 			throw new MalformedGeometryException(
 					"GeoTriples cannot recognize this type of geometry");
 		}
+		
 	}
 
 	private String convert2GML2(String value) {

@@ -24,6 +24,7 @@ import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 
@@ -130,13 +131,24 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 			// 1));
 			KeyGenerator keygen = new KeyGenerator();
 			Feature feature;
-
+			double total_thematic_duration=0.0;
+			double total_duration_geom=0.0;
 			for (int f = 0; f < poLayer.GetFeatureCount(); ++f) {
 				// while ((feature = poLayer.GetNextFeature()) != null) {
+				long startTime = System.nanoTime();
 				feature = poLayer.GetNextFeature();
+				long endTime = System.nanoTime();
+				long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+				total_thematic_duration+=duration;
+				
 				totalmatches.increase();
+				
+				
 				HashMap<String, Object> row = new HashMap<>();
 				int fieldssize = feature.GetFieldCount();
+				
+				
+				startTime = System.nanoTime();
 				for (int i = 0; i < fieldssize; ++i) {
 					String type = feature.GetFieldDefnRef(i).GetFieldTypeName(feature.GetFieldType(i));
 					if (type.equals("String")) {
@@ -172,7 +184,18 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 					// System.out.println(feature.GetFieldAsInteger(i));
 
 				}
+				endTime = System.nanoTime();
+				duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+				PrintTimeStats.printTime("Read Thematic from file", duration);
+				total_thematic_duration+=duration;
+				
+				startTime = System.nanoTime();
 				Geometry geom = feature.GetGeometryRef();
+				endTime = System.nanoTime();
+				duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+				total_duration_geom+=duration;
+				PrintTimeStats.printTime("Read Geometry from file", duration);
+				
 				row.put("the_geom", geom);
 				try {
 					row.put(Config.GEOTRIPLES_AUTO_ID, keygen.Generate());
@@ -186,6 +209,10 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 				feature.delete();
 				feature = null;
 			}
+			
+			PrintTimeStats.printTime("Read Thematic data (total) from file", total_thematic_duration);
+			PrintTimeStats.printTime("Read Geometries (total) from file", total_duration_geom);
+			
 
 		}
 

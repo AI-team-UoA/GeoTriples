@@ -23,6 +23,7 @@ import org.gdal.ogr.ogrJNI;
 import com.vividsolutions.jts.geom.Geometry;
 
 import be.ugent.mmlab.rml.function.Config;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import eu.linkedeodata.geotriples.GTransormationFunctions;
 import eu.linkedeodata.geotriples.GeneralConnection;
 
@@ -60,25 +61,82 @@ public class TransformationValueMaker implements ValueMaker {
 		try {
 			if (Config.useDGALLibrary) {
 				if (function.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
-					return GTransormationFunctions.asWKT((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asWKT((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asWKT", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isSimple.toString())) {
-					return GTransormationFunctions.isSimple((org.gdal.ogr.Geometry) values.get(0));
+					
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isSimple((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isSimple", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.hasSerialization.toString())) {
-					return GTransormationFunctions.hasSerialization((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.hasSerialization((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function hasSerialization", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.asGML.toString())) {
-					return GTransormationFunctions.asGML((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asGML((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asGML", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isEmpty.toString())) {
-					return GTransormationFunctions.isEmpty((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isEmpty((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isEmpty", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.is3D.toString())) {
-					return GTransormationFunctions.is3D((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.is3D((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function is3D", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.spatialDimension.toString())) {
-					return GTransormationFunctions.spatialDimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.spatialDimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function spatialDimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.dimension.toString())) {
-					return GTransormationFunctions.dimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.dimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function dimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.coordinateDimension.toString())) {
-					return GTransormationFunctions.coordinateDimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.coordinateDimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function coordinateDimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.area.toString())) {
-					return GTransormationFunctions.area((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.area((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function area", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.length.toString())) {
 					return GTransormationFunctions.length((org.gdal.ogr.Geometry) values.get(0));
 				} else if (function.equals(GEOMETRY_FUNCTIONS.centroidx.toString())) {
@@ -94,23 +152,73 @@ public class TransformationValueMaker implements ValueMaker {
 				}
 			} else {
 				if (function.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
-					return GTransormationFunctions.asWKT((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asWKT((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asWKT", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isSimple.toString())) {
-					return GTransormationFunctions.isSimple((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isSimple((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isSimple", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.hasSerialization.toString())) {
-					return GTransormationFunctions.hasSerialization((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.hasSerialization((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function hasSerialization", duration);
+					return result;
+				
 				} else if (function.equals(GEOMETRY_FUNCTIONS.asGML.toString())) {
-					return GTransormationFunctions.asGML((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asGML((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asGML", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isEmpty.toString())) {
-					return GTransormationFunctions.isEmpty((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isEmpty((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isEmpty", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.is3D.toString())) {
-					return GTransormationFunctions.is3D((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.is3D((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function is3D", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.spatialDimension.toString())) {
-					return GTransormationFunctions.spatialDimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.spatialDimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function spatialDimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.dimension.toString())) {
-					return GTransormationFunctions.dimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.dimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function dimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.coordinateDimension.toString())) {
-					return GTransormationFunctions.coordinateDimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.coordinateDimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function coordinateDimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.area.toString())) {
 					return GTransormationFunctions.area((Geometry) values.get(0));
 				} else if (function.equals(GEOMETRY_FUNCTIONS.length.toString())) {
@@ -166,25 +274,82 @@ public class TransformationValueMaker implements ValueMaker {
 		try {
 			if (Config.useDGALLibrary) {
 				if (function.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
-					return GTransormationFunctions.asWKT((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asWKT((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asWKT", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isSimple.toString())) {
-					return GTransormationFunctions.isSimple((org.gdal.ogr.Geometry) values.get(0));
+					
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isSimple((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isSimple", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.hasSerialization.toString())) {
-					return GTransormationFunctions.hasSerialization((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.hasSerialization((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function hasSerialization", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.asGML.toString())) {
-					return GTransormationFunctions.asGML((org.gdal.ogr.Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asGML((org.gdal.ogr.Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asGML", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isEmpty.toString())) {
-					return GTransormationFunctions.isEmpty((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isEmpty((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isEmpty", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.is3D.toString())) {
-					return GTransormationFunctions.is3D((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.is3D((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function is3D", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.spatialDimension.toString())) {
-					return GTransormationFunctions.spatialDimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.spatialDimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function spatialDimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.dimension.toString())) {
-					return GTransormationFunctions.dimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.dimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function dimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.coordinateDimension.toString())) {
-					return GTransormationFunctions.coordinateDimension((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.coordinateDimension((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function coordinateDimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.area.toString())) {
-					return GTransormationFunctions.area((org.gdal.ogr.Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.area((org.gdal.ogr.Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function area", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.length.toString())) {
 					return GTransormationFunctions.length((org.gdal.ogr.Geometry) values.get(0));
 				} else if (function.equals(GEOMETRY_FUNCTIONS.centroidx.toString())) {
@@ -200,23 +365,73 @@ public class TransformationValueMaker implements ValueMaker {
 				}
 			} else {
 				if (function.equals(GEOMETRY_FUNCTIONS.asWKT.toString())) {
-					return GTransormationFunctions.asWKT((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asWKT((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asWKT", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isSimple.toString())) {
-					return GTransormationFunctions.isSimple((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isSimple((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isSimple", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.hasSerialization.toString())) {
-					return GTransormationFunctions.hasSerialization((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.hasSerialization((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function hasSerialization", duration);
+					return result;
+				
 				} else if (function.equals(GEOMETRY_FUNCTIONS.asGML.toString())) {
-					return GTransormationFunctions.asGML((Geometry) values.get(0), crs);
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.asGML((Geometry) values.get(0), crs);
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function asGML", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.isEmpty.toString())) {
-					return GTransormationFunctions.isEmpty((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.isEmpty((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function isEmpty", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.is3D.toString())) {
-					return GTransormationFunctions.is3D((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.is3D((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function is3D", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.spatialDimension.toString())) {
-					return GTransormationFunctions.spatialDimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.spatialDimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function spatialDimension", duration);
+					return result;
+					
 				} else if (function.equals(GEOMETRY_FUNCTIONS.dimension.toString())) {
-					return GTransormationFunctions.dimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.dimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function dimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.coordinateDimension.toString())) {
-					return GTransormationFunctions.coordinateDimension((Geometry) values.get(0));
+					long startTime = System.nanoTime();
+					String result = GTransormationFunctions.coordinateDimension((Geometry) values.get(0));
+					long endTime = System.nanoTime();
+					long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+					PrintTimeStats.printTime("Compute function coordinateDimension", duration);
+					return result;
 				} else if (function.equals(GEOMETRY_FUNCTIONS.area.toString())) {
 					return GTransormationFunctions.area((Geometry) values.get(0));
 				} else if (function.equals(GEOMETRY_FUNCTIONS.length.toString())) {
@@ -225,6 +440,8 @@ public class TransformationValueMaker implements ValueMaker {
 					return GTransormationFunctions.centroidx((Geometry) values.get(0));
 				} else if (function.equals(GEOMETRY_FUNCTIONS.centroidy.toString())) {
 					return GTransormationFunctions.centroidy((Geometry) values.get(0));
+				} else if (function.equals(GEOMETRY_FUNCTIONS.strdfWKT.toString())) {
+					return GTransormationFunctions.strdfWKT((Geometry) values.get(0), crs);
 				} else if (function.equals(STRING_FUNCTIONS.asCAPITAL.toString())) {
 					return values.get(0).toString().toUpperCase();
 				} else if (function.equals(STRING_FUNCTIONS.asLOWER.toString())) {
@@ -236,7 +453,7 @@ public class TransformationValueMaker implements ValueMaker {
 
 		} catch (ArrayIndexOutOfBoundsException e) {
 			try {
-				throw new Exception("mple Not enough arguments given for function <" + function + ">");
+				throw new Exception("Not enough arguments given for function <" + function + ">");
 			} catch (Exception e1) {
 				System.out.println(e.getMessage());
 				e1.printStackTrace();

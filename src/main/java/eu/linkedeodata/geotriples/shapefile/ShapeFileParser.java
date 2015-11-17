@@ -36,6 +36,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import eu.linkedeodata.geotriples.Config;
 import eu.linkedeodata.geotriples.GeneralParser;
 import eu.linkedeodata.geotriples.GeneralResultRow;
@@ -103,22 +104,44 @@ public class ShapeFileParser implements GeneralParser {
 		FeatureIterator<?> iterator = collection.features();
 		List<GeneralResultRow> resultlist = new ArrayList<GeneralResultRow>();
 		try {
+			double total_thematic_duration=0.0;
+			double total_duration_geom=0.0;
 			while (iterator.hasNext()) {
+				
+				long startTime = System.nanoTime();
 				Feature feature = iterator.next();
 				GeneralResultRow newrow = new GeneralResultRow(); // new row
 				for (Property p : feature.getProperties()) {
 					newrow.addPair(p.getName().getLocalPart(), p.getValue());
 				}
+				long endTime = System.nanoTime();
+				double duration = (endTime - startTime) / 1000000; // divide by
+															// 1000000 to
+															// get
+															// milliseconds.
+				total_thematic_duration += duration;
+				PrintTimeStats.printTime("Read Thematic from file", duration);
+				
 				newrow.addPair(primarykey, KeyGenerator.Generate()); // Add
 																		// primary
 																		// key
-
+				startTime = System.nanoTime();
 				GeometryAttribute sourceGeometryAttribute = feature
 						.getDefaultGeometryProperty();
+				endTime = System.nanoTime();
+				duration = (endTime - startTime) / 1000000; // divide by
+																	// 1000000 to
+																	// get
+																	// milliseconds.
+				total_duration_geom+= duration;
+				PrintTimeStats.printTime("Read Geometry from file", duration);
+				
 
 				//RowHandler.handleGeometry(newrow, (Geometry)sourceGeometryAttribute.getValue(), crs);
 				resultlist.add(newrow);
 			}
+			PrintTimeStats.printTime("Read Thematic data (total) from file", total_thematic_duration);
+			PrintTimeStats.printTime("Read Geometries (total) from file", total_duration_geom);
 		} finally {
 			iterator.close();
 		}

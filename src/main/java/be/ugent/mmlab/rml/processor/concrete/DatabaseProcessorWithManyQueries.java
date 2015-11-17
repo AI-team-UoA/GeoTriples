@@ -33,6 +33,7 @@ import be.ugent.mmlab.rml.model.TermType;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
@@ -102,18 +103,36 @@ public class DatabaseProcessorWithManyQueries extends AbstractRMLProcessor {
 				String newquery = "SELECT \"effective_query\".\"" + reference + "\" FROM (" + effective_query
 						+ ") as effective_query";
 				log.info("[Executing query] " + newquery);
+				
+				long startTime = System.nanoTime();
 				ResultSet results = stm.executeQuery(newquery);
+				long endTime = System.nanoTime();
+				long duration = (endTime - startTime) / 1000000; // divide by
+																	// 1000000 to
+																	// get
+																	// milliseconds.
+				PrintTimeStats.printTime("Execute a query", duration);
+				
 				allresults.add(results);
 			}
-
+			double total_duration=0.0;
 			try {
 				// Iterate the rows
 				// Do one step for all separate results
 				ResultSet first = allresults.get(0);
-
+				
 				while (first.next()) {
 					for (int i = 1; i < allresults.size(); ++i) {
+						long startTime = System.nanoTime();
 						allresults.get(i).next();
+						long endTime = System.nanoTime();
+						double duration = (endTime - startTime) / 1000000; // divide by
+																			// 1000000 to
+																			// get
+																			// milliseconds.
+						PrintTimeStats.printTime("Read line from results of a query", duration);
+						total_duration+=duration;
+						
 					}
 					totalmatches.increase();
 					HashMap<String, Object> row = new HashMap<>();
@@ -125,6 +144,8 @@ public class DatabaseProcessorWithManyQueries extends AbstractRMLProcessor {
 					currentnode = row;
 					performer.perform(row, dataset, map);
 				}
+				PrintTimeStats.printTime("Read all lines from all results of the queries posed for a triples map", total_duration);
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

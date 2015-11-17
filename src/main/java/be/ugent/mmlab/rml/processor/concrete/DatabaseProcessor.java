@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.d2rq.db.SQLConnection;
+import org.geotools.feature.FeatureIterator;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 
@@ -28,6 +29,7 @@ import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.model.TermMap.TermMapType;
 import be.ugent.mmlab.rml.model.reference.ReferenceIdentifier;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 import net.antidot.semantic.rdf.rdb2rdf.r2rml.tools.R2RMLToolkit;
@@ -105,15 +107,35 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 			// stm.setFetchSize(10000);
 			// ResultSet results =
 			// stm.executeQuery(map.getLogicalSource().getReference());
+			long startTime = System.nanoTime();
 			ResultSet results = stm.executeQuery(newquery);
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime) / 1000000; // divide by
+																// 1000000 to
+																// get
+																// milliseconds.
+			PrintTimeStats.printTime("Execute a query", duration);
+			
 
 			try {
 				// Iterate the rows
+				double total_duration=0.0;
 				while (results.next()) {
+					startTime = System.nanoTime();
 					totalmatches.increase();
 					currentnode = results;
+					endTime = System.nanoTime();
+					duration = (endTime - startTime) / 1000000; // divide by
+																		// 1000000 to
+																		// get
+																		// milliseconds.
+					PrintTimeStats.printTime("Read line from results of a query", duration);
+					total_duration+=duration;
+					
+					
 					performer.perform(results, dataset, map);
 				}
+				PrintTimeStats.printTime("Read all lines from results of a query", total_duration);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

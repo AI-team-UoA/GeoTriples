@@ -13,6 +13,7 @@ import org.d2rq.SystemLoader;
 import org.d2rq.mapgen.MappingGenerator;
 
 import be.ugent.mmlab.rml.main.MainTrans;
+import be.ugent.mmlab.rml.tools.PrintTimeStats;
 
 
 /**
@@ -252,6 +253,7 @@ public class dump_rdf {
 		if (!shFound) {
 			log.info("Database detected for processing");
 			(new d2rq.dump_rdf()).process(args);
+			PrintTimeStats.printTime("Total time for reading results from database",PrintTimeStats.getDuration());
 		}
 	}
 	
