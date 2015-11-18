@@ -137,7 +137,7 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 
 					}
 					endTime = System.nanoTime();
-					duration = (endTime - startTime) / 1000000; // divide by
+					duration = (endTime - startTime) ; // divide by
 																// 1000000 to
 																// get
 																// milliseconds.
