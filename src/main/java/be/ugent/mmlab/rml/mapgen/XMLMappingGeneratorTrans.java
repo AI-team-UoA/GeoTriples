@@ -225,7 +225,7 @@ public class XMLMappingGeneratorTrans {
 			SchemaGlobalElement sge = globals[i];
 System.out.println("is abstract type: "+sge.getType().isAbstract());
 System.out.println("get outer type: "+sge.getType().getOuterType());
-System.out.println(sge.getType().getOuterType().getName());
+//System.out.println(sge.getType().getOuterType().getName());
 			if ((sge.getType().getOuterType() != null && sge.getType().getName()!=null)
 					|| sge.getType().isAbstract()) {
 				continue;
@@ -425,7 +425,7 @@ System.out.println(sge.getType().getOuterType().getName());
 								.replace(":", "-");
 						String reference = getGTName(sp.getName());
 
-						String typename = getGTName(sp.getType().getName());
+						String typename = fixType(getGTName(sp.getType().getName()));
 						// (sp.getType().getName() != null) ?
 						// sp.getType().getName().getLocalPart() : null;
 						/*
@@ -536,7 +536,7 @@ System.out.println(sge.getType().getOuterType().getName());
 							.replaceFirst("/", "").replace("/", "_")
 							.replace(":", "-");
 					String reference = "@" + getGTName(spp.getName());
-					String typename = getGTName(spp.getType().getName());
+					String typename = fixType(getGTName(spp.getType().getName()));
 					// String typename = (spp.getType().getName() != null) ? spp
 					// .getType().getName().getLocalPart() : null;
 					String typeprefix = (spp.getType().getName() != null) ? spp
@@ -560,6 +560,19 @@ System.out.println(sge.getType().getOuterType().getName());
 		}
 		printmapping();
 		printontology();
+	}
+
+	private String fixType(String gtName) {
+		if(gtName==null){
+			return gtName;
+		}
+		if(gtName.contains(":")){
+			return gtName;
+		}
+		
+		String prefix = "onto";
+		
+		return prefix+ ":" + gtName;
 	}
 
 	private void printontology() throws FileNotFoundException {
@@ -826,7 +839,7 @@ System.out.println(sge.getType().getOuterType().getName());
 								.replaceFirst("/", "").replace("/", "_")
 								.replace(":", "-");
 						String reference = getGTName(spp.getName());
-						String typename = getGTName(spp.getType().getName());
+						String typename = fixType(getGTName(spp.getType().getName()));
 						// String typename = (spp.getType().getName() != null) ?
 						// spp
 						// .getType().getName().getLocalPart() : null;
@@ -927,7 +940,7 @@ System.out.println(sge.getType().getOuterType().getName());
 						.replaceFirst("/", "").replaceAll("/", "_")
 						.replace(":", "-");
 				String reference = "@" + getGTName(spp.getName());
-				String typename = getGTName(spp.getType().getName());
+				String typename = fixType(getGTName(spp.getType().getName()));
 				// String typename = (spp.getType().getName() != null) ? spp
 				// .getType().getName().getLocalPart() : null;
 				String typeprefix = (spp.getType().getName() != null) ? spp
