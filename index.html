@@ -16,6 +16,7 @@
       <a href="https://github.com/LinkedEOData/GeoTriples" class="btn">View on GitHub</a>
       <a href="https://github.com/LinkedEOData/GeoTriples/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/LinkedEOData/GeoTriples/tarball/master" class="btn">Download .tar.gz</a>
+      <a href="geotriples-1.0.5-SNAPSHOT-cmd.jar">Command Line Tool - Jar</a>
     </section>
 
     <section class="main-content">
@@ -116,8 +117,8 @@ her requirements (e.g., use a different vocabulary).</p>
       &lt;<span class="pl-ent">Geometry</span>&gt;
        &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
          &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
-           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt; 
-             &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;0,0 100,0 100,100 0,100 0,0&lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt; 
+           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
+             &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;0,0 100,0 100,100 0,100 0,0&lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;
            &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
          &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
        &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
@@ -129,7 +130,7 @@ her requirements (e.g., use a different vocabulary).</p>
       &lt;<span class="pl-ent">Geometry</span> <span class="pl-e">id</span>=1&gt;
        &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">Polygon</span>&gt;
          &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
-           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt; 
+           &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
              &lt;<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;100,100 200,100 200,200 100,200 100,100&lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">posList</span>&gt;
            &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">LinearRing</span>&gt;
          &lt;/<span class="pl-ent">gml</span><span class="pl-ent">:</span><span class="pl-ent">outerBoundaryIs</span>&gt;
@@ -142,7 +143,7 @@ her requirements (e.g., use a different vocabulary).</p>
    &lt;/<span class="pl-ent">Field</span>&gt;
 &lt;/<span class="pl-ent">Farm</span>&gt;</pre></div>
 
-<p>R2RML uses the property <code>rr:tableName</code> to define which table from the input file or the relational database it going to be used as the source table for the mappings. RML has the equivalent <code>rml:source</code> to define the source for the mappings. The source can be a JDBC URL for a relational database, a Shapefile, an XML, JSON or CSV file. 
+<p>R2RML uses the property <code>rr:tableName</code> to define which table from the input file or the relational database it going to be used as the source table for the mappings. RML has the equivalent <code>rml:source</code> to define the source for the mappings. The source can be a JDBC URL for a relational database, a Shapefile, an XML, JSON or CSV file.
 The iterator property <code>rml:iterator</code> defines the iterating pattern in order to process non-relational structured files. For the above example the iterator should be an XPath query.</p>
 
 <p>An example RML mapping can be the following</p>
@@ -153,24 +154,24 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
      rml:referenceFormulation ql:XPath;
      rml:iterator "/Farm/Field"];
 
-    rr:subjectMap [ 
-     rr:class ont:Farm; 
+    rr:subjectMap [
+     rr:class ont:Farm;
      rr:class ogc:Feature;
      rr:template "http://data.linkedeodata.eu/Field/id/{@id}"];
 
-    rr:predicateObjectMap [ 
-     rr:predicate ont:hasVigor; 
+    rr:predicateObjectMap [
+     rr:predicate ont:hasVigor;
      rr:objectMap [
        rml:reference "Vigor"]];
 
-    rr:predicateObjectMap [ 
+    rr:predicateObjectMap [
      rr:predicate ont:hasFarmer;
-     rr:objectMap [ 
+     rr:objectMap [
        rml:reference "Farmer"]].
 
-    rr:predicateObjectMap [ 
+    rr:predicateObjectMap [
      rr:predicate ogc:hasGeometry;
-     rr:objectMap [ 
+     rr:objectMap [
        rr:template "http://data.linkedeodata.eu/FieldGeometry/id/{Geometry/@id}"]].
 
 &lt;#FieldGeometry&gt;
@@ -179,19 +180,19 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
      rml:referenceFormulation ql:XPath;
      rml:iterator "/Farm/Field/Geometry"];
 
-    rr:subjectMap [ 
-     rr:class ont:FieldGeometry; 
+    rr:subjectMap [
+     rr:class ont:FieldGeometry;
      rr:class ogc:Geometry
      rr:template "http://data.linkedeodata.eu/FieldGeometry/id/{@id}"];
 
-    rr:predicateObjectMap [ 
-     rr:predicate ogc:dimension; 
+    rr:predicateObjectMap [
+     rr:predicate ogc:dimension;
      rr:objectMap [
        rrx:function rrxf:dimension;
        rrx:argumentMap ([rml:reference "*"]) ];
 
-    rr:predicateObjectMap [ 
-     rr:predicate ogc:asWKT; 
+    rr:predicateObjectMap [
+     rr:predicate ogc:asWKT;
      rr:objectMap [
        rrx:function rrxf:asWKT;
        rrx:argumentMap ([rml:reference "*"]) ].
@@ -207,6 +208,6 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
 
     </section>
 
-  
+
   </body>
 </html>
