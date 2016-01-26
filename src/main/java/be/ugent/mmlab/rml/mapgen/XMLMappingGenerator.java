@@ -53,18 +53,18 @@ public class XMLMappingGenerator {
 			String onlynamespace) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, ClassCastException,
 			FileNotFoundException, XmlException, IOException {
-		System.out.println("xsdfilename=" + xsdfilename);
-		System.out.println("xmlfilename=" + xmlfilename);
-		System.out.println("outputfile=" + outputfile);
-		System.out.println("baseiri" + baseiri);
-		System.out.println("root=" + rootelement);
-		System.out.println("basepath=" + basepath);
-		System.out.println("namespaces=" + namespaces);
-		System.out
-				.println("allownulltypesasclasses=" + allownulltypesasclasses);
-		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
-		System.out.println("only global elements for namespace "
-				+ onlynamespace);
+//		System.out.println("xsdfilename=" + xsdfilename);
+//		System.out.println("xmlfilename=" + xmlfilename);
+//		System.out.println("outputfile=" + outputfile);
+//		System.out.println("baseiri" + baseiri);
+//		System.out.println("root=" + rootelement);
+//		System.out.println("basepath=" + basepath);
+//		System.out.println("namespaces=" + namespaces);
+//		System.out
+//				.println("allownulltypesasclasses=" + allownulltypesasclasses);
+//		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
+//		System.out.println("only global elements for namespace "
+//				+ onlynamespace);
 		this.baseURI = baseiri;
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";
@@ -193,7 +193,7 @@ public class XMLMappingGenerator {
 			// if (!(globals[i].getName().getLocalPart().equals("Wegdeel") &&
 			// globals[i].getName().getNamespaceURI().equals("http://www.opengis.net/gml")))
 			// {
-			System.out.println("Global elementtt: " + globals[i].getName());
+//			System.out.println("Global elementtt: " + globals[i].getName());
 			// if(true)
 			// continue;
 
@@ -206,8 +206,8 @@ public class XMLMappingGenerator {
 				if (!(globals[i].getName().getLocalPart().equals(rootelement))) {
 					continue;
 				}
-				System.out.println("The type is finite: "
-						+ globals[i].getType().isFinite());
+//				System.out.println("The type is finite: "
+//						+ globals[i].getType().isFinite());
 			}
 			if (globals[i].getName().getLocalPart().equals("GeoObject")) {// this
 																			// is
@@ -244,9 +244,9 @@ public class XMLMappingGenerator {
 				elementHierarhy.add(sge.getName());
 			}
 			
-			System.out.println("Global Element " + i + " Name: "
-					+ getGTName(sge.getName()) + " Type: "
-					+ sge.getType().getName());
+//			System.out.println("Global Element " + i + " Name: "
+//					+ getGTName(sge.getName()) + " Type: "
+//					+ sge.getType().getName());
 			triplesMaps.put("/" + getGTName(sge.getName()), "");
 			triplesMaps.put("/" + getGTName(sge.getName()),
 					triplesMaps.get("/" + getGTName(sge.getName()))
@@ -268,7 +268,7 @@ public class XMLMappingGenerator {
 			String targetNamespace = sge.getName().getNamespaceURI();
 			String path = "/" + getGTName(sge.getName());
 
-			System.out.println("Namespace: " + targetNamespace);
+//			System.out.println("Namespace: " + targetNamespace);
 			SchemaType st = sge.getType();
 			// st = sts.globalTypes()[0];
 			SchemaProperty[] elementProperties = st.getElementProperties();
@@ -444,7 +444,7 @@ public class XMLMappingGenerator {
 						if (!triplesMaps.containsKey(newpath)) {
 							triplesMaps.put(newpath, " ");
 						}
-						System.out.println(sp.getName() + "        here");
+//						System.out.println(sp.getName() + "        here");
 						triplesMaps.put(
 								"/" + getGTName(sge.getName()),
 								triplesMaps.get("/" + getGTName(sge.getName()))
@@ -501,9 +501,9 @@ public class XMLMappingGenerator {
 			}
 			for (SchemaProperty spp : st.getAttributeProperties()) {
 				String newpath = path + "/@" + getGTName(spp.getName());
-				System.out.println("\t" + "ROOTAttribute: "
-						+ getGTName(spp.getName()) + " Type: "
-						+ spp.getType().getName() + " Path: " + newpath);
+//				System.out.println("\t" + "ROOTAttribute: "
+//						+ getGTName(spp.getName()) + " Type: "
+//						+ spp.getType().getName() + " Path: " + newpath);
 
 				if (spp.getType().isSimpleType()) {
 					if (!triplesMaps.containsKey(path)) {
@@ -655,9 +655,9 @@ public class XMLMappingGenerator {
 			while (elementPropertiesList.size() > 0) {
 				final SchemaProperty spp = elementPropertiesList.remove();
 				String newpath = path + "/" + getGTName(spp.getName());
-				System.out.println(tabs + "Element: "
-						+ getGTName(spp.getName()) + " Type: "
-						+ spp.getType().getName() + " Path: " + newpath);
+//				System.out.println(tabs + "Element: "
+//						+ getGTName(spp.getName()) + " Type: "
+//						+ spp.getType().getName() + " Path: " + newpath);
 				boolean hasNotNullType = spp.getType().getName() != null;
 				String typeName = (hasNotNullType) ? spp.getType().getName()
 						.getLocalPart() : spp.getName().getLocalPart();
@@ -674,9 +674,9 @@ public class XMLMappingGenerator {
 							if (nko.equals(spp.getName())) {
 								continue;
 							}
-							System.out.println("We are in " + spp.getName());
-							System.out.println("mplamplampla " + nko);
-							System.out.println(sts.findElement(nko).getType());
+//							System.out.println("We are in " + spp.getName());
+//							System.out.println("mplamplampla " + nko);
+//							System.out.println(sts.findElement(nko).getType());
 							final SchemaGlobalElement finalelement = sts
 									.findElement(nko);
 							final SchemaType finaltype = sts.findElement(nko)
@@ -1076,10 +1076,10 @@ public class XMLMappingGenerator {
 		sb.append("\t];\n");
 		sb.append("];\n");
 		if (ontology != null) {
-			System.out.println(domainclassname);
-			System.out.println(predicate);
-			System.out.println(rangeclassname);
-			System.out.println(isSubTypeOfGeometry);
+//			System.out.println(domainclassname);
+//			System.out.println(predicate);
+//			System.out.println(rangeclassname);
+//			System.out.println(isSubTypeOfGeometry);
 			ontology.createObjectProperty(domainclassname, "has_" + predicate,
 					rangeclassname, isSubTypeOfGeometry);
 			if (isSubTypeOfGeometry) {

@@ -262,12 +262,12 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 
 	public static void main(String[] args) {
 		double d = 4799826.0986166214570499999999999;
-		System.out.printf("%.18f\n", d);
+//		System.out.printf("%.18f\n", d);
 		// byte[] array=toByteArray(d);
 		/*
 		 * for(int i=0;i<8;++i){ System.out.printf("%d ",array[i]); }
 		 */
-		System.out.println(Long.toBinaryString(Double.doubleToRawLongBits(d)));
+//		System.out.println(Long.toBinaryString(Double.doubleToRawLongBits(d)));
 
 	}
 }

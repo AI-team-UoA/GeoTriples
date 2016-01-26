@@ -321,8 +321,8 @@ public class MainTrans {
 						if (tokens.length < 3) {
 							throw new Exception("Mapping file in contains a bad line with @prefix");
 						}
-						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
-								+ tokens[2].replaceAll("[<>#]", ""));
+//						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
+//								+ tokens[2].replaceAll("[<>#]", ""));
 						Config.user_namespaces.put(tokens[1].replace(":", "").trim(),
 								tokens[2].replaceAll("[<>#]", ""));
 					}
@@ -340,8 +340,8 @@ public class MainTrans {
 						if (tokens.length < 3) {
 							throw new Exception("Mapping file in contains a bad line with @prefix");
 						}
-						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
-								+ tokens[2].replaceAll("[<>#]", ""));
+//						System.out.println("adding namespace " + tokens[1].replace(":", "").trim() + ": "
+//								+ tokens[2].replaceAll("[<>#]", ""));
 						Config.user_namespaces.put(tokens[1].replace(":", "").trim(),
 								tokens[2].replaceAll("[<>#]", ""));
 					}

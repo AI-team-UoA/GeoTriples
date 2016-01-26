@@ -45,12 +45,12 @@ public class SQLMappingGenerator {
 					IllegalAccessException, ClassCastException, FileNotFoundException, XmlException, IOException {
 		log.warn(
 				"Join conditions have not been implemented yet. If you need JoinConditions please use the same command without -rml argument.");
-		System.out.println("jdbc URL=" + jdbcURL);
-		System.out.println("outputfile=" + outputfile);
-		System.out.println("baseiri" + baseiri);
-		System.out.println("username " + username);
-		System.out.println("password " + password);
-		System.out.println("only table " + table);
+//		System.out.println("jdbc URL=" + jdbcURL);
+//		System.out.println("outputfile=" + outputfile);
+//		System.out.println("baseiri" + baseiri);
+//		System.out.println("username " + username);
+//		System.out.println("password " + password);
+//		System.out.println("only table " + table);
 		this.jdbcURL = jdbcURL;
 		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
 		this.baseURI = baseiri;

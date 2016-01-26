@@ -53,18 +53,18 @@ public class XMLMappingGeneratorTrans {
 			String onlynamespace) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, ClassCastException,
 			FileNotFoundException, XmlException, IOException {
-		System.out.println("xsdfilename=" + xsdfilename);
-		System.out.println("xmlfilename=" + xmlfilename);
-		System.out.println("outputfile=" + outputfile);
-		System.out.println("baseiri" + baseiri);
-		System.out.println("root=" + rootelement);
-		System.out.println("basepath=" + basepath);
-		System.out.println("namespaces=" + namespaces);
-		System.out
-				.println("allownulltypesasclasses=" + allownulltypesasclasses);
-		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
-		System.out.println("only global elements for namespace "
-				+ onlynamespace);
+//		System.out.println("xsdfilename=" + xsdfilename);
+//		System.out.println("xmlfilename=" + xmlfilename);
+//		System.out.println("outputfile=" + outputfile);
+//		System.out.println("baseiri" + baseiri);
+//		System.out.println("root=" + rootelement);
+//		System.out.println("basepath=" + basepath);
+//		System.out.println("namespaces=" + namespaces);
+//		System.out
+//				.println("allownulltypesasclasses=" + allownulltypesasclasses);
+//		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
+//		System.out.println("only global elements for namespace "
+//				+ onlynamespace);
 		this.baseURI = baseiri;
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";

@@ -8,24 +8,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 
+import com.csvreader.CsvReader;
+
+import be.ugent.mmlab.rml.core.KeyGenerator;
 import be.ugent.mmlab.rml.core.RMLEngine;
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.core.RMLPerformer;
+import be.ugent.mmlab.rml.function.Config;
 import be.ugent.mmlab.rml.model.LogicalSource;
 import be.ugent.mmlab.rml.model.SubjectMap;
 import be.ugent.mmlab.rml.model.TermMap;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.AbstractRMLProcessor;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
-
-import com.csvreader.CsvReader;
+import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 
 /**
  * 
@@ -34,7 +35,7 @@ import com.csvreader.CsvReader;
 public class CSVProcessor extends AbstractRMLProcessor {
 
 	private static Log log = LogFactory.getLog(RMLMappingFactory.class);
-	private HashMap<String, String> currentnode;
+	private HashMap<String, Object> currentnode;
 
 	private char getDelimiter(LogicalSource ls) {
 		String d = RMLEngine.getFileMap().getProperty(
@@ -51,7 +52,9 @@ public class CSVProcessor extends AbstractRMLProcessor {
 		// InputStream fis = null;
 		long totalmatches=0;
 		try {
-			char delimiter = getDelimiter(map.getLogicalSource());
+			KeyGenerator keygen = new KeyGenerator();
+			//char delimiter = getDelimiter(map.getLogicalSource());
+			char delimiter = '\t';
 
 			// TODO: add character guessing
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
@@ -63,12 +66,15 @@ public class CSVProcessor extends AbstractRMLProcessor {
 			reader.readHeaders();
 			// Iterate the rows
 			while (reader.readRecord()) {
+				//System.out.println(reader.getRawRecord());
 				++totalmatches;
-				HashMap<String, String> row = new HashMap<>();
+				HashMap<String, Object> row = new HashMap<>();
 
 				for (String header : reader.getHeaders()) {
+					//System.out.println(reader.get(header));
 					row.put(header, reader.get(header));
 				}
+				row.put(Config.GEOTRIPLES_AUTO_ID, keygen.Generate());
 				// let the performer handle the rows
 				currentnode = row;
 				performer.perform(row, dataset, map);
@@ -78,6 +84,9 @@ public class CSVProcessor extends AbstractRMLProcessor {
 			log.error(ex);
 		} catch (IOException ex) {
 			log.error(ex);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.error(e);
 		}
 		return totalmatches;
 	}

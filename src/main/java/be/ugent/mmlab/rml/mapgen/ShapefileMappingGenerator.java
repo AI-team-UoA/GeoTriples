@@ -19,9 +19,6 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
 
 import com.hp.hpl.jena.query.Query;
 
@@ -41,17 +38,16 @@ public class ShapefileMappingGenerator {
 	public ShapefileMappingGenerator(String shapefilefilename, String outputfile, String baseiri,
 			String ontologyOutputFile) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
 					ClassCastException, FileNotFoundException, XmlException, IOException {
-		System.out.println("shapefilefilename=" + shapefilefilename);
-		System.out.println("outputfile=" + outputfile);
-		System.out.println("baseiri" + baseiri);
+//		System.out.println("shapefilefilename=" + shapefilefilename);
+//		System.out.println("outputfile=" + outputfile);
+//		System.out.println("baseiri" + baseiri);
 		this.pathToShapefile = new File(shapefilefilename).getAbsolutePath();
-		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
+//		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
 		this.baseURI = baseiri;
 		if (!this.baseURI.endsWith("/")) {
 			this.baseURI += "/";
 		}
-		
-		
+
 		this.outputfile = new File(outputfile);
 		if (ontologyOutputFile != null) {
 			this.ontologyOutputFile = new File(ontologyOutputFile);
@@ -81,22 +77,27 @@ public class ShapefileMappingGenerator {
 					continue;
 				}
 				String datatype = TranslateDataTypeToXSD((property.getType().getBinding().getName()));
-				Query q=new Query();
+				Query q = new Query();
 				triplesMaps.put(typeName, triplesMaps.get(typeName)
 						+ printPredicateObjectMap(identifier, identifier, datatype, typeName));
 
 			}
-//			triplesMaps.put(typeName,
-//					triplesMaps.get(typeName) + printPredicateObjectMap(true, "hasGeometry",
-//							baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo + "/{GeoTriplesID}", null,
-//							typeName, true));
-			triplesMaps.put(typeName,
-					triplesMaps.get(typeName) +printPredicateObjectMap(true, "hasGeometry", baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName + "/Geometry/{GeoTriplesID}", null, null,"ogc", null,typeName, true, false));
+			// triplesMaps.put(typeName,
+			// triplesMaps.get(typeName) + printPredicateObjectMap(true,
+			// "hasGeometry",
+			// baseURI + (baseURI.endsWith("/") ? "" : "/") + typeNameGeo +
+			// "/{GeoTriplesID}", null,
+			// typeName, true));
+			triplesMaps
+					.put(typeName,
+							triplesMaps.get(typeName) + printPredicateObjectMap(true, "hasGeometry",
+									baseURI + (baseURI.endsWith("/") ? "" : "/") + typeName
+											+ "/Geometry/{GeoTriplesID}",
+									null, null, "ogc", null, typeName, true, false));
 			triplesMaps.put(typeNameGeo, "");
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printTriplesMap(typeNameGeo));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printLogicalSource(typeName));
-			triplesMaps.put(typeNameGeo,
-					triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
+			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printSubjectMap(baseURI, typeName, null, true));
 			triplesMaps.put(typeNameGeo, triplesMaps.get(typeNameGeo) + printGEOPredicateObjectMaps());
 		}
 		printmapping();
@@ -112,14 +113,14 @@ public class ShapefileMappingGenerator {
 
 	private void printmapping() throws FileNotFoundException {
 		PrintStream out = new PrintStream(outputfile);
-		out.println("@prefix rr: <http://www.w3.org/ns/r2rml#>.\n"
-				+ "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
-				+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
-				+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n" 
-				+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
-				+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
-				+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n" + "@prefix schema: <http://schema.org/>.\n"
-				+ "@prefix onto: <" + baseURI + "ontology#>.\n");
+		out.println(
+				"@prefix rr: <http://www.w3.org/ns/r2rml#>.\n" + "@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .\n"
+						+ "@prefix ql: <http://semweb.mmlab.be/ns/ql#> .\n"
+						+ "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n"
+						+ "@base <http://geotriples.eu/base> .\n" + "@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.\n"
+						+ "@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.\n"
+						+ "@prefix ogc: <http://www.opengis.net/ont/geosparql#>.\n"
+						+ "@prefix schema: <http://schema.org/>.\n" + "@prefix onto: <" + baseURI + "ontology#>.\n");
 
 		for (String triplesMap : triplesMaps.keySet()) {
 			log.debug("TRIPLES MAP: " + triplesMap);
@@ -241,17 +242,22 @@ public class ShapefileMappingGenerator {
 	private String printSubjectMap(String baseuri, String classname, String classprefix, boolean isGeometrySubClass) {
 		classname = classname.replace(".", "");
 		if (ontology != null) {
-			/*if (isGeometrySubClass) {
-				ontology.createGeometryClass(classname);
-			} else {
-				ontology.createClass(classname);
-			}*/
+			/*
+			 * if (isGeometrySubClass) {
+			 * ontology.createGeometryClass(classname); } else {
+			 * ontology.createClass(classname); }
+			 */
 		}
 		String base = baseuri + (baseuri.endsWith("/") ? "" : "/");
 		StringBuilder sb = new StringBuilder();
 		sb.append("rr:subjectMap [\n");
-		sb.append("\trr:template \"" + base + classname +(isGeometrySubClass?"/Geometry/":"/id/")+"{GeoTriplesID}\";\n");
-		sb.append("\trr:class " + (classprefix != null ? classprefix : "onto") + ":" + classname + ";\n");
+		sb.append("\trr:template \"" + base + classname + (isGeometrySubClass ? "/Geometry/" : "/id/")
+				+ "{GeoTriplesID}\";\n");
+		if (isGeometrySubClass) {
+			sb.append("\trr:class " +  "ogc" + ":" + "Geometry"+ ";\n");
+		} else {
+			sb.append("\trr:class " + (classprefix != null ? classprefix : "onto") + ":" + classname + ";\n");
+		}
 		sb.append("];\n");
 		return sb.toString();
 	}
@@ -272,8 +278,10 @@ public class ShapefileMappingGenerator {
 		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
 		sb.append(printPredicateObjectMap("isEmpty", "the_geom", "xsd:boolean", null, "ogc", "isEmpty", "", true));
 		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
-		/*sb.append(printPredicateObjectMap("hasSerialization", "the_geom", "ogc:wktLiteral", null, "ogc",
-				"hasSerialization", "", true));*/
+		/*
+		 * sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
+		 * "ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
+		 */
 		sb.append(printPredicateObjectMap("coordinateDimension", "the_geom", "xsd:integer", null, "ogc",
 				"coordinateDimension", "", true));
 		sb.append(printPredicateObjectMap("spatialDimension", "the_geom", "xsd:integer", null, "ogc",

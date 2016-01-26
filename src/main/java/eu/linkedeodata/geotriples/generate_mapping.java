@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.d2rq.mapgen.MappingGenerator;
 import org.geotools.gml3.Circle.Arc;
 
+import be.ugent.mmlab.rml.mapgen.CSVMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.SQLMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.ShapefileMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.XMLMappingGeneratorTrans;
@@ -86,6 +87,18 @@ public class generate_mapping {
 			} else if (lastToken.endsWith(".pdf")) {
 				log.info("GeoPDF detected for processing");
 				System.out.println("Currently GeoPDF is not implemented within WP2 (soon)");
+			}else if(lastToken.endsWith(".csv")){
+				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
+				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
+				final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
+				final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
+				final CommandLine cmd = new CommandLine();
+				cmd.add(baseIRIArg);
+				cmd.add(outfileArg);
+				cmd.add(ontologyOutArg);
+				cmd.add(isRMLarg);
+				cmd.process(args);
+				new CSVMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(ontologyOutArg)).run();;
 			} else if (lastToken.endsWith(".xml") || lastToken.endsWith(".gml") || lastToken.endsWith(".kml")) {
 				log.info("XML detected for processing");
 				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");

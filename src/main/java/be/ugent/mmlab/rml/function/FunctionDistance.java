@@ -24,10 +24,10 @@ public class FunctionDistance extends GeometryFunction implements Function {
 		
 		Geometry geometry1 = computeGeometry(arguments.get(0), qlterms.get(0));
 		Geometry geometry2 = computeGeometry(arguments.get(1), qlterms.get(1));
-		System.out.println(geometry1);
-		System.out.println(geometry2);
+		//System.out.println(geometry1);
+		//System.out.println(geometry2);
 		valueList.add(GTransormationFunctions.distance(geometry1, geometry2));
-		System.out.println(valueList.get(0));
+		//System.out.println(valueList.get(0));
 		return valueList;
 	}
 

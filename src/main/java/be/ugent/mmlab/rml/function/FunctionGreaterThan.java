@@ -24,7 +24,7 @@ public class FunctionGreaterThan extends AbstractFunction implements Function {
 //		System.out.println("result ");
 		valueList.add(GTransormationFunctions.greaterThan(
 				Double.valueOf(arguments.get(0).toString()),Double.valueOf(arguments.get(1).toString())));
-		System.out.println("GreaterThan("+ arguments.get(0) +","+arguments.get(1)+") ="+valueList.get(0));
+//		System.out.println("GreaterThan("+ arguments.get(0) +","+arguments.get(1)+") ="+valueList.get(0));
 		return valueList;
 	}
 

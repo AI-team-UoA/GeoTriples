@@ -3,9 +3,6 @@ package eu.linkedeodata.geotriples;
 import java.util.ArrayList;
 import java.util.List;
 
-import jena.cmdline.ArgDecl;
-import jena.cmdline.CommandLine;
-
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +11,8 @@ import org.d2rq.mapgen.MappingGenerator;
 
 import be.ugent.mmlab.rml.main.MainTrans;
 import be.ugent.mmlab.rml.tools.PrintTimeStats;
+import jena.cmdline.ArgDecl;
+import jena.cmdline.CommandLine;
 
 
 /**
@@ -240,7 +239,7 @@ public class dump_rdf {
 					}
 					else if (inputFile.endsWith(".pdf")) {
 						log.info("GeoPDF detected for processing");
-						System.out.println("Currently GeoPDF is not implemented within WP2 (soon)");
+						System.err.println("Currently GeoPDF is not implemented within WP2 (soon)");
 					}
 					else {
 						//log.info("Database detected for processing");
