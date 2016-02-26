@@ -222,6 +222,8 @@ public class XPathProcessor extends AbstractRMLProcessor {
 			// an implementation of javax.xml.namespace.NamespaceContext
 			// DefaultNamespaceContext dnc = new DefaultNamespaceContext();
 			DefaultNamespaceContext dnc = get_namespaces();
+			log.trace("Reference: "+reference);
+			log.trace("Namespaces found: "+dnc.toString());
 			XMLDog dog = new XMLDog(dnc);
 
 			// adding expression to the xpathprocessor
@@ -244,6 +246,7 @@ public class XPathProcessor extends AbstractRMLProcessor {
 				public void onNodeHit(Expression expression, NodeItem nodeItem) {
 					totalmatches.increase();
 					Node node = (Node) nodeItem.xml;
+					log.trace("Next hit: "+node.getValue());
 					// if(!nodeItem.namespaceURI.isEmpty())
 					// log.info("namespace? " + nodeItem.namespaceURI);
 					// else
@@ -920,6 +923,8 @@ public class XPathProcessor extends AbstractRMLProcessor {
 	@Override
 	public Resource processSubjectMap(SesameDataSet dataset,
 			SubjectMap subjectMap) {
+		if(log.isDebugEnabled())
+			log.debug("Finding subject map from currentnode "+currentnode);
 		return processSubjectMap(dataset, subjectMap, currentnode);
 	}
 

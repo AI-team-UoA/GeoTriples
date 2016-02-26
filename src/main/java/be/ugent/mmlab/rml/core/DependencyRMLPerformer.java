@@ -201,12 +201,15 @@ public class DependencyRMLPerformer extends NodeRMLPerformer {
 				Resource object = parentprocessor.processSubjectMap(dataset,
 						parentTriplesMap.getSubjectMap()); // subject of parent
 															// processor with
-															// its current node
+													// its current node
+				if(log.isDebugEnabled())
+					log.debug("Subject map for parent processor= "+parentprocessor + " is "+object);
+				if(object!=null){
 				if (isReversedParentTriplesMap) {
 					dataset.add(object, predicate, subject);
 				} else {
 					dataset.add(subject, predicate, object);
-				}
+				}}
 			}
 		}
 		log.debug("[DependencyRMLPerformer:findPerms] ");

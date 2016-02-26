@@ -1010,6 +1010,7 @@ public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap
 		for (Object value : values) {
 			switch (objectMap.getTermType()) {
 			case IRI:
+				log.trace("value as URI: "+value);
 				if (value != null && !value.equals("")) {
 					if (value.toString().startsWith("www."))
 						value = "http://" + value;
