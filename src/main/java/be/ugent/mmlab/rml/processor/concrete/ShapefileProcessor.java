@@ -91,6 +91,7 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 			connect.put("url", new File(fileName).toURI().toURL());
 			DataStore dataStore = DataStoreFinder.getDataStore(connect);
 			FeatureSource<?, ?> featureSource = dataStore.getFeatureSource(map.getLogicalSource().getReference());
+			
 			String epsg = org.geotools.gml2.bindings.GML2EncodingUtils
 					.epsgCode(featureSource.getSchema().getCoordinateReferenceSystem());
 

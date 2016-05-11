@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -63,7 +64,12 @@ public class FileSesameDataset extends SesameDataSet {
     	this.target = new File(target);
 
         try {
-            fw = new BufferedWriter(new FileWriter(target));
+            //fw = new BufferedWriter(new FileWriter(target));
+        	
+        	fw = new BufferedWriter
+        		    (new OutputStreamWriter(new FileOutputStream(target),"iso-8859-7"));
+            
+            
             writer = Rio.createWriter(this.format, fw);
             writer.startRDF();
 

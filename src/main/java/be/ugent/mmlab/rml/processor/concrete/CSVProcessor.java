@@ -38,8 +38,7 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	private HashMap<String, Object> currentnode;
 
 	private char getDelimiter(LogicalSource ls) {
-		String d = RMLEngine.getFileMap().getProperty(
-				ls.getIdentifier() + ".delimiter");
+		String d = RMLEngine.getFileMap().getProperty(ls.getIdentifier() + ".delimiter");
 		if (d == null) {
 			return ',';
 		}
@@ -47,32 +46,36 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	}
 
 	@Override
-	public long execute(SesameDataSet dataset, TriplesMap map,
-			RMLPerformer performer, String fileName) {
+	public long execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String fileName) {
 		// InputStream fis = null;
-		long totalmatches=0;
+		long totalmatches = 0;
 		try {
 			KeyGenerator keygen = new KeyGenerator();
-			//char delimiter = getDelimiter(map.getLogicalSource());
-			char delimiter = '\t';
+			// char delimiter = getDelimiter(map.getLogicalSource());
+			char delimiter = ',';
 
 			// TODO: add character guessing
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[CSV Processor] filename " + fileName);
-			CsvReader reader = new CsvReader(new FileInputStream(fileName),
-					Charset.defaultCharset());
+			CsvReader reader = new CsvReader(new FileInputStream(fileName), Charset.defaultCharset());
+			reader.setSafetySwitch(false);
 			reader.setDelimiter(delimiter);
 
 			reader.readHeaders();
 			// Iterate the rows
 			while (reader.readRecord()) {
-				//System.out.println(reader.getRawRecord());
+				// System.out.println(reader.getRawRecord());
 				++totalmatches;
 				HashMap<String, Object> row = new HashMap<>();
 
 				for (String header : reader.getHeaders()) {
-					//System.out.println(reader.get(header));
-					row.put(header, reader.get(header));
+					// System.out.println(reader.get(header));
+					if (reader.get(header).startsWith("\"") && reader.get(header).endsWith("\"")) {
+						row.put(header, reader.get(header).substring(1, reader.get(header).length()));
+					} else {
+						row.put(header, reader.get(header));
+					}
+
 				}
 				row.put(Config.GEOTRIPLES_AUTO_ID, keygen.Generate());
 				// let the performer handle the rows
@@ -104,20 +107,20 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	}
 
 	@Override
-	public void execute_node(SesameDataSet dataset, String expression,
-			TriplesMap parentTriplesMap, RMLPerformer performer, Object node,
-			Resource subject) {
-		throw new UnsupportedOperationException(
-				"[execute_node] Not applicable for CSV sources."); // To change body of
-													// generated methods, choose
-													// Tools | Templates.
+	public void execute_node(SesameDataSet dataset, String expression, TriplesMap parentTriplesMap,
+			RMLPerformer performer, Object node, Resource subject) {
+		throw new UnsupportedOperationException("[execute_node] Not applicable for CSV sources."); // To
+																									// change
+																									// body
+																									// of
+		// generated methods, choose
+		// Tools | Templates.
 	}
+
 	@Override
-	public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map,
-			 RMLPerformer performer, Object node
-			){
-		throw new UnsupportedOperationException(
-				"[execute_node_fromdependency] Not applicable for CSV sources.");
+	public void execute_node_fromdependency(SesameDataSet dataset, String expression, TriplesMap map,
+			RMLPerformer performer, Object node) {
+		throw new UnsupportedOperationException("[execute_node_fromdependency] Not applicable for CSV sources.");
 	}
 
 	@Override
@@ -126,26 +129,26 @@ public class CSVProcessor extends AbstractRMLProcessor {
 	}
 
 	@Override
-	public List<Object> processTermMap(TermMap map, TriplesMap triplesMap,
-			Resource subject, URI predicate, SesameDataSet dataset,
-			boolean ignoreOwnerBecauseWeAreInJoin) {
-		return processTermMap(map, currentnode, triplesMap, subject, predicate,
-				dataset, ignoreOwnerBecauseWeAreInJoin);
+	public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate,
+			SesameDataSet dataset, boolean ignoreOwnerBecauseWeAreInJoin) {
+		return processTermMap(map, currentnode, triplesMap, subject, predicate, dataset, ignoreOwnerBecauseWeAreInJoin);
 
 	}
+
 	@Override
-	public Resource processSubjectMap(SesameDataSet dataset,
-			SubjectMap subjectMap) {
-		return processSubjectMap(dataset, subjectMap,currentnode);
+	public Resource processSubjectMap(SesameDataSet dataset, SubjectMap subjectMap) {
+		return processSubjectMap(dataset, subjectMap, currentnode);
 	}
+
 	@Override
-	public Object getCurrentNode(){
+	public Object getCurrentNode() {
 		return currentnode;
 	}
+
 	@Override
-	public TriplesMap getCurrentTriplesMap(){
+	public TriplesMap getCurrentTriplesMap() {
 		try {
-			throw new Exception("Bug, it shouldn't use this function from CSVProcessor");
+			throw new Exception("Bug, it shouldn't call this function. (by CSVProcessor)");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

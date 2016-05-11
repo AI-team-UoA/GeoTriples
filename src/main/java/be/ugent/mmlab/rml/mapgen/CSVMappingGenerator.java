@@ -54,8 +54,9 @@ public class CSVMappingGenerator {
 
 	public void run() throws IOException {
 		CsvReader reader = new CsvReader(new FileInputStream(pathToShapefile), Charset.defaultCharset());
-		reader.setDelimiter('\t');
-
+		reader.setDelimiter(',');
+		reader.setSafetySwitch(false);
+		
 		reader.readHeaders();
 		// Iterate the rows
 
@@ -69,8 +70,8 @@ public class CSVMappingGenerator {
 
 		boolean hasgeometry = false;
 		String typeNameGeo = typeName + "_Geometry";
+		
 		for (String header : reader.getHeaders()) {
-
 			String identifier = header;
 			if (identifier.equals("the_geom")) {
 				hasgeometry = true;
