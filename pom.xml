@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.linkedeodata</groupId>
 	<artifactId>geotriples</artifactId>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.7</version>
 	<packaging>jar</packaging>
 	<name>geotriples</name>
 	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
@@ -558,7 +558,7 @@ gt-process-geometry</artifactId>
             <configuration> <shadedArtifactAttached>true</shadedArtifactAttached> 
 				<shadedClassifierName>cmd</shadedClassifierName> <transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
 				<mainClass>eu.linkedeodata.geotriples.GeoTriplesCMD</mainClass> </transformer> 
-				<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+				<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 				</transformers> <minimizeJar>true</minimizeJar> <exclude>commons-logging:commons-logging</exclude> 
 				<!--<exclude>jaxen:jaxen</exclude> <exclude>javax.xml.parsers:jaxp-api</exclude> 
 				<exclude>postgresql-9.2-1002-jdbc4.jar</exclude> <exclude>org.slf4j:slf4j-log4j12</exclude> 
@@ -576,7 +576,7 @@ gt-process-geometry</artifactId>
             <configuration> <shadedArtifactAttached>true</shadedArtifactAttached> 
 				<shadedClassifierName>shaded</shadedClassifierName> <transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
 				<mainClass>eu.linkedeodata.geotriples.gui.GeoTriples</mainClass> </transformer> 
-				<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+				<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 				</transformers> <minimizeJar>false</minimizeJar> <exclude>commons-logging:commons-logging</exclude> 
 				<exclude>jaxen:jaxen</exclude> <exclude>javax.xml.parsers:jaxp-api</exclude> 
 				<exclude>postgresql-9.2-1002-jdbc4.jar</exclude> <exclude>org.slf4j:slf4j-log4j12</exclude> 
@@ -743,7 +743,7 @@ gt-process-geometry</artifactId>
 		<url>https://github.com/LinkedEOData/GeoTriples</url>
 		<connection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</connection>
 		<developerConnection>scm:git:https://github.com/LinkedEOData/GeoTriples.git</developerConnection>
-		<tag>v1.0.7</tag>
+		<tag>1.0.7</tag>
 	</scm>
 	<repositories>
 		<!-- Temporary: MonetDB jdbc -->
