@@ -2,7 +2,11 @@ package be.ugent.mmlab.rml.processor;
 
 import static be.ugent.mmlab.rml.model.TermType.BLANK_NODE;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +65,7 @@ import be.ugent.mmlab.rml.model.reference.ReferenceIdentifierImpl;
 import be.ugent.mmlab.rml.processor.concrete.ConcreteRMLProcessorFactory;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 import be.ugent.mmlab.rml.vocabulary.VocabTrans;
+import eu.linkedeodata.geotriples.Config;
 
 /**
  * This class contains all generic functionality for executing an iteration and
@@ -128,6 +133,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	 * @param subjectMap
 	 * @param node
 	 * @return the created subject
+	 * @throws FileNotFoundException 
 	 */
 	@Override
 	public Resource processSubjectMap(SesameDataSet dataset,
@@ -199,7 +205,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	public List<Object> processTermMap(TermMap map, Object node,
 			TriplesMap triplesMap, Resource subject, URI predicate,
 			SesameDataSet dataset,
-			boolean ignoreOwnerBecauseWeAreInJoinInFirstLevel) {
+			boolean ignoreOwnerBecauseWeAreInJoinInFirstLevel)  {
 		List<Object> value = new ArrayList<>();
 		// extra addition
 		TriplesMap tm = map.getTriplesMap();
@@ -257,8 +263,14 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 					.extractColumnNamesFromStringTemplate(template);
 
 			for (String expression : tokens) {
-				List<Object> replacements = extractValueFromNode(node,
-						expression);
+				List<Object> replacements;
+				if(Config.variables.containsKey(expression)){
+					replacements=new ArrayList<>();
+					replacements.add(Config.variables.get(expression));
+				}else{
+					replacements= extractValueFromNode(node,
+							expression);					
+				}
 
 				for (int i = 0; i < replacements.size(); i++) {
 					if (value.size() < (i + 1)) {
@@ -370,6 +382,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	 *            the predicate object map
 	 * @param node
 	 *            the current node
+	 * @throws FileNotFoundException 
 	 */
 	@Override
 	public void processPredicateObjectMap(SesameDataSet dataset,
@@ -947,8 +960,11 @@ public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap
 }
 		@Override
 		public void run() {
-			List<Value> objects = processObjectMap(objectMap, node,
-					map, subject, predicate, dataset);
+			List<Value> 
+			
+				objects = processObjectMap(objectMap, node,
+						map, subject, predicate, dataset);
+			
 			for (Value object : objects) {
 				if (object.stringValue() != null) {
 					Set<GraphMap> graphs = pom.getGraphMaps();
@@ -973,6 +989,7 @@ public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap
 	 * @param predicateMap
 	 * @param node
 	 * @return the uri of the extracted predicate
+	 * @throws FileNotFoundException 
 	 */
 	protected List<URI> processPredicateMap(PredicateMap predicateMap,
 			Object node) {
@@ -1102,5 +1119,24 @@ public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap
 		return false;
 	}
 	
+private boolean in_memory_input=false;
 	
+	@Override
+	public void setInMemoryInput(boolean memory) {
+		this.in_memory_input=memory;
+	}
+	
+	@Override
+	public boolean isInMemoryInput() {
+		return in_memory_input;
+	}
+	String memory_input=null;
+	@Override
+	public String getMemoryInput(){
+		return this.memory_input;
+	}
+	@Override
+	public void setMemoryInput(String input){
+		this.memory_input=input;
+	}
 }

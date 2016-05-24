@@ -1,6 +1,9 @@
 package eu.linkedeodata.geotriples;
 
+import java.util.HashMap;
+
 import org.d2rq.db.schema.TableName;
+
 
 import eu.linkedeodata.geotriples.gui.ColumnReceipt;
 
@@ -21,4 +24,5 @@ public class Config {
 	 * as given by the gui so that the mapping generator can decide which what class the instances of each table have
 	 */
 	public static java.util.Map<TableName, String> tablesAndClasses;
+	public static HashMap<String,String> variables=new HashMap<>();
 }

@@ -51,6 +51,7 @@ public class dump_rdf {
 			log.info("RML processor selected.");
 			
 			/*Trasfer correct argument to RML processor*/
+			final ArgDecl variableArg = new ArgDecl(true, "variables", "variables to use in mapping");
 			final ArgDecl rmlArg = new ArgDecl(false, "rml", "rmlprocessor");
 			final ArgDecl epsgArg = new ArgDecl(true, "s", "srid");
 			final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
@@ -68,6 +69,9 @@ public class dump_rdf {
 			final ArgDecl inputFile=new ArgDecl(true, "i", "Input source. Use with -readyeop or -readykml");
 			final ArgDecl useGDALLibraryArg = new ArgDecl(false, "gdal", "Use GDAL as the library for the manipulation of the Geometries (Default is GeoTools)");
 			final ArgDecl useOldDBProcessorArg = new ArgDecl(false, "olddbprocessor", "Use old DB processor, it executes only one query per triples map with all projections in place, the alternative is to pose multiple queries with one projection at a time over the effective query");
+			cmd.add(variableArg);
+			argdecls.add(variableArg);
+			
 			cmd.add(rmlArg);
 			argdecls.add(rmlArg);
 			
@@ -133,6 +137,18 @@ public class dump_rdf {
 				usage();
 				System.exit(1);
 			}
+			
+			if(cmd.contains(variableArg)){
+				String variables= cmd.getArg(variableArg).getValue();
+				String[] vars = variables.split("\\s+");
+				for(String var :vars){
+					String[] parts = var.split("=");
+					if(parts.length==2){
+						Config.variables.put(parts[0].trim(), parts[1].trim());
+					}
+				}
+			}
+			
 			List<String> arglist=new ArrayList<>();
 			if(cmd.contains(epsgArg)){
 				arglist.add("-epsg");

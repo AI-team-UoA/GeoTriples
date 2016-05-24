@@ -1,9 +1,12 @@
 package be.ugent.mmlab.rml.processor.concrete;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,12 +55,13 @@ public class CSVProcessor extends AbstractRMLProcessor {
 		try {
 			KeyGenerator keygen = new KeyGenerator();
 			// char delimiter = getDelimiter(map.getLogicalSource());
-			char delimiter = ',';
+			char delimiter = '\t';
 
 			// TODO: add character guessing
 			// CsvReader reader = new CsvReader(fis, Charset.defaultCharset());
 			log.info("[CSV Processor] filename " + fileName);
-			CsvReader reader = new CsvReader(new FileInputStream(fileName), Charset.defaultCharset());
+			InputStream input = this.isInMemoryInput()?new ByteArrayInputStream(this.getMemoryInput().getBytes(StandardCharsets.UTF_8)):new FileInputStream(fileName); 
+			CsvReader reader = new CsvReader(input, Charset.defaultCharset());
 			reader.setSafetySwitch(false);
 			reader.setDelimiter(delimiter);
 

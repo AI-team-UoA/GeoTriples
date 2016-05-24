@@ -1,5 +1,7 @@
 package be.ugent.mmlab.rml.processor;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
@@ -28,7 +30,11 @@ public interface RMLProcessor {
      * @param map the triplemap
      * @param performer the performer handling the action done on the triplemap
      */
-    public long execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String fileName);
+    public long execute(SesameDataSet dataset, TriplesMap map, RMLPerformer performer, String filename);
+    public boolean isInMemoryInput();
+    void setInMemoryInput(boolean memory);
+    String getMemoryInput();
+    void setMemoryInput(String input);
     
     public void execute_node(SesameDataSet dataset, String expression, TriplesMap parentTriplesMap, RMLPerformer performer, Object node, Resource subject);
     public void execute_node_fromdependency(SesameDataSet dataset, String expression,TriplesMap map, RMLPerformer performer, Object node);
@@ -46,7 +52,7 @@ public interface RMLProcessor {
      * @param node
      * @return 
      */
-    public Resource processSubjectMap(SesameDataSet dataset, SubjectMap subjectMap, Object node);
+    public Resource processSubjectMap(SesameDataSet dataset, SubjectMap subjectMap, Object node) ;
     
     public void processSubjectTypeMap(SesameDataSet dataset, Resource subject, SubjectMap subjectMap, Object node);
     /**
@@ -64,8 +70,8 @@ public interface RMLProcessor {
      * @param node
      * @return
      */
-    public List<Object> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
-    public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin); //extra addition the argument TriplesMap triplesMap
+    public List<Object> processTermMap(TermMap map, Object node, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin) ; //extra addition the argument TriplesMap triplesMap
+    public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate ,SesameDataSet dataset,boolean ignoreOwnerBecauseWeAreInJoin) ; //extra addition the argument TriplesMap triplesMap
     
     public QLTerm getFormulation(); //dd
 
@@ -79,4 +85,5 @@ public interface RMLProcessor {
 	Object getCurrentNode();
 
 	public TriplesMap getCurrentTriplesMap();
+	
 }

@@ -1,5 +1,7 @@
 package be.ugent.mmlab.rml.processor.concrete;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -207,7 +209,7 @@ public class DatabaseProcessor extends AbstractRMLProcessor {
 
 	@Override
 	public List<Object> processTermMap(TermMap map, TriplesMap triplesMap, Resource subject, URI predicate,
-			SesameDataSet dataset, boolean ignoreOwnerBecauseWeAreInJoin) {
+			SesameDataSet dataset, boolean ignoreOwnerBecauseWeAreInJoin)  {
 		return processTermMap(map, currentnode, triplesMap, subject, predicate, dataset, ignoreOwnerBecauseWeAreInJoin);
 
 	}
