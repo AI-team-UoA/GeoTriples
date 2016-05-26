@@ -105,7 +105,7 @@ her requirements (e.g., use a different vocabulary).</p>
 <h3>
 <a id="rml-processor" class="anchor" href="#rml-processor" aria-hidden="true"><span class="octicon octicon-link"></span></a>RML Processor</h3>
 
-<p>GeoTriples now supports the <a href="http://rml.io/">RML</a> mapping language by extending the <a href="https://github.com/mmlab/RMLProcessor">RML processor</a> to address the spatial information.
+<p>GeoTriples supports the <a href="http://rml.io/">RML</a> mapping language by extending the <a href="https://github.com/mmlab/RMLProcessor">RML processor</a> to address the spatial information.
 <a href="http://rml.io/">RML</a> is a mapping language, very similar to <a href="http://www.w3.org/TR/r2rml/">R2RML</a>. The main difference is that RML is designed to allow the process of data that <em>do not necessarily</em> rely in tables and thus not having an explicit iteration pattern.</p>
 
 <p>For example, the farms.xml (see below) cannot be iterated in per row fashion, because it has nested elements.</p>
@@ -199,6 +199,39 @@ The iterator property <code>rml:iterator</code> defines the iterating pattern in
 </code></pre>
 
 <p>This mapping contains two triples maps: &lt;#Field&gt; and &lt;#FieldGeometry&gt;. Both triples maps uses an XPath iterator, denoted by <code>rml:referenceFormulation</code>, as the base iterator pattern that will be used by the mapping processor module for the generation of the graph. The <code>rml:reference</code> is used instead of <code>rr:column</code> R2RML's property . The value of <code>rml:reference</code> property extends the iterator in order to point at an element.</p>
+
+<h3>
+<a id="geotriples-maven-library" class="anchor" href="#geotriples-maven-library" aria-hidden="true"><span class="octicon octicon-link"></span></a>GeoTriples as Maven Dependency</h3>
+<p>Developers can use GeoTriples as a dependency project using <a href="https://maven.apache.org/">Apache Maven</a> dependency mechanism. Bellow we illustrate a demo pom.xml file that has GeoTriples as a dependency to the project.</p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;
+   &lt;<span class="pl-ent">modelVersion</span></span>&gt;4.0.0&lt;/<span class="pl-ent">modelVersion</span>&gt;
+      &lt;<span class="pl-ent">groupId</span>&gt;test&lt;/<span class="pl-ent">groupId</span>&gt;
+      &lt;<span class="pl-ent">artifactId</span>&gt;test&lt;/<span class="pl-ent">artifactId</span>&gt;
+      
+      &lt;<span class="pl-ent">version</span>&gt;0.0.1-SNAPSHOT&lt;/<span class="pl-ent">version</span>&gt;
+      &lt;<span class="pl-ent">name</span>&gt;test&lt;/<span class="pl-ent">name</span>&gt;
+      &lt;<span class="pl-ent">description</span>&gt;test project&lt;/<span class="pl-ent">description</span>&gt;
+      &lt;<span class="pl-ent">dependencies</span>&gt;
+       &lt;<span class="pl-ent">dependency</span><span class="pl-ent">&gt;
+             &lt;<span class="pl-ent">groupId</span><span class="pl-ent">&gt;eu.linkedeodata&lt;/<span class="pl-ent">groupId</span>&gt;
+             &lt;<span class="pl-ent">artifactId</span><span class="pl-ent">&gt;geotriples&lt;/<span class="pl-ent">artifactId</span>&gt;
+             &lt;<span class="pl-ent">version</span>&gt;1.1.4-SNAPSHOT&lt;/<span class="pl-ent">version</span>&gt;
+       &lt;/<span class="pl-ent">dependency</span>&gt;
+      &lt;/<span class="pl-ent">dependencies</span>&gt;
+
+      &lt;<span class="pl-ent">repositories</span>&gt;
+       &lt;<span class="pl-ent">repository</span><span class="pl-ent">&gt;
+             &lt;<span class="pl-ent">id</span><span class="pl-ent">&gt;GeoTriples-mvn-repo&lt;/<span class="pl-ent">id</span>&gt;
+             &lt;<span class="pl-ent">url</span><span class="pl-ent">&gt;https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo-snapshots/&lt;/<span class="pl-ent">url</span>&gt;
+             &lt;<span class="pl-ent">snapshots</span>&gt;
+                &lt;<span class="pl-ent">enabled</span>&gt;true&lt;/<span class="pl-ent">enabled</span>&gt;
+                &lt;<span class="pl-ent">updatePolicy</span>&gt;always&lt;/<span class="pl-ent">updatePolicy</span>&gt;
+              &lt;/<span class="pl-ent">snapshots</span>&gt;
+       &lt;/<span class="pl-ent">repository</span>&gt;
+      &lt;/<span class="pl-ent">repositories</span>&gt;
+&lt;/<span class="pl-ent">project</span>&gt;</pre></div>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/LinkedEOData/GeoTriples">GeoTriples</a> is maintained by <a href="https://github.com/LinkedEOData">LinkedEOData</a>.</span>
