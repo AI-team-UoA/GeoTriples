@@ -5,37 +5,37 @@
   <version>1.1.6-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20160616.124826</timestamp>
+      <timestamp>20160619.140937</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20160616124826</lastUpdated>
+    <lastUpdated>20160619140937</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>1.1.6-20160616.124826-1</value>
-        <updated>20160616124826</updated>
+        <value>1.1.6-20160619.140937-1</value>
+        <updated>20160619140937</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.1.6-20160616.124826-1</value>
-        <updated>20160616124826</updated>
+        <value>1.1.6-20160619.140937-1</value>
+        <updated>20160619140937</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>gui</classifier>
         <extension>jar</extension>
-        <value>1.1.6-20160616.124826-1</value>
-        <updated>20160616124826</updated>
+        <value>1.1.6-20160619.140937-1</value>
+        <updated>20160619140937</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>cmd</classifier>
         <extension>jar</extension>
-        <value>1.1.6-20160616.124826-1</value>
-        <updated>20160616124826</updated>
+        <value>1.1.6-20160619.140937-1</value>
+        <updated>20160619140937</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>deb</extension>
-        <value>1.1.6-20160616.124826-1</value>
-        <updated>20160616124826</updated>
+        <value>1.1.6-20160619.140937-1</value>
+        <updated>20160619140937</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
