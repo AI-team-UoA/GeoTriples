@@ -1,0 +1,41 @@
+<assembly
+  xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2
+  http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>bin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>target/appassembler/repo</directory>
+      <outputDirectory>repo</outputDirectory>
+      <excludes>
+        <exclude>maven-metadata-appassembler.xml</exclude>
+      </excludes>
+    </fileSet> 
+    <fileSet>
+      <directory>target/generated-resources/appassembler/booter-unix/etc</directory>
+      <outputDirectory>etc</outputDirectory>
+      <includes>
+        <include>geotriples-mapping.xml</include>
+        <include>geotriples-rdf.xml</include>
+        <include>geotriples-all.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/generated-resources/appassembler/booter-unix/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </fileSet>
+    <fileSet>
+      <directory>target/generated-resources/appassembler/booter-windows/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <lineEnding>dos</lineEnding>
+    </fileSet>
+  </fileSets>
+</assembly>

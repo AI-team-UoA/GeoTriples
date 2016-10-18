@@ -1,0 +1,142 @@
+<geotriplesgui:SourceTable height="-1"
+xmlns:bxml="http://pivot.apache.org/bxml"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:geotriplesgui="eu.linkedeodata.geotriples.gui"
+    xmlns="org.apache.pivot.wtk">   
+
+
+         <ScrollPane horizontalScrollBarPolicy="fill">  
+    <Expander bxml:id="expander" title="UnknownTitle" expanded="false" >
+    <BoxPane orientation="vertical" styles="{fill:true,
+                padding:{left:2, right:2}}">
+    
+		<TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+							    horizontalSpacing:1, showVerticalGridLines:true}"
+							    xmlns:bxml="http://pivot.apache.org/bxml"
+							    xmlns="org.apache.pivot.wtk">
+							        
+							    
+							    <columns>
+							        <TablePane.Column width="1*"/>
+							    </columns>
+							    <TablePane.Row height="-1">
+							    <TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+							    horizontalSpacing:1, showVerticalGridLines:true}">
+							    <columns>
+							        <TablePane.Column width="1*"/>
+							        <TablePane.Column width="-1"/>
+							    </columns>
+							    			<TablePane.Row height="-1">
+					                        <Label bxml:id="title" text="UnknownTitle" styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+					                        <TextInput bxml:id="className" prompt="ClassName" styles="{horizontalAlignment:'center'}" tooltipText="Class"/>
+					                        </TablePane.Row>
+					                    </TablePane>
+									    
+																	    
+							    </TablePane.Row>
+							     <TablePane.Row height="1*" >
+							        <SplitPane splitRatio="0.4" preferredHeight="300">
+						                <left>
+						                    <Border styles="{color:10}">
+						                        <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+						                            verticalScrollBarPolicy="fill_to_capacity">
+						                            <StackPane>
+						                                <TableView bxml:id="tableView" selectMode="multi"
+						                                    styles="{showHorizontalGridLines:false} ">                                  
+						                                    <columns>
+						                                        <TableView.Column name="columnName"
+						                                            headerData="%columnName" width="1*" />
+						                                        <TableView.Column name="dataType" headerData="%DataType" width="1*">
+						                                            <cellRenderer>
+						                                                <content:TableViewNumberCellRenderer styles="{horizontalAlignment:'right'}"/>
+						                                            </cellRenderer>
+						                                        </TableView.Column>
+						                                        <TableView.Column name="predicate" headerData="%Predicate" width="1*">
+						                                            <cellRenderer>
+						                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"
+						                                                    numberFormat="+0.00;-0.00"/>
+						                                            </cellRenderer>
+						                                        </TableView.Column>
+						                                        <TableView.Column name="transformation" headerData="%Transformation" width="1*">
+					                                            <cellRenderer>
+					                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"/>
+					                                            </cellRenderer>
+					                                        </TableView.Column>
+						                                    </columns>
+						                                    <rowEditor>
+						                    <content:TableViewRowEditor editEffect="horizontal_slide">
+						                        <cellEditors>
+						                            <predicate>
+						                            <TextInput bxml:id="predicateColumnEditor" strictValidation="true" textKey="predicate">
+						                                </TextInput>
+						                            </predicate>
+						
+						                            <dataType>
+						                            <ListButton bxml:id="types"
+						                                    selectedItemKey="dataType"/>      
+						                            </dataType>
+						                            <transformation>
+						                            <ListButton bxml:id="transformationColumnEditor"  listData="['isEmpty', 'is3D', 'asWKT', 'hasSerialization' , 'identity']"
+						                                    selectedItemKey="transformation"/>      
+						                            </transformation>                    
+						                        </cellEditors>
+						                    </content:TableViewRowEditor>
+						                </rowEditor>
+						                                </TableView>
+						                            </StackPane>
+						
+						                            <columnHeader>
+						                                <TableViewHeader tableView="$tableView" sortMode="single_column"/>
+						                            </columnHeader>
+						                        </ScrollPane>
+						                    </Border>
+						                </left>
+						
+						                <right>
+						                    <Border styles="{padding:6, color:10}">
+						                        <bxml:include bxml:id="detailPane" src="detail_pane.bxml"/>
+						                    </Border>
+						                </right>
+						            </SplitPane>
+							    </TablePane.Row>
+							    
+							    <TablePane.Row height="-1">
+									    <TablePane styles="{verticalSpacing:1, showHorizontalGridLines:true,
+									    horizontalSpacing:1, showVerticalGridLines:true}">
+									    <columns>
+									        <TablePane.Column width="1*"/>
+									        <TablePane.Column width="-1"/>
+									    </columns>
+									    			<TablePane.Row height="-1">
+								                        <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+											                <Label text="%Columns" styles="{font:{bold:true}}" />
+											                <ListButton bxml:id="symbolTextInput"
+											                                    selectedItemKey="dataType"/>
+											                
+											                <LinkButton bxml:id="addSymbolButton" enabled="false"
+											                    tooltipText="%addColumn">
+											                    <content:ButtonData icon="@add.png" />
+											                </LinkButton>
+											                <LinkButton bxml:id="removeSymbolsButton" enabled="false"
+											                    tooltipText="%removeColumn">
+											                    <content:ButtonData icon="@delete.png" />
+											                </LinkButton>
+											                
+											            </BoxPane>
+								                        <LinkButton bxml:id="removeTable" enabled="true"
+											                    tooltipText="%removeTable">
+											                    <content:ButtonData icon="@delete.png" />
+											        	</LinkButton>
+							                        </TablePane.Row>
+							          </TablePane>
+						        </TablePane.Row>
+        
+       
+        
+    	</TablePane>	
+    	</BoxPane>
+    </Expander>
+     </ScrollPane>
+           
+</geotriplesgui:SourceTable>
+        

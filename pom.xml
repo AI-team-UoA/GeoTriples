@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.linkedeodata.geotriples</groupId>
+	<artifactId>geotriples</artifactId>
+	<version>1.1.6-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>GeoTriples Tool</name>
+	<description>GeoTriples is a tool for publishing geospatial data as Linked Open Data</description>
+	<url>http://projects.cwi.nl/LEO/Geotriples</url>
+	<inceptionYear>2014</inceptionYear>
+	<licenses>
+		<license>
+			<name>Mozilla Public License, v. 2.0</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<properties>
+		<slf4j.version>1.7.21</slf4j.version>
+		<geotools.version>13.2</geotools.version>
+		<junit.version>4.11</junit.version>
+		<jts.version>1.13</jts.version>
+		<skipTests>true</skipTests>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+		<github.global.server>github-geotriples</github.global.server>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+	</properties>
+	<modules>
+        <module>geotriples-processors</module>
+        <module>geotriples-evaluation</module>
+        <module>geotriples-core</module>
+        <module>geotriples-gui</module>
+        <module>geotriples-ontop</module>
+    </modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency> 
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-log4j12</artifactId>
+		  <version>${slf4j.version}</version>
+		</dependency>
+	</dependencies>
+	
+
+</project>

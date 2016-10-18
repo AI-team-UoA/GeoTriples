@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in
+compliance with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<geotriplesgui:GeoTriplesWindow title="%geoTriples" maximized="true"
+    xmlns:bxml="http://pivot.apache.org/bxml"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:geotriplesgui="eu.linkedeodata.geotriples.gui"
+    xmlns="org.apache.pivot.wtk">
+   
+   <TablePane> 
+   <columns>
+        <TablePane.Column width="1*"/>
+	</columns>
+	
+	<TablePane.Row height="1*">
+	
+	<TabPane bxml:id="tabPane">
+	
+	<!--DATABASE-->
+	
+	
+	<Border styles="{padding:12}">
+    	<TabPane.tabData>
+        	<content:ButtonData text="Database"/>
+        </TabPane.tabData>
+        
+        <bxml:include bxml:id="dbSplitPane" inline="true" src="database_tab.bxml"/>
+	</Border>
+	
+	
+	
+	<!--SHAPEFILE-->
+	
+	<Border styles="{padding:12}">
+		<TabPane.tabData>
+				<content:ButtonData text="Shapefile"/>
+    </TabPane.tabData>
+<SplitPane bxml:id="splitPane" orientation="horizontal" splitRatio="0.6">
+<left>
+    <TablePane styles="{padding:8, horizontalSpacing:6, verticalSpacing:6}">
+        <columns>
+            <TablePane.Column width="1*" />
+        </columns>
+		
+		<TablePane.Row height="-1">
+            <TextInput bxml:id="baseIri" strictValidation="false" text="http://data.linkedeodata.eu"
+            tooltipText="BaseIRI">
+	            <validator> 
+				<geotriplesgui:BaseIRIValidator/> 
+				</validator> 
+			</TextInput>
+        </TablePane.Row>
+        
+        <TablePane.Row height="-1">
+            <Label text="Main Table"
+                styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+        </TablePane.Row>
+        
+        <TablePane.Row height="1*">
+            <SplitPane splitRatio="0.4">
+                <left>
+                    <Border styles="{color:10}">
+                        <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+                            verticalScrollBarPolicy="fill_to_capacity">
+                            <StackPane>
+                                <TableView bxml:id="stocksTableView" selectMode="multi"
+                                    styles="{showHorizontalGridLines:false}">                                  
+                                    <columns>
+                                        <TableView.Column name="columnName"
+                                            headerData="%columnName" width="1*" />
+                                        <TableView.Column name="dataType" headerData="%DataType" width="1*">
+                                            <cellRenderer>
+                                                <content:TableViewNumberCellRenderer styles="{horizontalAlignment:'right'}"/>
+                                            </cellRenderer>
+                                        </TableView.Column>
+                                        <TableView.Column name="predicate" headerData="%Predicate" width="1*">
+                                            <cellRenderer>
+                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"
+                                                    numberFormat="+0.00;-0.00"/>
+                                            </cellRenderer>
+                                        </TableView.Column>
+                                    </columns>
+                                    <rowEditor>
+                    <content:TableViewRowEditor editEffect="horizontal_slide">
+                        <cellEditors>
+                            <predicate>
+                            <TextInput strictValidation="true" textKey="predicate">
+                                </TextInput>
+                            </predicate>
+
+                            <dataType>
+                            <ListButton listData="['Int', 'Date', 'Double', 'String' , 'Geometry']"
+                                    selectedItemKey="dataType"/>      
+                            </dataType>
+
+                                             
+                        </cellEditors>
+                    </content:TableViewRowEditor>
+                </rowEditor>
+                                </TableView>
+                            </StackPane>
+
+                            <columnHeader>
+                                <TableViewHeader tableView="$stocksTableView" sortMode="single_column"/>
+                            </columnHeader>
+                        </ScrollPane>
+                    </Border>
+                </left>
+
+                <right>
+                    <Border styles="{padding:6, color:10}">
+                        <bxml:include bxml:id="detailPane" src="detail_pane.bxml"/>
+                    </Border>
+                </right>
+            </SplitPane>
+        </TablePane.Row>
+        
+<TablePane.Row height="-1">
+            <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+                <Label text="%Columns" styles="{font:{bold:true}}" />
+                <ListButton bxml:id="symbolTextInput"
+                                    selectedItemKey="dataType"/>
+                
+                <LinkButton bxml:id="addSymbolButton" enabled="false"
+                    tooltipText="%addColumn">
+                    <content:ButtonData icon="@add.png" />
+                </LinkButton>
+                <LinkButton bxml:id="removeSymbolsButton" enabled="false"
+                    tooltipText="%removeColumn">
+                    <content:ButtonData icon="@delete.png" />
+                </LinkButton>
+            </BoxPane>
+        </TablePane.Row>
+        
+        
+        
+        
+        
+        
+
+<TablePane.Row height="-1">
+            <Label text="%GeometryTable"
+                styles="{font:{size:14, bold:true}, verticalAlignment:'center'}" />
+        </TablePane.Row>
+
+<TablePane.Row height="1*">
+            <SplitPane splitRatio="0.4">
+                <left>
+                    <Border styles="{color:10}">
+                        <ScrollPane horizontalScrollBarPolicy="fill_to_capacity"
+                            verticalScrollBarPolicy="fill_to_capacity">
+                            <StackPane>
+                                <TableView bxml:id="stocksTableViewSecond" selectMode="multi"
+                                    styles="{showHorizontalGridLines:false}">                                  
+                                    <columns>
+                                        <TableView.Column name="columnName"
+                                            headerData="%columnName" width="1*" />
+                                        <TableView.Column name="dataType" headerData="%DataType" width="1*">
+                                            <cellRenderer>
+                                                <content:TableViewNumberCellRenderer styles="{horizontalAlignment:'right'}"/>
+                                            </cellRenderer>
+                                        </TableView.Column>
+                                        <TableView.Column name="predicate" headerData="%Predicate" width="1*">
+                                            <cellRenderer>
+                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"
+                                                    numberFormat="+0.00;-0.00"/>
+                                            </cellRenderer>
+                                        </TableView.Column>
+                                        <TableView.Column name="transformation" headerData="%Transformation" width="1*">
+                                            <cellRenderer>
+                                                <geotriplesgui:ChangeCellRenderer styles="{horizontalAlignment:'right'}"/>
+                                            </cellRenderer>
+                                        </TableView.Column>
+                                    </columns>
+                                    <rowEditor>
+                    <content:TableViewRowEditor editEffect="horizontal_slide">
+                        <cellEditors>
+                            <predicate>
+                            <TextInput strictValidation="true" textKey="predicate">
+                                </TextInput>
+                            </predicate>
+
+                            <dataType>
+                            <ListButton listData="['Default']"
+                                    selectedItemKey="dataType"
+                                    enabled="false"/>      
+                            </dataType>
+
+                            <transformation>
+                            <ListButton listData="['isEmpty', 'is3D', 'asWKT', 'hasSerialization' , 'identity']"
+                                    selectedItemKey="transformation"/>      
+                            </transformation>                        
+                        </cellEditors>
+                    </content:TableViewRowEditor>
+                </rowEditor>
+                                </TableView>
+                            </StackPane>
+
+                            <columnHeader>
+                                <TableViewHeader tableView="$stocksTableViewSecond" sortMode="single_column"/>
+                            </columnHeader>
+                        </ScrollPane>
+                    </Border>
+                </left>
+
+                <right>
+                    <Border styles="{padding:6, color:10}">
+                        <bxml:include bxml:id="detailPaneSecond" src="detail_pane.bxml"/>
+                    </Border>
+                </right>
+            </SplitPane>
+        </TablePane.Row>
+
+
+
+
+
+        <TablePane.Row height="-1">
+            <BoxPane styles="{horizontalAlignment:'left', verticalAlignment:'center'}">
+                <Label text="%Columns" styles="{font:{bold:true}}" />
+                <ListButton bxml:id="symbolTextInputSecond"
+                                    selectedItemKey="dataType"/>
+                <LinkButton bxml:id="addSymbolButtonSecond" enabled="false"
+                    tooltipText="%addColumn">
+                    <content:ButtonData icon="@add.png" />
+                </LinkButton>
+                <LinkButton bxml:id="removeSymbolsButtonSecond" enabled="false"
+                    tooltipText="%removeColumn">
+                    <content:ButtonData icon="@delete.png" />
+                </LinkButton>
+            </BoxPane>
+        </TablePane.Row>
+
+		<TablePane.Row height="-1">
+            <TablePane>
+                <columns>
+                    <TablePane.Column width="1*"/>
+                    <TablePane.Column width="-1"/>
+                </columns>
+
+                <TablePane.Row>
+                    <BoxPane>
+                        
+                        <LinkButton bxml:id="generateMapping" enabled="true"
+	                    tooltipText="%generatemapping">
+	                    <content:ButtonData icon="@generatemapping.gif" />
+	                	</LinkButton>
+                    </BoxPane>
+                    <BoxPane>
+                        
+                        <LinkButton bxml:id="dumpRDF" enabled="true"
+	                    tooltipText="%dumprdf">
+	                    <content:ButtonData icon="@dumprdf.gif" />
+	                	</LinkButton>
+                    </BoxPane>
+                </TablePane.Row>
+            </TablePane>
+        </TablePane.Row>
+        
+        
+        <TablePane.Row height="-1">
+            <TablePane>
+                <columns>
+                    <TablePane.Column width="1*"/>
+                    <TablePane.Column width="-1"/>
+                </columns>
+
+                <TablePane.Row>
+                    <BoxPane>
+                        <Label text="The most powerful GeoTriples engine"/>
+                    </BoxPane>
+                    <BoxPane styles="{horizontalAlignment:'right'}">
+                        <Label text="%dataProvidedBy" />
+                        <LinkButton bxml:id="geoTriplesLinkButton"
+                            buttonData="%geoTriplesLink" />
+                    </BoxPane>
+                </TablePane.Row>
+            </TablePane>
+        </TablePane.Row>
+    </TablePane>
+    </left>
+    
+    
+    <right>
+    
+    <Border styles="{color:10}">
+        <ScrollPane horizontalScrollBarPolicy="fill">
+            <TablePane styles="{padding:8, verticalSpacing:8}">
+                <columns>
+                    <TablePane.Column width="1*"/>
+                </columns>
+ 				
+ 				<TablePane.Row height="-1">
+                    <Label text="%mappingpreview" styles="{font:{size:14, bold:true}, verticalAlignment:'center'}"/>
+                </TablePane.Row>
+                <TablePane.Row height="1*">
+                    <Border styles="{color:10}">
+                        <ScrollPane horizontalScrollBarPolicy="fill"
+                            verticalScrollBarPolicy="fill">
+                            <TextArea bxml:id="r2rmlPreview" text=""/>
+                        </ScrollPane>
+                    </Border>
+                </TablePane.Row>
+            </TablePane>
+        </ScrollPane>
+    </Border>
+</right>    
+    
+    </SplitPane>
+    </Border>
+    </TabPane>
+    </TablePane.Row>
+    </TablePane>
+</geotriplesgui:GeoTriplesWindow>
