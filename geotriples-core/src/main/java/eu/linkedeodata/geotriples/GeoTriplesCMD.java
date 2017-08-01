@@ -22,27 +22,27 @@ public class GeoTriplesCMD {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (mode.equals("obda")) {
-			String[] ontopargs = Arrays.copyOfRange(args, 1, args.length);
-			Class<?> ontop = null;
-			try {
-				// org.semanticweb.ontop.cli.Ontop.main(ontopargs);
-				ontop=Class.forName("org.semanticweb.ontop.cli.Ontop");
-				Class<?>[] argTypes = new Class[] { String[].class };
-				Method main = ontop.getMethod("main", argTypes);
-				main.invoke(null, (Object)ontopargs);
-			} catch (ClassNotFoundException e) {
-				System.err.println("Missing libraries for ontop-spatial??");
-				System.err.println("Is maven configured to add jars in ontop-spatial-lib/ direcotry??");
-				e.printStackTrace();
-			} catch (NoSuchMethodException x) {
-			    x.printStackTrace();
-			} catch (IllegalAccessException x) {
-			    x.printStackTrace();
-			} catch (InvocationTargetException x) {
-			    x.printStackTrace();
-			}
-			return;
+		// } else if (mode.equals("obda")) {
+		// 	String[] ontopargs = Arrays.copyOfRange(args, 1, args.length);
+		// 	Class<?> ontop = null;
+		// 	try {
+		// 		// org.semanticweb.ontop.cli.Ontop.main(ontopargs);
+		// 		ontop=Class.forName("org.semanticweb.ontop.cli.Ontop");
+		// 		Class<?>[] argTypes = new Class[] { String[].class };
+		// 		Method main = ontop.getMethod("main", argTypes);
+		// 		main.invoke(null, (Object)ontopargs);
+		// 	} catch (ClassNotFoundException e) {
+		// 		System.err.println("Missing libraries for ontop-spatial??");
+		// 		System.err.println("Is maven configured to add jars in ontop-spatial-lib/ direcotry??");
+		// 		e.printStackTrace();
+		// 	} catch (NoSuchMethodException x) {
+		// 	    x.printStackTrace();
+		// 	} catch (IllegalAccessException x) {
+		// 	    x.printStackTrace();
+		// 	} catch (InvocationTargetException x) {
+		// 	    x.printStackTrace();
+		// 	}
+		// 	return;
 		} else {
 			usage();
 		}
@@ -149,15 +149,15 @@ public class GeoTriplesCMD {
 		System.err.println("\tDatabase  (R2RML):\tgeotriples-cmd dump_rdf -o out.nt -b http://example.com -u dbuser -p dbpassword -jdbc jdbc:postgresql://localhost:5432/dbname mapping.ttl");
 		
 		
-		System.err.println();
+		// System.err.println();
 
-		System.err.println("C. Usage for obda: geotriples-cmd obda [commands]");
-		System.err.println("\tCommands:");
-		System.err.println("\t\tbootstrap");
-		System.err.println("\t\tmaterialize");
-		System.err.println("\t\tquery");
-		System.err.println("\t\tmapping");
-		System.err.println("\tFor help, type geotriples-cmd obda help <command>");
+		// System.err.println("C. Usage for obda: geotriples-cmd obda [commands]");
+		// System.err.println("\tCommands:");
+		// System.err.println("\t\tbootstrap");
+		// System.err.println("\t\tmaterialize");
+		// System.err.println("\t\tquery");
+		// System.err.println("\t\tmapping");
+		// System.err.println("\tFor help, type geotriples-cmd obda help <command>");
 		
 		System.err.println();
 		System.err.println("Developers: dimis@di.uoa.gr, johnvl@di.uoa.gr, Kostis.Kyzirakos@cwi.nl");
