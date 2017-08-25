@@ -1,7 +1,7 @@
 # GeoTriples
  Publishing geospatial data as Linked Open Geospatial Data 
 
-## Quickstart##
+## Quickstart ##
 ### Use GeoTriples binaries (Unix) ###
 Assuming [Java >=7](https://www.java.com/en/download/) installed:
 
