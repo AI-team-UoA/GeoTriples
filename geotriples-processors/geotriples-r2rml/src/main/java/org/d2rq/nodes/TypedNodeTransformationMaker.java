@@ -8,7 +8,7 @@ import org.d2rq.values.ValueMaker;
 import org.d2rq.vocab.GEOMETRY_FUNCTIONS;
 
 import com.hp.hpl.jena.graph.Node;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.linkedeodata.geotriples.GTransormationFunctions;
 import eu.linkedeodata.geotriples.GeneralConnection;

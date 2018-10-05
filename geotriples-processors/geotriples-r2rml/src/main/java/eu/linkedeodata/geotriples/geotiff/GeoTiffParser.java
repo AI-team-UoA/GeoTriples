@@ -33,10 +33,10 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.Property;
 
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.io.gml2.GMLWriter;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.io.gml2.GMLWriter;
 
 public class GeoTiffParser {
 	private File geoTiffFile;
@@ -100,7 +100,7 @@ public class GeoTiffParser {
 				Object initgeometry = null;
 				if (sourceGeometryAttribute.getValue().toString()
 						.startsWith("POINT")) {
-					Point geometry = (com.vividsolutions.jts.geom.Point) sourceGeometryAttribute
+					Point geometry = (org.locationtech.jts.geom.Point) sourceGeometryAttribute
 							.getValue();
 					newrow.addPair("isEmpty", geometry.isEmpty());
 					newrow.addPair("isSimple", geometry.isSimple());

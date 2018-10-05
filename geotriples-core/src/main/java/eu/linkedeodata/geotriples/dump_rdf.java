@@ -218,7 +218,6 @@ public class dump_rdf {
 				pipeargs=new String[]{cmd.getItem(0),cmd.getArg(outfileArg).getValue()};
 				//log.info("DERP");
 			}*/
-			HelpFormatter hh=new HelpFormatter();
 			MainTrans.main(pipeargs);
 			
 			return;

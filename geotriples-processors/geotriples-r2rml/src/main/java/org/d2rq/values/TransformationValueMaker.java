@@ -20,7 +20,7 @@ import org.d2rq.vocab.STRING_FUNCTIONS;
 import org.gdal.ogr.ogr;
 import org.gdal.ogr.ogrJNI;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.linkedeodata.geotriples.Config;
 import eu.linkedeodata.geotriples.PrintTimeStats;

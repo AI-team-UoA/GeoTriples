@@ -7,9 +7,9 @@ package be.ugent.mmlab.rml.function;
 ****************************************************************************/
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.io.gml2.GMLWriter;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.io.gml2.GMLWriter;
 
 public final class GTransormationFunctions {
 	private static WKTWriter wkt_writer = new WKTWriter();

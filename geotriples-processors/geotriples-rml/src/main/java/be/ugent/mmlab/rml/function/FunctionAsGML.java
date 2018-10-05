@@ -10,8 +10,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
 
 import be.ugent.mmlab.rml.core.MalformedGeometryException;
 import eu.linkedeodata.geotriples.PrintTimeStats;

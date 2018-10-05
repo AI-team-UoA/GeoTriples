@@ -1,6 +1,5 @@
 package eu.linkedeodata.geotriples;
 
-import java.io.FileOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;

@@ -17,9 +17,9 @@
 	</licenses>
 	<properties>
 		<slf4j.version>1.6.4</slf4j.version>
-		<geotools.version>13.2</geotools.version>
+		<geotools.version>20.0</geotools.version>
 		<junit.version>4.11</junit.version>
-		<jts.version>1.13</jts.version>
+		<jts.version>1.16.0</jts.version>
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>

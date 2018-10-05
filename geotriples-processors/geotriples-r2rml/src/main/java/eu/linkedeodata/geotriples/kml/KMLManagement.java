@@ -1,6 +1,6 @@
 package eu.linkedeodata.geotriples.kml;
 
-//package com.vividsolutions.jtsexample.io.gml2;
+//package org.locationtech.jtsexample.io.gml2;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,14 +20,14 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-import com.vividsolutions.jts.geom.CoordinateSequences;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.io.gml2.GMLConstants;
-import com.vividsolutions.jts.io.gml2.GMLHandler;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateSequenceFactory;
+import org.locationtech.jts.geom.CoordinateSequences;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.io.gml2.GMLConstants;
+import org.locationtech.jts.io.gml2.GMLHandler;
 
 import eu.linkedeodata.geotriples.GeneralResultRow;
 import eu.linkedeodata.geotriples.KeyGenerator;

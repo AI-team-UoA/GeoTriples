@@ -17,14 +17,15 @@
 	</licenses>
 	<properties>
 		<slf4j.version>1.6.4</slf4j.version>
-		<geotools.version>13.2</geotools.version>
+		<geotools.version>20.0</geotools.version>
 		<junit.version>4.11</junit.version>
-		<jts.version>1.13</jts.version>
+		<jts.version>1.16.0</jts.version>
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 		<github.global.server>github-geotriples</github.global.server>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<pivot.version>2.0.5</pivot.version>
 	</properties>
 	<parent>
         <groupId>eu.linkedeodata.geotriples</groupId>
@@ -33,59 +34,37 @@
     </parent>
 
 	<dependencies>
-		<!-- 
-<dependency>
-            <groupId>eu.linkedeodata.geotriples</groupId>
-            <artifactId>SystemEvaluation</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
-        </dependency>
 		<dependency>
-            <groupId>org.d2rq</groupId>
-            <artifactId>R2RMLprocessor</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>be.ugent.mmlab.rml</groupId>
-            <artifactId>RMLprocessor</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
-        </dependency>
- -->
- 		<dependency>
-            <groupId>eu.linkedeodata.geotriples</groupId>
-            <artifactId>geotriples-core</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
+			<groupId>eu.linkedeodata.geotriples</groupId>
+			<artifactId>geotriples-core</artifactId>
+			<version>1.1.6-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.pivot</groupId>
 			<artifactId>pivot-core</artifactId>
-			<version>2.0.4</version>
+			<version>${pivot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pivot</groupId>
 			<artifactId>pivot-wtk</artifactId>
-			<version>2.0.4</version>
+			<version>${pivot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pivot</groupId>
 			<artifactId>pivot-web</artifactId>
-			<version>2.0.4</version>
+			<version>${pivot.version}</version>
 		</dependency>
 		<dependency>
-		<groupId>org.apache.pivot</groupId>
-		<artifactId>pivot-wtk-terra</artifactId>
-		<version>2.0.4</version>
+			<groupId>org.apache.pivot</groupId>
+			<artifactId>pivot-wtk-terra</artifactId>
+			<version>${pivot.version}</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.pivot</groupId> -->
-		<!-- <artifactId>pivot-charts</artifactId> -->
-		<!-- <version>2.0.4</version> -->
-		<!-- </dependency> -->
 		
 		<dependency>
 			<groupId>org.codehaus.mojo.appassembler</groupId>
 			<artifactId>appassembler-booter</artifactId>
-			<version>1.10</version>
+			<version>2.0.0</version>
 		</dependency>
 		
 	</dependencies>
@@ -94,10 +73,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.8.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
@@ -105,7 +84,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.17</version>
+				<version>2.22.0</version>
 				<configuration>
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
@@ -113,21 +92,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>2.5.3</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
-			
-			
-			
-
-			
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.1</version>
+				<version>3.0.1</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
@@ -137,7 +110,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.10</version>
+				<version>2.0.0</version>
 				<configuration>
 					<daemons>
 						<daemon>
@@ -162,7 +135,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -172,7 +145,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<descriptor>src/main/assembly/bin.xml</descriptor>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+					</descriptors>
 				</configuration>
 			</plugin>
 		</plugins>

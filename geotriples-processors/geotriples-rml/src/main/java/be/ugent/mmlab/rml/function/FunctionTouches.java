@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.opengis.referencing.FactoryException;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
 
 import be.ugent.mmlab.rml.core.MalformedGeometryException;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;

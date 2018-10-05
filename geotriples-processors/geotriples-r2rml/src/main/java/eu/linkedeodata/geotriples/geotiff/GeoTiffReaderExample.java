@@ -1,6 +1,6 @@
 package eu.linkedeodata.geotriples.geotiff;
 
-//package com.vividsolutions.jtsexample.io.gml2;
+//package org.locationtech.jtsexample.io.gml2;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,18 +20,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-import com.vividsolutions.jts.geom.CoordinateSequences;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.io.gml2.GMLConstants;
-import com.vividsolutions.jts.io.gml2.GMLHandler;
-import com.vividsolutions.jts.io.gml2.GMLWriter;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateSequenceFactory;
+import org.locationtech.jts.geom.CoordinateSequences;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.io.gml2.GMLConstants;
+import org.locationtech.jts.io.gml2.GMLHandler;
+import org.locationtech.jts.io.gml2.GMLWriter;
 
 /**
  * An example of using the {@link GMLHandler} class to read geometry data out of
@@ -212,8 +212,8 @@ private class KMLHandler extends DefaultHandler {
 				
 				WKTWriter wkt_writer=new WKTWriter();
 				GMLWriter gml_writer = new GMLWriter();
-				if (g.getClass().equals(com.vividsolutions.jts.geom.Point.class)) {
-					Point geometry = (com.vividsolutions.jts.geom.Point) g;
+				if (g.getClass().equals(org.locationtech.jts.geom.Point.class)) {
+					Point geometry = (org.locationtech.jts.geom.Point) g;
 					row.addPair("isEmpty", geometry.isEmpty());
 					row.addPair("isSimple", geometry.isSimple());
 					row.addPair("dimension",
