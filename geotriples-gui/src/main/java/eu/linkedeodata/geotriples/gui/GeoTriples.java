@@ -17,7 +17,6 @@
 package eu.linkedeodata.geotriples.gui;
 
 import java.net.URL;
-import java.security.Permission;
 import java.util.Locale;
 
 import org.apache.pivot.beans.BXMLSerializer;
@@ -27,34 +26,24 @@ import org.apache.pivot.wtk.Application;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 
-import sun.applet.AppletClassLoader;
-
 /**
  * Stock Tracker application.
  */
 public class GeoTriples implements Application{
-	
+
     private GeoTriplesWindow window = null;
 
     public static final String LANGUAGE_KEY = "language";
 
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception {
-    	
-    	ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    	//classLoader.loadClass(GeoTriplesWindow.class.getName());
-    	//System.out.println(classLoader);
-       // URL resource = classLoader.getResource("/");  
-       //System.out.println(resource);
-    	//Resources fff=new 
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String language = properties.get(LANGUAGE_KEY);
-        System.out.println(language); //na to dw kati paei x edw
-        //Locale locale = (language == null) ? Locale.ENGLISH : new Locale(language);
+        System.out.println(language);
         Locale locale = (language == null) ? Locale.getDefault() : new Locale(language);
         System.out.println(locale);
-        //Resources resources = new Resources(GeoTriplesWindow.class.getName(),locale);
         @SuppressWarnings("unused")
-		URL url=classLoader.getResource("GeoTriplesWindow.json");
+        URL url=classLoader.getResource("GeoTriplesWindow.json");
         
         Resources resources = new Resources("GeoTriplesWindow",locale);
         BXMLSerializer bxmlSerializer = new BXMLSerializer();
@@ -62,17 +51,7 @@ public class GeoTriples implements Application{
         System.out.println(classLoader.getResource("/GeoTriplesWindow.bxml"));
         System.out.println(GeoTriples.class.getResource("GeoTriplesWindow.bxml"));
         System.out.println(GeoTriples.class.getResource("/GeoTriplesWindow.bxml"));
-        
-        //System.out.println(AppletClassLoader.getSystemResource("GeoTriplesWindow.bxml"));
-        //System.out.println(AppletClassLoader.getSystemResource("/GeoTriplesWindow.bxml"));
-        
-        //System.out.println(GeoTriples.class.getClassLoader().getResource("GeoTriplesWindow.bxml"));
-        //System.out.println(GeoTriples.class.getClassLoader().getResource("/GeoTriplesWindow.bxml"));
-        
-        //ClassLoader.getSystemClassLoader().getResource("GeoTriplesWindow.bxml");
-        //ClassLoader.getSystemClassLoader().getResource("/GeoTriplesWindow.bxml");
         window = (GeoTriplesWindow)bxmlSerializer.readObject(classLoader.getResource("GeoTriplesWindow.bxml"),resources);
-        //window = (GeoTriplesWindow)bxmlSerializer.readObject(classLoader.getResourceAsStream("GeoTriplesWindow.bxml"));
         window.open(display);
     }
 

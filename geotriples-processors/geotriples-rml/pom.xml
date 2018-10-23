@@ -17,9 +17,7 @@
 	</licenses>
 	<properties>
 		<slf4j.version>1.6.4</slf4j.version>
-		<geotools.version>13.2</geotools.version>
-		<junit.version>4.11</junit.version>
-		<jts.version>1.13</jts.version>
+		<jts.version>1.16.0</jts.version>
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
@@ -170,8 +168,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
@@ -192,12 +190,6 @@
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
-			
-			
-			
-
-			
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -219,6 +211,14 @@
 	</build>
 	
 	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
 		<!-- Temporary: MonetDB jdbc -->
 		<repository>
 			<releases>

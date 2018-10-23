@@ -34,7 +34,7 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.linkedeodata.geotriples.PrintTimeStats;
 import eu.linkedeodata.geotriples.Config;

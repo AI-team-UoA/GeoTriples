@@ -64,7 +64,6 @@ import org.d2rq.values.TemplateValueMaker;
 import org.d2rq.values.TemplateValueMaker.ColumnFunction;
 import org.d2rq.values.TransformationValueMaker;
 import org.d2rq.values.ValueMaker;
-import org.hamcrest.core.IsInstanceOf;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Graph;

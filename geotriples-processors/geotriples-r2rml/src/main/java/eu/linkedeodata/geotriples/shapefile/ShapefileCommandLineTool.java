@@ -62,7 +62,7 @@ public abstract class ShapefileCommandLineTool {
 	{
 		this.process(args, null, null);
 	}
-	public void process(String[] args,RecipeMapping receipt) throws Exception
+	public void process(String[] args, RecipeMapping receipt) throws Exception
 	{
 		if(receipt==null)
 		{

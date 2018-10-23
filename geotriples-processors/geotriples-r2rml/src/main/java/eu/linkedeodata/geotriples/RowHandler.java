@@ -1,9 +1,9 @@
 package eu.linkedeodata.geotriples;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.io.gml2.GMLWriter;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.io.gml2.GMLWriter;
 
 public class RowHandler {
 	public static void handleGeometry(GeneralResultRow row,Geometry g,String crs)
@@ -15,8 +15,8 @@ public class RowHandler {
 		WKTWriter wkt_writer = new WKTWriter();
 		GMLWriter gml_writer = new GMLWriter();
 		if (g.getClass().equals(
-				com.vividsolutions.jts.geom.Point.class)) {
-			Point geometry = (com.vividsolutions.jts.geom.Point) g;
+				org.locationtech.jts.geom.Point.class)) {
+			Point geometry = (org.locationtech.jts.geom.Point) g;
 			row.addPair("isEmpty", geometry.isEmpty());
 			row.addPair("isSimple", geometry.isSimple());
 			row.addPair("dimension",

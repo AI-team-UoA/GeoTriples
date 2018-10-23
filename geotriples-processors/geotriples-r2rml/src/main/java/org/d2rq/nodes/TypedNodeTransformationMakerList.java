@@ -11,7 +11,7 @@ import org.d2rq.vocab.GEOMETRY_FUNCTIONS;
 import org.d2rq.vocab.STRING_FUNCTIONS;
 
 import com.hp.hpl.jena.graph.Node;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.linkedeodata.geotriples.GTransormationFunctions;
 import eu.linkedeodata.geotriples.GeneralConnection;
