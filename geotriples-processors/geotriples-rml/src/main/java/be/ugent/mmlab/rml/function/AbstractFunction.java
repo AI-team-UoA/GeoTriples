@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.locationtech.jts.geom.*;
+//import *;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.geotools.geojson.geom.GeometryJSON;
@@ -16,7 +18,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.xml.sax.SAXException;
 
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.gml2.GMLReader;
@@ -80,7 +81,7 @@ public abstract class AbstractFunction {
 				 * "<gml:FeatureCollection xmlns:gml=\"http://www.opengis.net/gml\" ><gml:featureMember><a>"
 				 * ); sbuffer.append(value); sbuffer.append(
 				 * "</a></gml:featureMember></gml:FeatureCollection>" );
-				 * 
+				 *
 				 * org.geotools.GML gml = new org.geotools.GML(Version.GML3);
 				 * SimpleFeatureIterator iter = gml.decodeFeatureIterator(in);
 				 * SimpleFeature feature = iter.next(); geometry = (Geometry)
@@ -144,6 +145,12 @@ public abstract class AbstractFunction {
 			WKTReader wktReader = new WKTReader();
 			geometry = wktReader.read(value);
 			return geometry;
+
+		case ROW_CLASS:
+			WKTReader reader = new WKTReader();
+			geometry = reader.read(value);
+			return geometry;
+
 		case JSONPATH_CLASS:
 			GeometryJSON g = new GeometryJSON();
 
@@ -170,8 +177,10 @@ public abstract class AbstractFunction {
 		}
 		switch (term) {
 		case SHP_CLASS:
-			// return (org.gdal.ogr.Geometry) object;
 			return (Geometry) object;
+		case ROW_CLASS:
+			Geometry result = computeGeometry((String) object, term);
+			return result;
 		case XPATH_CLASS:
 			Geometry result1 = computeGeometry((String) object, term);
 			cache.put(object, result1);

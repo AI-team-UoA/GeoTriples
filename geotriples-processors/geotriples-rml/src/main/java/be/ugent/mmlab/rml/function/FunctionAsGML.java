@@ -57,4 +57,22 @@ public class FunctionAsGML extends GeometryFunction implements Function {
 	}
 
 
+
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException, ParseException {
+
+		if(qlterm.equals(QLTerm.SHP_CLASS) && argument instanceof org.gdal.ogr.Geometry ){
+			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )argument;
+
+			return "<http://www.opengis.net/def/crs/EPSG/0/"+gdalgeom.GetSpatialReference().GetAttrValue("AUTHORITY", 1)+ "> "+gdalgeom.ExportToGML();
+		}
+
+		Geometry geometry = computeGeometry(argument, qlterm);
+		return GTransormationFunctions.asGML((Geometry) geometry, CRS.decode("EPSG:"+Config.EPSG_CODE));
+	}
+
+
+
+
+
 }

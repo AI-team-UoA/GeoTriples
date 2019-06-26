@@ -193,4 +193,7 @@ public class JSONPathProcessor extends AbstractRMLProcessor {
 	public TriplesMap getCurrentTriplesMap(){
 		return map;
 	}
+
+	@Override
+	public void setFields(List<String> fields){}
 }

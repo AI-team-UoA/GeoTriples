@@ -27,7 +27,7 @@ import be.ugent.mmlab.rml.core.OntologyGenerator;
 public class ShapefileMappingGenerator extends RMLMappingGenerator {
 	private final static Logger log = LoggerFactory.getLogger(XMLMappingGenerator.class);
 	private HashMap<String, String> triplesMaps = new HashMap<>();
-	
+	private boolean gfeatures;
 
 	
 	private File ontologyOutputFile = null;
@@ -36,13 +36,15 @@ public class ShapefileMappingGenerator extends RMLMappingGenerator {
 	private String pathToShapefile;
 
 	public ShapefileMappingGenerator(String shapefilefilename, String outputfile, String baseiri,
-			String ontologyOutputFile) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+			String ontologyOutputFile, boolean in_gfeatures) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
 					ClassCastException, FileNotFoundException, XmlException, IOException {
 		super(baseiri,outputfile);
 //		System.out.println("shapefilefilename=" + shapefilefilename);
 //		System.out.println("outputfile=" + outputfile);
 //		System.out.println("baseiri" + baseiri);
 		this.pathToShapefile = new File(shapefilefilename).getAbsolutePath();
+		this.gfeatures= in_gfeatures;
+
 //		System.out.println("ontologyOutputFile=" + ontologyOutputFile);
 		
 
@@ -268,23 +270,25 @@ public class ShapefileMappingGenerator extends RMLMappingGenerator {
 
 	private String printGEOPredicateObjectMaps() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(printPredicateObjectMap("dimension", "the_geom", "xsd:integer", null, "ogc", "dimension", "", true));
 		sb.append(printPredicateObjectMap("asWKT", "the_geom", "ogc:wktLiteral", null, "ogc", "asWKT", "", true));
-		// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
-		// null,
-		// "ogc", "asGML", "",true));
-		sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
-		sb.append(printPredicateObjectMap("isEmpty", "the_geom", "xsd:boolean", null, "ogc", "isEmpty", "", true));
-		sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
-		/*
-		 * sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
-		 * "ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
-		 */
-		sb.append(printPredicateObjectMap("coordinateDimension", "the_geom", "xsd:integer", null, "ogc",
-				"coordinateDimension", "", true));
-		sb.append(printPredicateObjectMap("spatialDimension", "the_geom", "xsd:integer", null, "ogc",
-				"spatialDimension", "", true));
-		// TODO write all the GeoSPARQL properties
+		if (this.gfeatures) {
+			sb.append(printPredicateObjectMap("dimension", "the_geom", "xsd:integer", null, "ogc", "dimension", "", true));
+			// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
+			// null,
+			// "ogc", "asGML", "",true));
+			sb.append(printPredicateObjectMap("is3D", "the_geom", "xsd:boolean", null, "ogc", "is3D", "", true));
+			sb.append(printPredicateObjectMap("isEmpty", "the_geom", "xsd:boolean", null, "ogc", "isEmpty", "", true));
+			sb.append(printPredicateObjectMap("isSimple", "the_geom", "xsd:boolean", null, "ogc", "isSimple", "", true));
+			/*
+			 * sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
+			 * "ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
+			 */
+			sb.append(printPredicateObjectMap("coordinateDimension", "the_geom", "xsd:integer", null, "ogc",
+					"coordinateDimension", "", true));
+			sb.append(printPredicateObjectMap("spatialDimension", "the_geom", "xsd:integer", null, "ogc",
+					"spatialDimension", "", true));
+			// TODO write all the GeoSPARQL properties
+		}
 		return sb.toString();
 	}
 
@@ -296,8 +300,14 @@ public class ShapefileMappingGenerator extends RMLMappingGenerator {
 		}
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
+		boolean arg_gfeatures = false;
+		for (String arg: args){
+			if (arg.equals("-gfeatures")){
+				arg_gfeatures = true;
+			}
+		}
 		ShapefileMappingGenerator m = new ShapefileMappingGenerator(args[0], args[1], args[2],
-				(args.length > 3) ? args[3] : null);
+				(args.length > 3) ? args[3] : null, arg_gfeatures);
 		m.run();
 	}
 }

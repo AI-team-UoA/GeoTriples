@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import be.ugent.mmlab.rml.model.*;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
 
 import org.openrdf.model.Resource;
@@ -12,10 +14,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 
 import be.ugent.mmlab.rml.core.RMLPerformer;
-import be.ugent.mmlab.rml.model.PredicateObjectMap;
-import be.ugent.mmlab.rml.model.SubjectMap;
-import be.ugent.mmlab.rml.model.TermMap;
-import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.vocabulary.Vocab.QLTerm;
 
 
@@ -87,5 +85,10 @@ public interface RMLProcessor {
 	Object getCurrentNode();
 
 	public TriplesMap getCurrentTriplesMap();
-	
+
+
+    public List<URI> processPredicateMap(PredicateMap predicateMap,
+                                         Object node);
+
+    public void setFields(List<String> fields);
 }

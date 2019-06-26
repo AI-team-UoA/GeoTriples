@@ -57,4 +57,37 @@ public class FunctionDimension extends GeometryFunction implements Function {
 	}
 
 
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException, ParseException {
+
+		if(qlterm.equals(QLTerm.SHP_CLASS) && argument instanceof org.gdal.ogr.Geometry ){
+			long startTime = System.nanoTime();
+			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )argument;
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			PrintTimeStats.printTime("Compute Geometry", duration);
+
+			startTime = System.nanoTime();
+			endTime = System.nanoTime();
+			duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			PrintTimeStats.printTime("Compute function dimension", duration);
+
+			return String.valueOf(gdalgeom.GetDimension());
+		}
+
+		long startTime = System.nanoTime();
+		Geometry geometry = computeGeometry(argument, qlterm);
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+		PrintTimeStats.printTime("Compute Geometry", duration);
+
+		startTime = System.nanoTime();
+		endTime = System.nanoTime();
+		duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+		PrintTimeStats.printTime("Compute function dimension", duration);
+
+		return GTransormationFunctions.dimension(
+				(Geometry) geometry);
+	}
+
 }

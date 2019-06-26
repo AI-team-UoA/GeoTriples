@@ -1,14 +1,12 @@
 package be.ugent.mmlab.rml.core;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import jlibs.xml.sax.dog.NodeItem;
+import be.ugent.mmlab.rml.processor.concrete.RowProcessor;
 import net.antidot.semantic.rdf.model.impl.sesame.SesameDataSet;
-import nu.xom.Node;
 
+import org.apache.spark.sql.Row;
+import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openrdf.model.Resource;
@@ -91,4 +89,26 @@ public class NodeRMLPerformer implements RMLPerformer{
     public Object getCurrentNode() {
         return current_node;
     }
+
+
+    /**
+     * Process the subject map and predicate-object maps
+     *
+     * @param node current object in the iteration
+     * @param map current triple map that is being processed
+     */
+    public Collection<Statement> perform(Row node, TriplesMap map, List<URI> predicates,
+                                         List<PredicateObjectMap> predicateObjectMaps, RowProcessor row_processor, int i) {
+
+        List<Statement> statements=new LinkedList<>();
+
+        Resource subject = row_processor.createSubject(node, i);
+        if (subject == null)
+            return statements;
+
+        statements.addAll(row_processor.processPredicateObjectMap(subject, predicateObjectMaps, node, map, predicates, i));
+
+        return statements;
+    }
+
 }

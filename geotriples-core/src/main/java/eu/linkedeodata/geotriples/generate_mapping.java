@@ -47,6 +47,12 @@ public class generate_mapping {
 				generate_mapping_usage();
 				System.exit(0);
 			}
+			boolean gfeatures = false;
+			for (String arg: args){
+				if (arg.equals("-gfeatures")){
+					gfeatures = true;
+				}
+			}
 			
 			// if (lastToken.endsWith(".kml")) {
 			// log.info("KML detected for processing");
@@ -71,14 +77,16 @@ public class generate_mapping {
 					final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
 					final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 					final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
+					final ArgDecl gfeaturesArg = new ArgDecl(false, "-gfeatures");
 					final CommandLine cmd = new CommandLine();
 					cmd.add(baseIRIArg);
 					cmd.add(outfileArg);
 					cmd.add(ontologyOutArg);
 					cmd.add(isRMLarg);
+					cmd.add(gfeaturesArg);
 					cmd.process(args);
 					new ShapefileMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg),
-							cmd.getValue(ontologyOutArg)).run();
+							cmd.getValue(ontologyOutArg), gfeatures).run();
 
 				} else {
 					if (this.recipe != null) {
@@ -97,25 +105,29 @@ public class generate_mapping {
 				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
 				final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 				final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
+				final ArgDecl gfeaturesArg = new ArgDecl(false, "-gfeatures");
 				final CommandLine cmd = new CommandLine();
 				cmd.add(baseIRIArg);
 				cmd.add(outfileArg);
 				cmd.add(ontologyOutArg);
 				cmd.add(isRMLarg);
+				cmd.add(gfeaturesArg);
 				cmd.process(args);
-				new CSVMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(ontologyOutArg),',').run();;
+				new CSVMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(ontologyOutArg),',', gfeatures).run();
 			}else if(lastToken.endsWith(".tsv")){
 				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
 				final ArgDecl baseIRIArg = new ArgDecl(true, "b", "base", "Base IRI");
 				final ArgDecl ontologyOutArg = new ArgDecl(true, "ont", "onto", "outfile for ontology");
 				final ArgDecl isRMLarg = new ArgDecl(false, "-rml");
+				final ArgDecl gfeaturesArg = new ArgDecl(false, "-gfeatures");
 				final CommandLine cmd = new CommandLine();
 				cmd.add(baseIRIArg);
 				cmd.add(outfileArg);
 				cmd.add(ontologyOutArg);
 				cmd.add(isRMLarg);
+				cmd.add(gfeaturesArg);
 				cmd.process(args);
-				new CSVMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(ontologyOutArg),'\t').run();;
+				new CSVMappingGenerator(lastToken, cmd.getValue(outfileArg), cmd.getValue(baseIRIArg), cmd.getValue(ontologyOutArg),'\t', gfeatures).run();
 			} else if (lastToken.endsWith(".xml") || lastToken.endsWith(".gml") || lastToken.endsWith(".kml")) {
 				log.info("XML detected for processing");
 				final ArgDecl outfileArg = new ArgDecl(true, "o", "out", "outfile");
@@ -132,6 +144,7 @@ public class generate_mapping {
 				final ArgDecl onlyNamespace = new ArgDecl(true, "onlyns", "onlynamespace",
 						"only global elements for this namespace will be analyzed");
 				final ArgDecl isRML = new ArgDecl(false, "-rml");
+				final ArgDecl gfeaturesArg = new ArgDecl(false, "-gfeatures");
 
 				final CommandLine cmd = new CommandLine();
 				cmd.add(xsdifileArg);
@@ -144,6 +157,7 @@ public class generate_mapping {
 				cmd.add(namespacesArg);
 				cmd.add(onlyNamespace);
 				cmd.add(isRML);
+				cmd.add(gfeaturesArg);
 				try {
 					cmd.process(args);
 				} catch (IllegalArgumentException ex) {
@@ -165,7 +179,7 @@ public class generate_mapping {
 				new XMLMappingGeneratorTrans(cmd.getValue(xsdifileArg), lastToken, cmd.getValue(outfileArg),
 						cmd.getValue(baseIRIArg), cmd.getValue(rootElement), cmd.getValue(rootPathArg),
 						cmd.getValue(namespacesArg), cmd.hasArg(nullTypesArg), cmd.getValue(ontologyOutArg),
-						cmd.getValue(onlyNamespace)).run();
+						cmd.getValue(onlyNamespace), gfeatures).run();
 			} else {
 				boolean isRML = false;
 				log.info("Database detected for processing");
@@ -215,6 +229,7 @@ public class generate_mapping {
 		System.err.println("\tOptions:");
 		System.err.println("\t\t-o outfile\t\tOutput mapping file name (default: stdout)");
 		System.err.println("\t\t-b base IRI\t\te.g., http://data.linkedeodata.eu/mydataset");
+		System.err.println("\t\t-gfeatures \t\tGenerate additional geometric features (e.g. dimension, is3D etc.)");
 		System.err.println("\tDatabase options:");
 		System.err.println("\t\t-u username\t\tDatabase Username (Optional)");
 		System.err.println("\t\t-p password\t\tDatabase Password (Optional)");
@@ -231,6 +246,7 @@ public class generate_mapping {
 		System.err.println("    -v              Generate RDFS+OWL vocabulary instead of mapping file");
 		System.err.println("    --verbose       Print debug information");
 		System.err.println("    -b <baseIR> e.g. http://geo.linkedopendata.gr/natura");
+		System.err.println("    -gfeatures       Generate additional geometric features (e.g. dimension, is3D etc.)");
 		System.err.println("	-geov			Use target geospatial vocabulary (GeoSPARQL/stRDF)");
 		System.err.println();
 		System.exit(1);

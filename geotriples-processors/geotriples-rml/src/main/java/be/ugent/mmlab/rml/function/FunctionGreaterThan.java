@@ -29,6 +29,12 @@ public class FunctionGreaterThan extends AbstractFunction implements Function {
 	}
 
 
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException {
+		return null;
+	}
+
+
 }
 
                

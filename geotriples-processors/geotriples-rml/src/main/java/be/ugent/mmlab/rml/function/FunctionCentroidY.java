@@ -30,4 +30,13 @@ public class FunctionCentroidY extends GeometryFunction implements Function {
 	}
 
 
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException, ParseException {
+
+		Geometry geometry = computeGeometry(argument, qlterm);
+		return GTransormationFunctions.centroidy(
+				(Geometry) geometry);
+	}
+
+
 }

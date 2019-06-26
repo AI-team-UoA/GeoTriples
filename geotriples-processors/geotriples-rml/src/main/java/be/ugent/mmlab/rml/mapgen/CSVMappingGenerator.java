@@ -34,9 +34,10 @@ public class CSVMappingGenerator extends RMLMappingGenerator {
 	private String pathToShapefile;
 
 	private char separator = ',';
+	private boolean gfeatures;
 
 	public CSVMappingGenerator(String datasource_filename, String output_filename, String base_iri,
-			String ontology_output_filename, char separator) throws ClassNotFoundException, InstantiationException,
+			String ontology_output_filename, char separator, boolean in_gfeatures) throws ClassNotFoundException, InstantiationException,
 					IllegalAccessException, ClassCastException, FileNotFoundException, XmlException, IOException {
 		super(base_iri, output_filename);
 		// System.out.println("shapefilefilename=" + shapefilefilename);
@@ -49,6 +50,7 @@ public class CSVMappingGenerator extends RMLMappingGenerator {
 			this.ontologyOutputFile = new File(ontology_output_filename);
 			ontology = new OntologyGenerator(true, baseURI);
 		}
+		this.gfeatures = in_gfeatures;
 	}
 
 	public void run() throws IOException {
@@ -282,23 +284,25 @@ public class CSVMappingGenerator extends RMLMappingGenerator {
 
 	private String printGEOPredicateObjectMaps(String column) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(printPredicateObjectMap("dimension", column, "xsd:integer", null, "ogc", "dimension", "", true));
 		sb.append(printPredicateObjectMap("asWKT", column, "ogc:wktLiteral", null, "ogc", "asWKT", "", true));
-		// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
-		// null,
-		// "ogc", "asGML", "",true));
-		sb.append(printPredicateObjectMap("is3D", column, "xsd:boolean", null, "ogc", "is3D", "", true));
-		sb.append(printPredicateObjectMap("isEmpty", column, "xsd:boolean", null, "ogc", "isEmpty", "", true));
-		sb.append(printPredicateObjectMap("isSimple", column, "xsd:boolean", null, "ogc", "isSimple", "", true));
-		/*
-		 * sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
-		 * "ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
-		 */
-		sb.append(printPredicateObjectMap("coordinateDimension", column, "xsd:integer", null, "ogc",
-				"coordinateDimension", "", true));
-		sb.append(printPredicateObjectMap("spatialDimension", column, "xsd:integer", null, "ogc", "spatialDimension",
-				"", true));
-		// TODO write all the GeoSPARQL properties
+		if(this.gfeatures) {
+			sb.append(printPredicateObjectMap("dimension", column, "xsd:integer", null, "ogc", "dimension", "", true));
+			// sb.append(printPredicateObjectMap("asGML", "*", "ogc:gmlLiteral",
+			// null,
+			// "ogc", "asGML", "",true));
+			sb.append(printPredicateObjectMap("is3D", column, "xsd:boolean", null, "ogc", "is3D", "", true));
+			sb.append(printPredicateObjectMap("isEmpty", column, "xsd:boolean", null, "ogc", "isEmpty", "", true));
+			sb.append(printPredicateObjectMap("isSimple", column, "xsd:boolean", null, "ogc", "isSimple", "", true));
+			/*
+			 * sb.append(printPredicateObjectMap("hasSerialization", "the_geom",
+			 * "ogc:wktLiteral", null, "ogc", "hasSerialization", "", true));
+			 */
+			sb.append(printPredicateObjectMap("coordinateDimension", column, "xsd:integer", null, "ogc",
+					"coordinateDimension", "", true));
+			sb.append(printPredicateObjectMap("spatialDimension", column, "xsd:integer", null, "ogc", "spatialDimension",
+					"", true));
+			// TODO write all the GeoSPARQL properties
+		}
 		return sb.toString();
 	}
 
@@ -310,7 +314,13 @@ public class CSVMappingGenerator extends RMLMappingGenerator {
 		}
 		// XMLMappingGenerator m=new XMLMappingGenerator("TF7.xsd" ,
 		// "personal.xml" , "http://ex.com/" , true);
-		CSVMappingGenerator m = new CSVMappingGenerator(args[0], args[1], args[2], (args.length > 3) ? args[3] : null,',');
+		boolean arg_gfeatures = false;
+		for (String arg: args){
+			if (arg.equals("-gfeatures")){
+				arg_gfeatures = true;
+			}
+		}
+		CSVMappingGenerator m = new CSVMappingGenerator(args[0], args[1], args[2], (args.length > 3) ? args[3] : null,',', arg_gfeatures);
 		m.run();
 	}
 }

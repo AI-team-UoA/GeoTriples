@@ -281,4 +281,7 @@ public class ShapefileProcessor extends AbstractRMLProcessor {
 		// System.out.println(Long.toBinaryString(Double.doubleToRawLongBits(d)));
 
 	}
+
+	@Override
+	public void setFields(List<String> fields){}
 }

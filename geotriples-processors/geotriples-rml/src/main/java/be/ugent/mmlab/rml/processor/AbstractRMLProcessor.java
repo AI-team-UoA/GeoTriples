@@ -208,10 +208,8 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 	/**
 	 * Process any Term Map
 	 * 
-	 * @param map
-	 *            current term map
-	 * @param node
-	 *            current node in iteration
+	 * @param map current term map
+	 * @param node current node in iteration
 	 * @return the resulting value
 	 */
 	@Override
@@ -630,7 +628,7 @@ public abstract class AbstractRMLProcessor implements RMLProcessor {
 
 						HashSet<TriplesMap> seen = new HashSet<>();
 						ArrayList<TriplesMap> clusters_sorted = new ArrayList<>();
-						EdgeReversedGraph xx = new EdgeReversedGraph(condgraph);
+						EdgeReversedGraph<TriplesMap, DefaultEdge> xx = new EdgeReversedGraph<>(condgraph);
 						/*
 						 * ConnectivityInspector<String, DefaultEdge> inspector2
 						 * = new ConnectivityInspector<String, DefaultEdge>(xx);
@@ -1021,7 +1019,7 @@ public ObjecMapWorker(ObjectMap objectMap,Object node,TriplesMap
 	 * @return the uri of the extracted predicate
 	 * @throws FileNotFoundException 
 	 */
-	protected List<URI> processPredicateMap(PredicateMap predicateMap,
+	public List<URI> processPredicateMap(PredicateMap predicateMap,
 			Object node) {
 		// Get the value
 		List<Object> values = processTermMap(predicateMap, node, null, null,
@@ -1169,4 +1167,6 @@ private boolean in_memory_input=false;
 	public void setMemoryInput(String input){
 		this.memory_input=input;
 	}
+
+
 }

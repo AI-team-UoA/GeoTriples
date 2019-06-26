@@ -103,15 +103,14 @@ public abstract class RMLMappingFactory {
 			R2RMLDataError, RepositoryException, RDFParseException, IOException {
 		// Load RDF data from R2RML Mapping document
 		CustomSesameDataset r2rmlMappingGraph = new CustomSesameDataset();
-		if(fileToRMLFile instanceof InputStream){
+		if(fileToRMLFile instanceof InputStream)
 			r2rmlMappingGraph.loadDataFromInputStream((InputStream)fileToRMLFile, RDFFormat.TURTLE,new URIImpl("http://mplamplou"));
-		}
 		else if(fileToRMLFile instanceof String)
-		r2rmlMappingGraph.loadDataFromFile((String)fileToRMLFile, RDFFormat.TURTLE);
-		else{
+			r2rmlMappingGraph.loadDataFromFile((String)fileToRMLFile, RDFFormat.TURTLE);
+		else
 			r2rmlMappingGraph.loadDataFromURL(fileToRMLFile.toString());
-		}
-		
+
+
 		log.debug("[RMLMappingFactory:extractRMLMapping] Number of R2RML triples in file "
 				+ fileToRMLFile + " : " + r2rmlMappingGraph.getSize());
 		// Transform RDF with replacement shortcuts
@@ -121,7 +120,7 @@ public abstract class RMLMappingFactory {
 		// Construct R2RML Mapping object
 		Map<Resource, TriplesMap> triplesMapResources = extractTripleMapResources(r2rmlMappingGraph);
 
-		
+
 		log.debug("[RMLMappingFactory:extractRMLMapping] Number of RML triples with "
 				+ " type "
 				+ R2RMLTerm.TRIPLES_MAP_CLASS

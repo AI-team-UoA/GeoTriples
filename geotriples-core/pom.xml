@@ -53,7 +53,13 @@
 			<artifactId>appassembler-booter</artifactId>
 			<version>1.10</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>eu.linkedeodata.geotriples</groupId>
+            <artifactId>geotriples-spark</artifactId>
+            <version>1.1.6-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -112,7 +118,9 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-			<!-- Assemble scripts -->
+
+
+			<!-- Assemble scripts
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>appassembler-maven-plugin</artifactId>
@@ -177,7 +185,9 @@
 				<configuration>
 					<descriptor>src/main/assembly/bin.xml</descriptor>
 				</configuration>
-			</plugin>
+			</plugin> -->
+
+
 		</plugins>
 		<resources>
 			<resource>

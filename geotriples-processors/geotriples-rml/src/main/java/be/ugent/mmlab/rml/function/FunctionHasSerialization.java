@@ -57,4 +57,20 @@ public class FunctionHasSerialization extends GeometryFunction implements Functi
 		return valueList;
 	}
 
+
+	@Override
+	public Object execute(Object argument, QLTerm qlterm)
+			throws SAXException, IOException, ParserConfigurationException, FactoryException,
+			MalformedGeometryException, ParseException {
+
+		if (qlterm.equals(QLTerm.SHP_CLASS) && argument instanceof org.gdal.ogr.Geometry) {
+			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )argument;
+			return "<http://www.opengis.net/def/crs/EPSG/0/" + Config.EPSG_CODE + "> " + gdalgeom.ExportToWkt();
+
+		}
+		Geometry geometry = computeGeometry(argument, qlterm);
+		return GTransormationFunctions.hasSerialization((Geometry) geometry, CRS.decode("EPSG:" + Config.EPSG_CODE));
+
+	}
+
 }

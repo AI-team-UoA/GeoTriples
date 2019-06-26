@@ -306,4 +306,7 @@ public class ShapefileProcessorGDAL extends AbstractRMLProcessor {
 		System.out.println(d);
 
 	}
+
+	@Override
+	public void setFields(List<String> fields){}
 }

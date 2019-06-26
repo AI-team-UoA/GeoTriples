@@ -64,7 +64,8 @@ public class Vocab {
         JSONPATH_CLASS("JSONPath"),
         CSV_CLASS("CSV"),
         TSV_CLASS("TSV"),
-        SHP_CLASS("SHP");
+        SHP_CLASS("SHP"),
+        ROW_CLASS("ROW");
         
         private String displayName;
 

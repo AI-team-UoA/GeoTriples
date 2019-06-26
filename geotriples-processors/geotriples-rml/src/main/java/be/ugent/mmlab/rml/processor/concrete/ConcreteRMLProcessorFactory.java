@@ -35,6 +35,8 @@ public class ConcreteRMLProcessorFactory implements RMLProcessorFactory {
 				return new ShapefileProcessorGDAL();
 			else
 				return new ShapefileProcessor();
+		case ROW_CLASS:
+			return new RowProcessor();
 		// case SQL_CLASS:
 		// 	if (Config.useOldDBProcessor)//this old processor asks only one query, the new one ask multiple queries and projects one column at a time
 		// 		return new DatabaseProcessor();

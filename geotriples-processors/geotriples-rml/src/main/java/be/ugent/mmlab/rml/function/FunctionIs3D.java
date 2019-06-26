@@ -57,4 +57,18 @@ public class FunctionIs3D extends GeometryFunction implements Function {
 	}
 
 
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException, ParseException {
+
+		if(qlterm.equals(QLTerm.SHP_CLASS) && argument instanceof org.gdal.ogr.Geometry ){
+			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )argument;
+
+			 return (String.valueOf(gdalgeom.GetCoordinateDimension()==3));
+		}
+
+		Geometry geometry = computeGeometry(argument, qlterm);
+		return GTransormationFunctions.is3D((Geometry) geometry);
+	}
+
+
 }

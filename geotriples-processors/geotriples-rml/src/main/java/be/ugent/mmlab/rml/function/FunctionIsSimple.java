@@ -57,4 +57,19 @@ public class FunctionIsSimple extends GeometryFunction implements Function {
 	}
 
 
+
+	@Override
+	public Object execute(Object argument, QLTerm qlterm) throws SAXException, IOException, ParserConfigurationException, FactoryException, MalformedGeometryException, ParseException {
+
+		if(qlterm.equals(QLTerm.SHP_CLASS) && argument instanceof org.gdal.ogr.Geometry ){
+			org.gdal.ogr.Geometry gdalgeom=(org.gdal.ogr.Geometry )argument;
+
+			return String.valueOf(gdalgeom.IsSimple());
+		}
+
+		Geometry geometry = computeGeometry(argument, qlterm);
+		return GTransormationFunctions.isSimple((Geometry) geometry);
+	}
+
+
 }

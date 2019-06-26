@@ -956,4 +956,8 @@ public class XPathProcessor extends AbstractRMLProcessor {
 	public TriplesMap getCurrentTriplesMap() {
 		return map;
 	}
+
+	@Override
+	public void setFields(List<String> fields){}
+
 }

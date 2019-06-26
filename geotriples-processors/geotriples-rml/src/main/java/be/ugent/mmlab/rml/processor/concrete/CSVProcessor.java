@@ -178,4 +178,7 @@ public class CSVProcessor extends AbstractRMLProcessor {
 		}
 		return null;
 	}
+
+	@Override
+	public void setFields(List<String> fields){}
 }

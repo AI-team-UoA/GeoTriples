@@ -4,6 +4,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+
+
+
+
+
 public class GeoTriplesCMD {
 
 	public static void main(String[] args) throws Exception {
@@ -26,28 +31,39 @@ public class GeoTriplesCMD {
 			Class<?> ontop = null;
 			try {
 				// org.semanticweb.ontop.cli.Ontop.main(ontopargs);
-				ontop=Class.forName("org.semanticweb.ontop.cli.Ontop");
-				Class<?>[] argTypes = new Class[] { String[].class };
+				ontop = Class.forName("org.semanticweb.ontop.cli.Ontop");
+				Class<?>[] argTypes = new Class[]{String[].class};
 				Method main = ontop.getMethod("main", argTypes);
-				main.invoke(null, (Object)ontopargs);
+				main.invoke(null, (Object) ontopargs);
 			} catch (ClassNotFoundException e) {
 				System.err.println("Missing libraries for ontop-spatial??");
 				System.err.println("Is maven configured to add jars in ontop-spatial-lib/ direcotry??");
 				e.printStackTrace();
 			} catch (NoSuchMethodException x) {
-			    x.printStackTrace();
+				x.printStackTrace();
 			} catch (IllegalAccessException x) {
-			    x.printStackTrace();
+				x.printStackTrace();
 			} catch (InvocationTargetException x) {
-			    x.printStackTrace();
+				x.printStackTrace();
 			}
 			return;
-		} else {
+		}
+
+
+
+		else if (mode.equals("spark")){
+			SparkMaster master = new SparkMaster(yourArray);
+			master.readInput();
+			master.convert2RDF();
+			master.endSpark();
+		}
+
+		else {
 			usage();
 		}
 		long endTime = System.currentTimeMillis();
-//		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
-		System.out.println("Took " + (endTime - startTime)  + " msec");
+		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
+		System.out.println("In more detail it took " + (endTime - startTime)  + " msec");
 		//FileOutputStream logfile=new FileOutputStream(new File())
 	}
 
@@ -75,6 +91,23 @@ public class GeoTriplesCMD {
 		System.err.println("\t\t\t\t5. CSV");
 
 		System.err.println("\tobda\t\t -- Ontology Based Data Access");
+		System.err.println();
+
+		System.err.println("\tspark\t\t -- Transformation of Big Geospatial Data");
+		System.err.println("Usage for Spark mode:  [arguments] <source mapping>");
+		System.err.println("\tArguments:");
+		System.err.println("\t\t-o <outDir>\t\tOutput directory name");
+		System.err.println("\t\t-i <inFile>\t\tPath to the input file");
+		System.err.println("\t\t-m mode\t\tDefine the conversion mode. Accepted values: \"partition\", \"row\"(default)");
+		System.err.println("\t\t-r <partitions>\t\t(Optional) Specify the number of the requested partitions. If it is set to \"default\", then the number of partitions will be calculated based on the size of the input.");
+		System.err.println("\t\t-sh <directory>\t\t\t Path that points to a directory containing multiple folders of shapefiles. Used to load multiple shapefiles");
+		System.err.println("\t\t-times <n>\t\t\t Load the input dataset <n> times");
+		System.err.println("\t\t-h \t\t\tPrint usage");
+		System.err.println();
+		System.err.println();
+		System.err.println("\tThe last argument must be the path to the mapping file");
+
+
 		System.err.println();
 		
 		
@@ -160,6 +193,24 @@ public class GeoTriplesCMD {
 		
 		System.err.println();
 		System.err.println("Developers: dimis@di.uoa.gr, johnvl@di.uoa.gr, Kostis.Kyzirakos@cwi.nl");
+
+
+		System.err.println("\tspark\t\t -- Transformation of Big Geospatial Data");
+		System.err.println("Usage for Spark mode:  [arguments] <source mapping>");
+		System.err.println("\tArguments:");
+		System.err.println("\t\t-o <outDir>\t\tOutput directory name");
+		System.err.println("\t\t-i <inFile>\t\tPath to the input file");
+		System.err.println("\t\t-m mode\t\tDefine the conversion mode. Accepted values: \"partition\", \"row\"(default)");
+		System.err.println("\t\t-r <partitions>\t\t(Optional) Specify the number of the requested partitions. " +
+				"\n\t\t\t\t\t\t\tIf it is set to \"default\", then the number of partitions will be calculated based on the size of the input.");
+		System.err.println("\t\t-sh <directory>\t\t\t Path that points to a directory containing multiple folders of shapefiles. Used to load multiple shapefiles");
+		System.err.println("\t\t-times <n>\t\t\t Load the input dataset <n> times");
+		System.err.println("\t\t-h \t\t\tPrint usage");
+		System.err.println();
+		System.err.println();
+		System.err.println("\tThe last argument must be the path to the mapping file");
+
+
 		System.exit(1);
 	}
 }

@@ -117,12 +117,35 @@
 			<artifactId>xmlbeans</artifactId>
 			<version>2.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.datasyslab</groupId>
+			<artifactId>geospark</artifactId>
+			<version>1.2.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-model</artifactId>
+			<version>2.6.10</version>
+		</dependency>
 
 		<!-- <dependency> -->
 		<!-- <groupId>edu.ucar</groupId> -->
 		<!-- <artifactId>netcdfAll</artifactId> -->
 		<!-- <version>4.6.1</version> -->
 		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_2.11</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_2.11</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<pluginManagement>

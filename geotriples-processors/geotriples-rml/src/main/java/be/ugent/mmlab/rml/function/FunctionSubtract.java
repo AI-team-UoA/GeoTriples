@@ -36,4 +36,12 @@ public class FunctionSubtract extends AbstractFunction implements Function {
 		return valueList;
 	}
 
+
+	@Override
+	public Object execute(Object argument, QLTerm qlterm)
+			throws SAXException, IOException, ParserConfigurationException, FactoryException,MalformedGeometryException {
+
+		return null;
+	}
+
 }
