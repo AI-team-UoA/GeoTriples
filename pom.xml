@@ -32,6 +32,7 @@
         <module>geotriples-core</module>
         <module>geotriples-gui</module>
         <module>geotriples-ontop</module>
+        <module>geotriples-spark</module>
     </modules>
 	<dependencies>
 		<dependency>
