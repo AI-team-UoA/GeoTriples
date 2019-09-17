@@ -5,15 +5,50 @@
 ### Use GeoTriples binaries (Unix) ###
 Assuming [Java >=7](https://www.java.com/en/download/) installed:
 
-Download GeoTriples binaries at: http://geotriples.di.uoa.gr/downloads/geotriples-1.1.6-bin.zip
+Download GeoTriples binaries [here](http://geotriples.di.uoa.gr/downloads/geotriples-1.1.6-bin.zip)
 *	Unzip the downloaded file `geotriples-<version>-bin.zip`
 *	Change directory to `geotriples-<version>-bin`
 *	Under the `bin` directory you can find the available starter script for GeoTriples
 
 	> `bin/geotriples-cmd`
 	
-
 See more at Wiki pages
+
+##Execution by source
+
+Install the source code by using
+    
+    mvn package 
+
+**Generate Mapping files:**
+
+    java -cp <geotriples-dependencies.jar> eu.linkedeodata.geotriples.GeoTriplesCMD generate_mapping -o <output file(.ttl)> -b <URI base> <input file>
+
+* **-o output_file** the name of the produced mapping file (RML/R2RML)
+* **-b URI_base** the base URI that will describe the entities
+
+<br/>
+
+**Transform file into RDF**
+
+    java -cp <geotriples-dependencies.jar> eu.linkedeodata.geotriples.GeoTriplesCMD dump_rdf -o <output file> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+    
+* **-o output_file** the path of the produced file
+* **-b URI_base** the base URI that will describe the entities
+* **-sh shp_file** if the input is a shapefile specify the .shp path using this flag 
+
+##Execution by binaries
+
+**Generate Mapping files:**
+
+    bin/geotriples-all generate_mapping -o <output_file (.ttl)> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+    
+<br/>
+
+**Transform file into RDF**
+    
+    bin/geotriples-all dump_rdf -o <output_file> -b http://example.com (-sh <shp file>) <path_to_the_mapping_file>
+
 
 ---
 
@@ -31,10 +66,10 @@ run in a standalone machine or in a Hadoop based cluster, but it is more efficie
 * Apache Hadoop 2.6.0 or 2.6.7 or Hops
 
 ### Build
->mvn package
+    mvn package
 
 ### Execute
->spark-submit  --class eu.linkedeodata.geotriples.GeoTriplesCMD <path to geotriples-spark.jar>   spark  -i <input_file> -o <out_folder> <rml>
+    spark-submit --class eu.linkedeodata.geotriples.GeoTriplesCMD <path to geotriples-spark.jar> spark -i <in_file> -o <out_folder> <rml>
 
 * **-i input_file**: path to the input dataset. Enter multiple input files seperated by comma ",".
 
