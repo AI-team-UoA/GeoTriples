@@ -1,5 +1,9 @@
 # GeoTriples
- Publishing geospatial data as Linked Open Geospatial Data 
+Publishing geospatial data as Linked Open Geospatial Data. GeoTriples generates and processes extended R2RML and RML 
+mappings that transform geospatial data from many input formats into RDF. GeoTriples allows the transformation of 
+geospatial data stored in raw files (shapefiles, CSV, KML, XML, GML and GeoJSON) and spatially-enabled RDBMS 
+(PostGIS and MonetDB) into RDF graphs using well-known vocabularies like GeoSPARQL and stSPARQL, but without being tightly
+ coupled to a specific vocabulary. 
 
 ## Quickstart ##
 ### Use GeoTriples binaries (Unix) ###
@@ -14,7 +18,7 @@ Download GeoTriples binaries [here](http://geotriples.di.uoa.gr/downloads/geotri
 	
 See more at Wiki pages
 
-##Execution by source
+## Execution by source
 
 Install the source code by using
     
@@ -37,7 +41,7 @@ Install the source code by using
 * **-b URI_base** the base URI that will describe the entities
 * **-sh shp_file** if the input is a shapefile specify the .shp path using this flag 
 
-##Execution by binaries
+## Execution by binaries
 
 **Generate Mapping files:**
 
@@ -52,7 +56,7 @@ Install the source code by using
 
 ---
 
-## GeoTriples-Spark ##
+# GeoTriples-Spark
 
 GeoTriples-Spark is an extended version of GeoTriples capable of transforming big geospatial data into RDF graphs.
 To enable the transformation of big geospatial
