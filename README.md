@@ -26,7 +26,7 @@ Install the source code by using
 
 **Generate Mapping files:**
 
-    java -cp <geotriples-dependencies.jar> eu.linkedeodata.geotriples.GeoTriplesCMD generate_mapping -o <output file(.ttl)> -b <URI base> <input file>
+    java -cp <geotriples-core/ dependencies jar> eu.linkedeodata.geotriples.GeoTriplesCMD generate_mapping -o <output file(.ttl)> -b <URI base> <input file>
 
 * **-o output_file** the name of the produced mapping file (RML/R2RML)
 * **-b URI_base** the base URI that will describe the entities
@@ -35,7 +35,7 @@ Install the source code by using
 
 **Transform file into RDF**
 
-    java -cp <geotriples-dependencies.jar> eu.linkedeodata.geotriples.GeoTriplesCMD dump_rdf -o <output file> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+    java -cp <geotriples-core/ dependencies jar> eu.linkedeodata.geotriples.GeoTriplesCMD dump_rdf -o <output file> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
     
 * **-o output_file** the path of the produced file
 * **-b URI_base** the base URI that will describe the entities
@@ -73,7 +73,7 @@ run in a standalone machine or in a Hadoop based cluster, but it is more efficie
     mvn package
 
 ### Execute
-    spark-submit --class eu.linkedeodata.geotriples.GeoTriplesCMD <path to geotriples-spark.jar> spark -i <in_file> -o <out_folder> <rml>
+    spark-submit --class eu.linkedeodata.geotriples.GeoTriplesCMD <geotriples-core/ dependencies jar> spark -i <in_file> -o <out_folder> <rml>
 
 * **-i input_file**: path to the input dataset. Enter multiple input files seperated by comma ",".
 
