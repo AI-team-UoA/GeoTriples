@@ -4,17 +4,14 @@ import java.io.PrintStream;
 
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.d2rq.mapgen.MappingGenerator;
-import org.geotools.gml3.Circle.Arc;
 
 import be.ugent.mmlab.rml.mapgen.CSVMappingGenerator;
-//import be.ugent.mmlab.rml.mapgen.SQLMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.ShapefileMappingGenerator;
 import be.ugent.mmlab.rml.mapgen.XMLMappingGeneratorTrans;
 import eu.linkedeodata.geotriples.gui.RecipeMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Command line interface for {@link MappingGenerator}.
@@ -22,7 +19,8 @@ import eu.linkedeodata.geotriples.gui.RecipeMapping;
  * @author Richard Cyganiak (richard@cyganiak.de)
  */
 public class generate_mapping {
-	private final static Logger log = LoggerFactory.getLogger(generate_mapping.class);
+	private final static Logger log = LoggerFactory.getLogger(GeoTriplesCMD.class);
+
 	private RecipeMapping recipe = null;
 	protected java.io.PrintStream guiOutput = null;
 
@@ -34,6 +32,7 @@ public class generate_mapping {
 	public generate_mapping(RecipeMapping receipt, PrintStream guiOutput) {
 		this.recipe = receipt; // set the receipt for mapping
 		this.guiOutput = guiOutput;
+
 	}
 
 	public generate_mapping() {

@@ -1,5 +1,9 @@
 package eu.linkedeodata.geotriples;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -11,7 +15,10 @@ import java.util.Arrays;
 
 public class GeoTriplesCMD {
 
+	private final static Logger log = LoggerFactory.getLogger(GeoTriplesCMD.class);
+
 	public static void main(String[] args) throws Exception {
+
 		long startTime = System.currentTimeMillis();
 		if (args.length == 0) {
 			usage();
@@ -19,6 +26,7 @@ public class GeoTriplesCMD {
 		String mode = args[0];
 		String[] yourArray = Arrays.copyOfRange(args, 1, args.length);
 		if (mode.equals("generate_mapping")) {
+			new generate_mapping().process(yourArray);
 			new generate_mapping().process(yourArray);
 		} else if (mode.equals("dump_rdf")) {
 			try {
@@ -49,8 +57,6 @@ public class GeoTriplesCMD {
 			return;
 		}
 
-
-
 		else if (mode.equals("spark")){
 			SparkMaster master = new SparkMaster(yourArray);
 			master.readInput();
@@ -62,8 +68,8 @@ public class GeoTriplesCMD {
 			usage();
 		}
 		long endTime = System.currentTimeMillis();
-		System.out.println("Took " + (endTime - startTime) / 1000 + " sec");
-		System.out.println("In more detail it took " + (endTime - startTime)  + " msec");
+		log.info("Took " + (endTime - startTime) / 1000 + " sec");
+		log.info("In more detail it took " + (endTime - startTime)  + " msec");
 		//FileOutputStream logfile=new FileOutputStream(new File())
 	}
 

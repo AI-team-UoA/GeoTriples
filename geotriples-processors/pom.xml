@@ -16,7 +16,6 @@
 		</license>
 	</licenses>
 	<properties>
-		<slf4j.version>1.7.21</slf4j.version>
 		<geotools.version>20.0</geotools.version>
 		<junit.version>4.11</junit.version>
 		<jts.version>1.16.0</jts.version>

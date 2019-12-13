@@ -16,7 +16,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<slf4j.version>1.7.21</slf4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<geotools.version>20.0</geotools.version>
 		<junit.version>4.11</junit.version>
 		<jts.version>1.16.0</jts.version>
@@ -35,17 +35,9 @@
         <module>geotriples-spark</module>
     </modules>
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency> 
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-log4j12</artifactId>
-		  <version>${slf4j.version}</version>
-		</dependency>
-	</dependencies>
+
+
+    </dependencies>
 
 
 	<build>

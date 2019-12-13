@@ -3,16 +3,14 @@ package eu.linkedeodata.geotriples;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.cli.HelpFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.d2rq.SystemLoader;
 import org.d2rq.mapgen.MappingGenerator;
 
 import be.ugent.mmlab.rml.main.MainTrans;
-import eu.linkedeodata.geotriples.PrintTimeStats;
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -22,7 +20,7 @@ import jena.cmdline.CommandLine;
  * @author Richard Cyganiak (richard@cyganiak.de)
  */
 public class dump_rdf {
-	private final static Logger log = LoggerFactory.getLogger(dump_rdf.class);
+	private final static Logger log = LoggerFactory.getLogger(GeoTriplesCMD.class);
 
 	protected String guimapping =null;
 	public static void main(String[] args) throws Exception {
