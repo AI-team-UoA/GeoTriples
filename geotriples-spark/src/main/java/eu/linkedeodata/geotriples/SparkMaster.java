@@ -1,16 +1,11 @@
 package eu.linkedeodata.geotriples;
 
-
-
-
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
 import be.ugent.mmlab.rml.function.Function;
 import be.ugent.mmlab.rml.function.FunctionFactory;
 import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.model.TriplesMap;
-import be.ugent.mmlab.rml.processor.concrete.RowProcessor;
 import eu.linkedeodata.geotriples.Converters.RML_Converter;
-import eu.linkedeodata.geotriples.utils.SerializedLogger;
 import eu.linkedeodata.geotriples.utils.SparkReader;
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
@@ -29,13 +24,9 @@ import org.datasyslab.geospark.serde.GeoSparkKryoRegistrator;
 import org.openrdf.model.URI;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.*;
 
-import java.util.concurrent.TimeUnit;
-
-
-import org.apache.spark.rdd.DoubleRDDFunctions;
+import scala.reflect.ClassTag;
 
 
 /*
@@ -85,7 +76,6 @@ public class SparkMaster  {
     private boolean count;
 
 
-
     /**
      * Constructor. Parses the input arguments and configure Spark.
      *
@@ -93,25 +83,18 @@ public class SparkMaster  {
      */
     SparkMaster(String[] inputArgs){
 
-        /*try{
-            System.out.println("Sleeping...zzZZzzzZzZZZzz..");
-            TimeUnit.SECONDS.sleep(10);
-            System.out.println("Woke UP!");
-        }
-        catch (InterruptedException ignored){}*/
-
         // set loggers level
-        log = Logger.getLogger("GeoTriples");
+        log = Logger.getLogger("GEOTRIPLES-SPARK");
         log.setLevel(Level.INFO);
-        Logger.getLogger("org").setLevel(Level.INFO);
-        Logger.getRootLogger().setLevel(Level.INFO);
+        log.info("\n");
+        Logger.getLogger("org").setLevel(Level.ERROR);
+        Logger.getRootLogger().setLevel(Level.ERROR);
 
         boolean is_shp_folder = false;
         count = false;
 
         String outputDirArg = null;
         try {
-
             // parse the input arguments
             CommandLine cmd = new CommandLine();
             ArgDecl outDirArg = new ArgDecl(true, "-o", "out", "outfile");
@@ -122,8 +105,6 @@ public class SparkMaster  {
             ArgDecl modeArg = new ArgDecl(true, "-m", "mode");
             ArgDecl timesArg = new ArgDecl(true, "-times", "times");
             ArgDecl countArg = new ArgDecl(false, "-count", "count");
-
-
 
             cmd.add(outDirArg);
             cmd.add(infileArg);
@@ -142,7 +123,6 @@ public class SparkMaster  {
 
             if (cmd.hasArg(outDirArg)) {
                 outputDirArg = cmd.getArg(outDirArg).getValue();
-
                 outputDir = outputDirArg;
                 if(outputDir.contains("/") && outputDir.lastIndexOf("/") == outputDir.length() -1)
                     outputDir = outputDir.substring(0, outputDir.length() - 1);
@@ -152,12 +132,12 @@ public class SparkMaster  {
                 fs = FileSystem.get(conf);
 
                 // Create the output folder
-                // if the specified direcotory does not exist do nothing
-                // if if the specified direcotory does exist it creates a new one inside the specified one
+                // if the specified directory does not exist do nothing
+                // if the specified directory does exist, create a new one inside the specified one
                 if (fs.exists(outputDirArg_path)) {
                     if (!fs.isDirectory(outputDirArg_path)) {
                         usage = true;
-                        errors.add("ERROR: \"-o\" flag must point to a directory");
+                        errors.add("ERROR: \"-o\" flag must point to a directory.");
                     } else {
                         outputDir = outputDir + "/GeoTriples_results";
                         outputDirArg_path = new Path(outputDir);
@@ -173,22 +153,22 @@ public class SparkMaster  {
                     }
                     if (!outputDirArg.equals(outputDir))
                         log.warn("Because the " + outputDirArg + " already exists, the results will be located in " + outputDir);
-                    else log.info("The results will be located in " + outputDir);
                 }
                 catch (Exception e){
                     e.printStackTrace();
                     System.exit(1);
                 }
+                log.info("The results will be located in " + outputDir);
             }
             else {
                 usage = true;
-                errors.add("ERROR: You need to specify the output directory using the \"-o\" flag");
+                errors.add("ERROR: You need to specify the output directory using the \"-o\" flag.");
             }
 
             if (cmd.hasArg(infileArg)){
                 inputFile = cmd.getArg(infileArg).getValue();
                 if (cmd.hasArg(timesArg)){
-                    // it is used in order to read multiple times a file
+                    // it is used in order to load a single file multiple times
                     StringBuilder sb = new StringBuilder();
                     int times_to_load = Integer.parseInt(cmd.getArg(timesArg).getValue());
                     for (int i = 0; i < times_to_load - 1; i++)
@@ -198,6 +178,7 @@ public class SparkMaster  {
                 }
             }
             else if (cmd.hasArg(inSHFArg)){
+                log.info("Shapefile detected.");
                 inputFile = cmd.getArg(inSHFArg).getValue();
                 Path shp_folder = new Path(inputFile);
                 Configuration conf = new Configuration();
@@ -205,16 +186,14 @@ public class SparkMaster  {
 
                 if (!fs.isDirectory(shp_folder)) {
                     usage = true;
-                    errors.add("ERROR: \"-sh\" flag must point to a directory");
+                    errors.add("ERROR: \"-sh\" flag must point to a directory.");
                 }
                 is_shp_folder = true;
             }
             else {
                 usage = true;
-                errors.add("ERROR: You need to specify the input file using the \"-i\" flag");
+                errors.add("ERROR: You need to specify the input file using the \"-i\" flag.");
             }
-
-
             if (cmd.hasArg(modeArg)){
                 String in_mode = cmd.getArg(modeArg).getValue();
                 if (in_mode.equals("row"))
@@ -222,18 +201,16 @@ public class SparkMaster  {
                 else if (in_mode.equals("partition"))
                     mode = Mode.PARTITION;
                 else {
-                    log.warn("No such mode \"" + in_mode + "\". The conversion mode is set to  \"per ROW conversion\"");
+                    log.warn("No mode \"" + in_mode + "\". The conversion mode is set to  \"per ROW conversion\".");
                     mode = Mode.ROW;
                 }
             }
-            else {
+            else
                 mode = Mode.ROW;
-            }
-            log.info("The conversion mode is set to \"per " + mode.name() + " conversion\"");
+            log.info("The conversion mode is set to \"per " + mode.name() + " conversion\".");
 
-            if (cmd.hasArg(repartitionArg)){
+            if (cmd.hasArg(repartitionArg))
                 repartition = cmd.getArg(repartitionArg).getValue();
-            }
 
             if (inputArgs[inputArgs.length - 1].endsWith(".ttl"))
                 mappingFile = inputArgs[inputArgs.length - 1];
@@ -241,11 +218,8 @@ public class SparkMaster  {
                 usage = true;
                 errors.add("ERROR: The last argument must be the mapping file and it must end with the extension .ttl");
             }
-
-            if (cmd.hasArg(countArg)){
+            if (cmd.hasArg(countArg))
                 count = true;
-            }
-
             if (usage)
                 usage(errors);
         }
@@ -262,7 +236,7 @@ public class SparkMaster  {
                 .set("spark.kryo.registrator", GeoSparkKryoRegistrator.class.getName())
                 .set("spark.io.compression.codec", "lz4");
 
-        //Shapefiles require more SparkMemory for shuffling
+        // Shapefiles require more SparkMemory for shuffling
         if (repartition != null)
             conf.set("spark.memory.fraction", "0.5");
         else
@@ -270,23 +244,17 @@ public class SparkMaster  {
 
         spark = SparkSession
                 .builder()
-                .appName("GeoTriples-HOPS")//Hops.getJobName())
+                .appName("GeoTriples-Spark")//Hops.getJobName())
                 .config(conf)
                 .getOrCreate();
-
         System.setProperty("geospark.global.charset", "utf8");
     }
-
-
 
 
     /**
      * Read input according to its file-type and store it as a spark Dataset.
      */
-    public void readInput() {
-        inputDataset = reader.read(spark, repartition);
-        inputDataset.printSchema();
-    }
+    public void readInput() { inputDataset = reader.read(spark, repartition); }
 
 
     /**
@@ -458,7 +426,6 @@ public class SparkMaster  {
         log.info("\tThe last argument must be the path to the mapping file");
 
         System.exit(0);
-
     }
 
 }

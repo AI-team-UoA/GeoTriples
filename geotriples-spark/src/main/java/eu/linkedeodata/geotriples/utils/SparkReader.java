@@ -49,7 +49,7 @@ public class SparkReader {
      * @param inputfile the file it will read
      */
     public SparkReader(String inputfile, boolean isShpFolder){
-        log = Logger.getLogger("GeoTriples");
+        log = Logger.getLogger("GEOTRIPLES-SPARK");
         log.setLevel(Level.INFO);
 
         if (inputfile.contains(","))
@@ -119,8 +119,8 @@ public class SparkReader {
             // insert a column with ID
             dt = dt.withColumn(Config.GEOTRIPLES_AUTO_ID, functions.monotonicallyIncreasingId());
             log.info("The input data was read into " + dt.javaRDD().getNumPartitions() + " partitions");
-            log.info("The  reading procedure completed and took " + (System.currentTimeMillis() - startTime) + " msec\n");
-            // repartition the loaded dataset if it is specified by the user.
+            log.info("Input dataset(s) was loaded in " + (System.currentTimeMillis() - startTime) + " msec");
+            // repartition the loaded dataset if it is specified by user.
             // if "repartition" is set to "defualt" the number of partitions is calculated based on input's size
             // else the number must be defined by the user
             if (repartition != null){
@@ -149,8 +149,7 @@ public class SparkReader {
                         dt = dt.coalesce(new_partitions);
                     else
                         dt = dt.repartition(new_partitions);
-                    log.info("The input Dataset will be repartitioned into: " + new_partitions + " partitions");
-                    dt.persist();
+                    log.info("Dataset was repartitioned into: " + new_partitions + " partitions");
                 }
             }
         }
@@ -159,6 +158,8 @@ public class SparkReader {
             ex.printStackTrace();
             System.exit(1);
         }
+        log.info("Dataset schema: ");
+        dt.printSchema();
         return dt;
     }
 
@@ -238,8 +239,6 @@ public class SparkReader {
 
         return dt;
     }
-
-
 
 
     /**
