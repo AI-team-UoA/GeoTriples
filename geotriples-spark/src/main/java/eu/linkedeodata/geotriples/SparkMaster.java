@@ -4,7 +4,8 @@ package eu.linkedeodata.geotriples;
 
 
 import be.ugent.mmlab.rml.core.RMLMappingFactory;
-import be.ugent.mmlab.rml.model.PredicateObjectMap;
+import be.ugent.mmlab.rml.function.Function;
+import be.ugent.mmlab.rml.function.FunctionFactory;
 import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import be.ugent.mmlab.rml.processor.concrete.RowProcessor;
@@ -20,7 +21,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
-import org.apache.spark.TaskContext;
+import org.apache.spark.SparkContext;
+import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.serializer.KryoSerializer;
 import org.apache.spark.sql.*;
 import org.datasyslab.geospark.serde.GeoSparkKryoRegistrator;
@@ -293,23 +295,25 @@ public class SparkMaster  {
      * If the user did not define the conversion mode, the conversion mode will be per row conversion.
      */
     public void convert2RDF() {
-        
         // data that will be passed to the conversion
         List<String> headers = Arrays.asList(inputDataset.columns());
         ArrayList<TriplesMap> mapping_list = RML_Parser(mappingFile);
-        if (count){
-           count(headers, mapping_list);
-        }
+        long startTime = System.currentTimeMillis();
+        log.info("Starts the conversion");
+        if (count) count(headers, mapping_list);
         else {
             switch (mode) {
                 case ROW:
+                    log.info("Conversion mode: Per Row Conversion");
                     convert_row(headers, mapping_list);
                     break;
                 case PARTITION:
+                    log.info("Conversion mode: Per Partition Conversion");
                     convert_partition(headers, mapping_list);
                     break;
             }
         }
+        log.info("The conversion completed and took " + (System.currentTimeMillis() - startTime) + " msec.\n");
     }
 
 
@@ -320,30 +324,21 @@ public class SparkMaster  {
      * @param mapping_list list of TripleMaps
      */
     private void convert_partition(List<String> headers, ArrayList<TriplesMap> mapping_list){
-        log.info("Conversion mode: Per Partition Conversion");
-        log.info("Starts the conversion");
-        long startTime = System.currentTimeMillis();
+        SparkContext sc = SparkContext.getOrCreate();
+        RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
+        rml_converter.start();
+        ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
+        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
 
-        // conversion
+        Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
+        Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
+
         inputDataset
             .javaRDD()
-            .mapPartitions((Iterator<Row> rows_iter) -> {
-                SerializedLogger serializedLogger = new SerializedLogger("GeoTriples", Level.INFO);
-                long map_startTime = System.currentTimeMillis();
-                DecimalFormat df = new DecimalFormat("###.###");
-
-                RML_Converter converter = new RML_Converter(mapping_list, headers);
-                Iterator<String> triples = converter.convertPartition(rows_iter);
-
-                String used_memory = df.format((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000000.0);
-                long elapsed_time = System.currentTimeMillis() - map_startTime;
-                serializedLogger.info("The conversion of partition " + TaskContext.getPartitionId() + " completed in " + elapsed_time + " msec" + " and consumed " + used_memory + "GB");
-                return triples;
-            })
+            .mapPartitions((Iterator<Row> rows_iter) ->
+                    bc_converter.value().convertPartition(rows_iter, bc_functionsHashMap.value()))
             .saveAsTextFile(outputDir);
-
-        log.info("The whole conversion completed and took " + (System.currentTimeMillis() - startTime) + " msec.\n");
-        log.info("The results are located in: " + outputDir);        
+        rml_converter.stop();
     }
 
 
@@ -354,36 +349,20 @@ public class SparkMaster  {
      * @param mapping_list list of TripleMaps
      */
     private void convert_row(List<String> headers, ArrayList<TriplesMap> mapping_list){
-        log.info("Conversion mode: Per Row Conversion");
-        log.info("Starts the conversion");
-        long startTime = System.currentTimeMillis();
 
+        SparkContext sc = SparkContext.getOrCreate();
         RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
-        List<List<PredicateObjectMap>> list_pom = rml_converter.getListPOM();
-        List<List<URI>> tmPredicates = rml_converter.getTm_predicates();
+        rml_converter.start();
+        ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
+        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
 
-        RowProcessor row_processor = rml_converter.getProcessor();
-        Set<String> in_headers = row_processor.getHeaders();
-        List<String> subjTemplates = row_processor.getSubj_templates();
-        List<List<String>> subjTokens = row_processor.getSubj_tokens();
-        List<List<String>> subjReplacements_pos = row_processor.getSubj_replacements_pos();
-        List<String> objTemplates = row_processor.getObj_templates();
-        List<List<String>> objTokens = row_processor.getObj_tokens();
-        List<List<String>> objReplacements_pos = row_processor.getObj_replacements_pos();
-        Map<String, Integer> objTemplatesMap = row_processor.getObj_templatesMap();
-
+        Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
+        Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
         inputDataset
                 .javaRDD()
-                .map(row -> {
-                    RML_Converter converter = new RML_Converter(mapping_list, list_pom, tmPredicates, in_headers,
-                            subjTemplates, subjTokens, subjReplacements_pos, objTemplates, objTokens, objReplacements_pos,
-                            objTemplatesMap);
-                    return converter.convertRow(row);
-                })
+                .map(row -> bc_converter.value().convertRow(row, bc_functionsHashMap.value()))
                 .saveAsTextFile(outputDir);
-
-        log.info("The whole conversion completed and took " + (System.currentTimeMillis() - startTime) + " msec\n");
-        log.info("The results are located in: " + outputDir);
+        rml_converter.stop();
     }
 
 
@@ -397,48 +376,28 @@ public class SparkMaster  {
 
         long records = inputDataset.count();
         log.info("The input dataset(s) contain: " + records + " records");
-
+        SparkContext sc = SparkContext.getOrCreate();
         RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
-        List<List<PredicateObjectMap>> list_pom = rml_converter.getListPOM();
-        List<List<URI>> tmPredicates = rml_converter.getTm_predicates();
+        rml_converter.start();
+        ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
+        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
 
-        RowProcessor row_processor = rml_converter.getProcessor();
-        Set<String> in_headers = row_processor.getHeaders();
-        List<String> subjTemplates = row_processor.getSubj_templates();
-        List<List<String>> subjTokens = row_processor.getSubj_tokens();
-        List<List<String>> subjReplacements_pos = row_processor.getSubj_replacements_pos();
-        List<String> objTemplates = row_processor.getObj_templates();
-        List<List<String>> objTokens = row_processor.getObj_tokens();
-        List<List<String>> objReplacements_pos = row_processor.getObj_replacements_pos();
-        Map<String, Integer> objTemplatesMap = row_processor.getObj_templatesMap();
-
-
+        Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
+        Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
         Long triples_count = inputDataset
                 .javaRDD()
-                .map(row -> {
-                    RML_Converter converter = new RML_Converter(mapping_list, list_pom, tmPredicates, in_headers,
-                            subjTemplates, subjTokens, subjReplacements_pos, objTemplates, objTokens, objReplacements_pos,
-                            objTemplatesMap);
-                     return converter.convertRow(row);
-                })
+                .map(row -> bc_converter.value().convertRow(row, bc_functionsHashMap.value()))
                 .map((String s) -> s.codePoints().filter(ch -> ch == '\n').count())
-                .reduce((Long l1, Long l2) -> {return l1+l2;});
-
-        /*long triples_sum = 0;
-        for (Long i : triples_count)
-            triples_sum = triples_sum + i;*/
-
+                .reduce(Long::sum);
+        rml_converter.stop();
         log.info("The input dataset(s) transformed into " + triples_count + " RDF triples");
-
     }
 
 
-        /**
-         * Close the Spark session.
-         */
-    public void endSpark(){
-        spark.close();
-    }
+    /**
+     * Close the Spark session.
+     */
+    public void endSpark(){ spark.close();}
 
 
     /**

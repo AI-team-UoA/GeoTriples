@@ -10,8 +10,8 @@ import org.apache.spark.sql.Row;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFHandlerException;
-import java.util.*;
 
+import java.util.*;
 
 
 /**
@@ -26,16 +26,6 @@ public class RML_Converter implements java.io.Serializable {
     private RowProcessor processor;
     private NodeRMLPerformer performer;
 
-
-    /**
-     * Getters
-     */
-
-    public List<List<PredicateObjectMap>> getListPOM() { return listPOM; }
-
-    public RowProcessor getProcessor() { return processor; }
-
-    public List<List<URI>> getTm_predicates() { return tm_predicates; }
 
     /**
      * Constructor.
@@ -75,54 +65,26 @@ public class RML_Converter implements java.io.Serializable {
         rdfWriter = new NTriplesAlternative();
     }
 
+    /**
+     * Start RDF Writer
+     */
+    public void start() { rdfWriter.startRDF();}
 
     /**
-     * Construct an RML_Converter by initializing its fields with pre-constructed variables.
-     * It is used in order to create a copy of an existing RML_Converter.
-     *
-     * @param mapping_list input mappings
-     * @param list_pom input list_pom
-     * @param tmPredicates input tm_predicates
-     * @param in_headers row processor's headers
-     * @param subjTemplates row processor's subject  templates
-     * @param subjTokens row processor's subject tokens
-     * @param subjReplacements_pos row processor's sublect replacements
-     * @param objTemplates row processor's object templates
-     * @param objTokens row processor's object tokens
-     * @param objReplacements_pos row processor's object replacements
-     * @param objTemplatesMap row processor's object templates map
+     * Stop RDF Writer
      */
-    public RML_Converter(ArrayList<TriplesMap> mapping_list, List<List<PredicateObjectMap>> list_pom, List<List<URI>> tmPredicates,
-                         Set<String> in_headers, List<String> subjTemplates, List<List<String>> subjTokens
-                        ,List<List<String>> subjReplacements_pos, List<String> objTemplates, List<List<String>> objTokens
-                        ,List<List<String>> objReplacements_pos,  Map<String, Integer> objTemplatesMap){
-
-        registerFunctions();
-        Config.EPSG_CODE = 4326;
-        mappingList = mapping_list;
-
-        processor = new RowProcessor(in_headers, subjTemplates, subjTokens, subjReplacements_pos, objTemplates
-                ,objTokens, objReplacements_pos,  objTemplatesMap);
-        performer = new NodeRMLPerformer(processor);
-
-        listPOM = list_pom;
-        tm_predicates = tmPredicates;
-
-        rdfWriter = new NTriplesAlternative();
-    }
-
-
+    public void stop() { rdfWriter.endRDF();}
 
     /**
      * Convert a Spark Partition into triples.
      *
      * @param partition_iter: an iterator of rows. The rows must follow the predefined headers.
+     * @param functionHashMap a hash map containing all the functions needed for the conversion.
      * @return a String of triples
      */
-    public Iterator<String> convertPartition(Iterator<Row> partition_iter){
-
+    public Iterator<String> convertPartition(Iterator<Row> partition_iter, HashMap<URI, Function> functionHashMap){
+        FunctionFactory.availableFunctions = functionHashMap;
         List<String> partitionTriples = new LinkedList<>();
-        rdfWriter.startRDF();
         partition_iter.forEachRemaining(row -> {
             try {
                 for (int i = 0; i < mappingList.size(); i++) {
@@ -137,7 +99,6 @@ public class RML_Converter implements java.io.Serializable {
                 System.exit(1);
             }
         });
-        rdfWriter.endRDF();
         return  partitionTriples.iterator();
     }
 
@@ -145,33 +106,31 @@ public class RML_Converter implements java.io.Serializable {
     /**
      * Convert a Spark Row into triples.
      * @param row the input row.
-     * @returna String of triples
+     * @param functionHashMap a hash map containing all the functions needed for the conversion.
+     * @return String of triples
      */
-   public String convertRow(Row row){
+   public String convertRow(Row row, HashMap<URI, Function> functionHashMap){
+        FunctionFactory.availableFunctions = functionHashMap;
         String triples = null;
-        //rdfWriter = new NTriplesAlternative();
         try {
-            rdfWriter.startRDF();
             for (int i = 0; i < mappingList.size(); i++)
                 rdfWriter.handleStatementIter(performer.perform(row, mappingList.get(i), tm_predicates.get(i), listPOM.get(i), processor, i));
             triples = rdfWriter.getString();
-            rdfWriter.endRDF();
         }
         catch (RDFHandlerException e) {
            System.out.println("ERROR while Handling Statement");
            e.printStackTrace();
            System.exit(1);
        }
-        return triples;
-
+       return triples;
    }
+
 
     /**
      * Register functions.
      */
     private static void registerFunctions()   {
         try {
-            // If a JVM extractor handles more tha one partition then each function must be registered once
             URI func_equi = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi");
             URI func_asWKT = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT");
             URI func_hasSerialization = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization");
@@ -229,8 +188,6 @@ public class RML_Converter implements java.io.Serializable {
             if (! FunctionFactory.availableFunctions.containsKey(func_centroidy))
                 FunctionFactory.registerFunction(func_centroidy, new FunctionCentroidY());
 
-        } catch (FunctionAlreadyExists functionAlreadyExists) {
-            //functionAlreadyExists.printStackTrace();
-        }
+        } catch (FunctionAlreadyExists ignored) {}
     }
 }
