@@ -7,6 +7,7 @@ import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import eu.linkedeodata.geotriples.Converters.RML_Converter;
 import eu.linkedeodata.geotriples.utils.SparkReader;
+import javafx.util.Pair;
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
 import org.apache.hadoop.conf.Configuration;
@@ -87,13 +88,13 @@ public class SparkMaster  {
         log = Logger.getLogger("GEOTRIPLES-SPARK");
         log.setLevel(Level.INFO);
         log.info("\n");
-        Logger.getLogger("org").setLevel(Level.ERROR);
-        Logger.getRootLogger().setLevel(Level.ERROR);
+        //Logger.getLogger("org").setLevel(Level.ERROR);
+        //Logger.getRootLogger().setLevel(Level.ERROR);
 
         boolean is_shp_folder = false;
         count = false;
 
-        String outputDirArg = null;
+        String outputDirArg;
         try {
             // parse the input arguments
             CommandLine cmd = new CommandLine();
@@ -293,20 +294,28 @@ public class SparkMaster  {
      */
     private void convert_partition(List<String> headers, ArrayList<TriplesMap> mapping_list){
         SparkContext sc = SparkContext.getOrCreate();
-        RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
-        rml_converter.start();
-        ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
-        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
 
-        Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
+        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
         Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
 
+        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, headers);
+        ClassTag<Pair<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Pair.class);
+        Broadcast<Pair<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
         inputDataset
             .javaRDD()
-            .mapPartitions((Iterator<Row> rows_iter) ->
-                    bc_converter.value().convertPartition(rows_iter, bc_functionsHashMap.value()))
+            .mapPartitions(
+            (Iterator<Row> rows_iter) -> {
+                ArrayList<TriplesMap> p_mapping_list = bd_info.value().getKey();
+                List<String> p_header = bd_info.value().getValue();
+                RML_Converter rml_converter = new RML_Converter(p_mapping_list, p_header);
+                rml_converter.start();
+
+                Iterator<String> triples = rml_converter.convertPartition(rows_iter, bc_functionsHashMap.value());
+
+                rml_converter.stop();
+                return triples;
+            })
             .saveAsTextFile(outputDir);
-        rml_converter.stop();
     }
 
 
@@ -319,18 +328,26 @@ public class SparkMaster  {
     private void convert_row(List<String> headers, ArrayList<TriplesMap> mapping_list){
 
         SparkContext sc = SparkContext.getOrCreate();
-        RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
-        rml_converter.start();
-        ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
         ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
-
-        Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
         Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
+
+        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, headers);
+        ClassTag<Pair<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Pair.class);
+        Broadcast<Pair<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
+
         inputDataset
                 .javaRDD()
-                .map(row -> bc_converter.value().convertRow(row, bc_functionsHashMap.value()))
+                .map((row) -> {
+                    ArrayList<TriplesMap> p_mapping_list = bd_info.value().getKey();
+                    List<String> p_header = bd_info.value().getValue();
+                    RML_Converter rml_converter = new RML_Converter(p_mapping_list, p_header);
+                    rml_converter.start();
+                    String triples = rml_converter.convertRow(row, bc_functionsHashMap.value());
+                    rml_converter.stop();
+                    return triples;
+                } )
+
                 .saveAsTextFile(outputDir);
-        rml_converter.stop();
     }
 
 
