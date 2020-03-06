@@ -27,13 +27,28 @@ public class RML_Converter implements java.io.Serializable {
     private NodeRMLPerformer performer;
 
 
+    private URI func_equi = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi");
+    private URI func_asWKT = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT");
+    private URI func_hasSerialization = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization");
+    private URI func_asGML = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML");
+    private URI func_isSimple = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple");
+    private URI func_isEmpty = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty");
+    private URI func_is3D = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D");
+    private URI func_spatialDimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension");
+    private URI func_dimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension");
+    private URI func_coordinateDimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension");
+    private URI func_area = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area");
+    private URI func_length = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length");
+    private URI func_centroidx = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx");
+    private URI func_centroidy = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy");
+
     /**
      * Constructor.
      *
      * @param mapping_list: the TriplesMap as was parsed by the input RML file.
      * @param headers the headers of the expected rows.
      */
-    public RML_Converter(ArrayList<TriplesMap> mapping_list, List<String> headers) {
+    public RML_Converter(ArrayList<TriplesMap> mapping_list, List<String> headers)  {
         registerFunctions();
         Config.EPSG_CODE = 4326;
         mappingList = mapping_list;
@@ -79,19 +94,17 @@ public class RML_Converter implements java.io.Serializable {
      * Convert a Spark Partition into triples.
      *
      * @param partition_iter: an iterator of rows. The rows must follow the predefined headers.
-     * @param functionHashMap a hash map containing all the functions needed for the conversion.
      * @return a String of triples
      */
-    public Iterator<String> convertPartition(Iterator<Row> partition_iter, HashMap<URI, Function> functionHashMap){
-        FunctionFactory.availableFunctions = functionHashMap;
-        List<String> partitionTriples = new LinkedList<>();
+    public Iterator<String> convertPartition(Iterator<Row> partition_iter){
+
+        List<String> partitionTriples = new ArrayList<>();
         partition_iter.forEachRemaining(row -> {
             try {
                 for (int i = 0; i < mappingList.size(); i++) {
                     rdfWriter.handleStatementIter(performer.perform(row, mappingList.get(i), tm_predicates.get(i), listPOM.get(i), processor, i));
                 }
                 partitionTriples.add(rdfWriter.getString());
-
             }
             catch (RDFHandlerException e) {
                 System.out.println("ERROR while Handling Statement");
@@ -129,65 +142,23 @@ public class RML_Converter implements java.io.Serializable {
     /**
      * Register functions.
      */
-    private static void registerFunctions()   {
+    public void registerFunctions()   {
         try {
-            URI func_equi = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/equi");
-            URI func_asWKT = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asWKT");
-            URI func_hasSerialization = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/hasSerialization");
-            URI func_asGML = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/asGML");
-            URI func_isSimple = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isSimple");
-            URI func_isEmpty = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/isEmpty");
-            URI func_is3D = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/is3D");
-            URI func_spatialDimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/spatialDimension");
-            URI func_dimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/dimension");
-            URI func_coordinateDimension = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/coordinateDimension");
-            URI func_area = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/area");
-            URI func_length = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/length");
-            URI func_centroidx = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidx");
-            URI func_centroidy = new URIImpl("http://www.w3.org/ns/r2rml-ext/functions/def/centroidy");
+            FunctionFactory.registerFunction(func_equi, new FunctionEQUI());
+            FunctionFactory.registerFunction(func_asWKT, new FunctionAsWKT());
+            FunctionFactory.registerFunction(func_hasSerialization, new FunctionHasSerialization());
+            FunctionFactory.registerFunction(func_asGML, new FunctionAsGML());
+            FunctionFactory.registerFunction(func_isSimple, new FunctionIsSimple());
+            FunctionFactory.registerFunction(func_isEmpty, new FunctionIsEmpty());
+            FunctionFactory.registerFunction(func_is3D, new FunctionIs3D());
+            FunctionFactory.registerFunction(func_spatialDimension, new FunctionSpatialDimension());
+            FunctionFactory.registerFunction(func_dimension, new FunctionDimension());
+            FunctionFactory.registerFunction(func_coordinateDimension, new FunctionCoordinateDimension());
+            FunctionFactory.registerFunction(func_area, new FunctionArea());
+            FunctionFactory.registerFunction(func_length, new FunctionLength());
+            FunctionFactory.registerFunction(func_centroidx, new FunctionCentroidX());
+            FunctionFactory.registerFunction(func_centroidy, new FunctionCentroidY());
 
-            if (! FunctionFactory.availableFunctions.containsKey(func_equi))
-                FunctionFactory.registerFunction(func_equi, new FunctionEQUI());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_asWKT))
-                FunctionFactory.registerFunction(func_asWKT, new FunctionAsWKT());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_hasSerialization))
-                FunctionFactory.registerFunction(func_hasSerialization, new FunctionHasSerialization());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_asGML))
-                FunctionFactory.registerFunction(func_asGML, new FunctionAsGML());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_isSimple))
-                FunctionFactory.registerFunction(func_isSimple, new FunctionIsSimple());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_isEmpty))
-                FunctionFactory.registerFunction(func_isEmpty, new FunctionIsEmpty());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_is3D))
-                FunctionFactory.registerFunction(func_is3D, new FunctionIs3D());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_spatialDimension))
-                FunctionFactory.registerFunction(func_spatialDimension, new FunctionSpatialDimension());
-            
-            if (! FunctionFactory.availableFunctions.containsKey(func_dimension))
-                FunctionFactory.registerFunction(func_dimension, new FunctionDimension());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_coordinateDimension))
-                FunctionFactory.registerFunction(func_coordinateDimension, new FunctionCoordinateDimension());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_area))
-                FunctionFactory.registerFunction(func_area, new FunctionArea());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_length))
-                FunctionFactory.registerFunction(func_length, new FunctionLength());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_centroidx))
-                FunctionFactory.registerFunction(func_centroidx, new FunctionCentroidX());
-
-            if (! FunctionFactory.availableFunctions.containsKey(func_centroidy))
-                FunctionFactory.registerFunction(func_centroidy, new FunctionCentroidY());
-
-        } catch (FunctionAlreadyExists ignored) {}
+        } catch (FunctionAlreadyExists ignored) {  }
     }
 }
