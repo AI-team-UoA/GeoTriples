@@ -18,6 +18,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.serializer.KryoSerializer;
 import org.apache.spark.sql.*;
@@ -27,6 +28,7 @@ import org.openrdf.model.URI;
 import java.io.IOException;
 import java.util.*;
 
+import scala.Tuple2;
 import scala.reflect.ClassTag;
 
 
@@ -68,13 +70,11 @@ public class SparkMaster  {
     private String inputFile;
     private String outputDir;
     private String mappingFile;
-    private Dataset<Row> inputDataset;
+    private JavaRDD<Row> rowRDD;
     private FileSystem fs;
     private Mode mode;
     private String repartition = null;
     private Logger log;
-
-    private boolean count;
 
 
     /**
@@ -92,8 +92,6 @@ public class SparkMaster  {
         //Logger.getRootLogger().setLevel(Level.ERROR);
 
         boolean is_shp_folder = false;
-        count = false;
-
         String outputDirArg;
         try {
             // parse the input arguments
@@ -105,7 +103,6 @@ public class SparkMaster  {
             ArgDecl helpArg = new ArgDecl(false, "-h", "help");
             ArgDecl modeArg = new ArgDecl(true, "-m", "mode");
             ArgDecl timesArg = new ArgDecl(true, "-times", "times");
-            ArgDecl countArg = new ArgDecl(false, "-count", "count");
 
             cmd.add(outDirArg);
             cmd.add(infileArg);
@@ -114,7 +111,6 @@ public class SparkMaster  {
             cmd.add(helpArg);
             cmd.add(modeArg);
             cmd.add(timesArg);
-            cmd.add(countArg);
             cmd.process(inputArgs);
 
             boolean usage = false;
@@ -219,8 +215,6 @@ public class SparkMaster  {
                 usage = true;
                 errors.add("ERROR: The last argument must be the mapping file and it must end with the extension .ttl");
             }
-            if (cmd.hasArg(countArg))
-                count = true;
             if (usage)
                 usage(errors);
         }
@@ -229,13 +223,12 @@ public class SparkMaster  {
             usage(null);
         }
 
-        reader = new SparkReader(inputFile, is_shp_folder);
-
         // configure spark
         SparkConf conf = new SparkConf()
                 .set("spark.serializer", KryoSerializer.class.getName())
                 .set("spark.kryo.registrator", GeoSparkKryoRegistrator.class.getName())
-                .set("spark.io.compression.codec", "lz4");
+                .set("spark.hadoop.validateOutputSpecs", "false")
+                .set("spark.serializer", KryoSerializer.class.getName());
 
         // Shapefiles require more SparkMemory for shuffling
         if (repartition != null)
@@ -245,17 +238,19 @@ public class SparkMaster  {
 
         spark = SparkSession
                 .builder()
-                .appName("GeoTriples-Spark")//Hops.getJobName())
+                .appName("GeoTriples-Spark")
                 .config(conf)
                 .getOrCreate();
         System.setProperty("geospark.global.charset", "utf8");
+
+        reader = new SparkReader(inputFile, is_shp_folder, spark);
     }
 
 
     /**
      * Read input according to its file-type and store it as a spark Dataset.
      */
-    public void readInput() { inputDataset = reader.read(spark, repartition); }
+    public void readInput() { rowRDD = reader.read(repartition); }
 
 
     /**
@@ -265,23 +260,21 @@ public class SparkMaster  {
      */
     public void convert2RDF() {
         // data that will be passed to the conversion
-        List<String> headers = Arrays.asList(inputDataset.columns());
+        List<String> headers = Arrays.asList(reader.getHeaders());
         ArrayList<TriplesMap> mapping_list = RML_Parser(mappingFile);
         long startTime = System.currentTimeMillis();
         log.info("Starts the conversion");
-        if (count) count(headers, mapping_list);
-        else {
-            switch (mode) {
-                case ROW:
-                    log.info("Conversion mode: Per Row Conversion");
-                    convert_row(headers, mapping_list);
-                    break;
-                case PARTITION:
-                    log.info("Conversion mode: Per Partition Conversion");
-                    convert_partition(headers, mapping_list);
-                    break;
-            }
+        switch (mode) {
+            case ROW:
+                log.info("Conversion mode: Per Row Conversion");
+                convert_row(mapping_list);
+                break;
+            case PARTITION:
+                log.info("Conversion mode: Per Partition Conversion");
+                convert_partition(mapping_list);
+                break;
         }
+
         log.info("The conversion completed and took " + (System.currentTimeMillis() - startTime) + " msec.\n");
     }
 
@@ -289,28 +282,24 @@ public class SparkMaster  {
     /**
      * Convert the input Dataset into RDF triples and store the results.
      * The conversion is taking place per Partitions using the mapPartition Spark transformation.
-     * @param headers of the Dataset
      * @param mapping_list list of TripleMaps
      */
-    private void convert_partition(List<String> headers, ArrayList<TriplesMap> mapping_list){
+    private void convert_partition(ArrayList<TriplesMap> mapping_list){
         SparkContext sc = SparkContext.getOrCreate();
 
-        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
-        Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
-
-        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, headers);
+        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, Arrays.asList(reader.getHeaders()));
         ClassTag<Pair<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Pair.class);
         Broadcast<Pair<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
-        inputDataset
-            .javaRDD()
+
+        rowRDD
             .mapPartitions(
             (Iterator<Row> rows_iter) -> {
                 ArrayList<TriplesMap> p_mapping_list = bd_info.value().getKey();
                 List<String> p_header = bd_info.value().getValue();
                 RML_Converter rml_converter = new RML_Converter(p_mapping_list, p_header);
                 rml_converter.start();
-
-                Iterator<String> triples = rml_converter.convertPartition(rows_iter, bc_functionsHashMap.value());
+                rml_converter.registerFunctions();
+                Iterator<String> triples = rml_converter.convertPartition(rows_iter);
 
                 rml_converter.stop();
                 return triples;
@@ -322,60 +311,24 @@ public class SparkMaster  {
     /**
      * Convert the input Dataset into RDF triples and store the results.
      * The conversion is taking place per Per using the map Spark transformation.
-     * @param headers of the Dataset
      * @param mapping_list list of TripleMaps
      */
-    private void convert_row(List<String> headers, ArrayList<TriplesMap> mapping_list){
+    private void convert_row(ArrayList<TriplesMap> mapping_list){
 
         SparkContext sc = SparkContext.getOrCreate();
-        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
-        Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
 
-        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, headers);
-        ClassTag<Pair<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Pair.class);
-        Broadcast<Pair<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
-
-        inputDataset
-                .javaRDD()
-                .map((row) -> {
-                    ArrayList<TriplesMap> p_mapping_list = bd_info.value().getKey();
-                    List<String> p_header = bd_info.value().getValue();
-                    RML_Converter rml_converter = new RML_Converter(p_mapping_list, p_header);
-                    rml_converter.start();
-                    String triples = rml_converter.convertRow(row, bc_functionsHashMap.value());
-                    rml_converter.stop();
-                    return triples;
-                } )
-
-                .saveAsTextFile(outputDir);
-    }
-
-
-    /**
-     * Count the input records and the produced triples
-     * The conversion is taking place per Per using the map Spark transformation.
-     * @param headers of the Dataset
-     * @param mapping_list list of TripleMaps
-     */
-    private void count(List<String> headers, ArrayList<TriplesMap> mapping_list) {
-
-        long records = inputDataset.count();
-        log.info("The input dataset(s) contain: " + records + " records");
-        SparkContext sc = SparkContext.getOrCreate();
-        RML_Converter rml_converter = new RML_Converter(mapping_list, headers);
-        rml_converter.start();
+        RML_Converter rml_converter = new RML_Converter(mapping_list, Arrays.asList(reader.getHeaders()));
         ClassTag<RML_Converter> classTagRML_Converter = scala.reflect.ClassTag$.MODULE$.apply(RML_Converter.class);
-        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
-
         Broadcast<RML_Converter> bc_converter = sc.broadcast(rml_converter, classTagRML_Converter);
+
+        ClassTag<HashMap<URI, Function>> classTag_hashMap = scala.reflect.ClassTag$.MODULE$.apply(HashMap.class);
         Broadcast<HashMap<URI, Function>> bc_functionsHashMap = sc.broadcast(FunctionFactory.availableFunctions, classTag_hashMap);
-        Long triples_count = inputDataset
-                .javaRDD()
-                .map(row -> bc_converter.value().convertRow(row, bc_functionsHashMap.value()))
-                .map((String s) -> s.codePoints().filter(ch -> ch == '\n').count())
-                .reduce(Long::sum);
-        rml_converter.stop();
-        log.info("The input dataset(s) transformed into " + triples_count + " RDF triples");
+        rowRDD
+            .map((row) ->  {
+                FunctionFactory.availableFunctions = bc_functionsHashMap.value();
+                return bc_converter.value().convertRow(row);
+            } )
+            .saveAsTextFile(outputDir);
     }
 
 

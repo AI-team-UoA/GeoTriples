@@ -119,16 +119,17 @@ public class RML_Converter implements java.io.Serializable {
     /**
      * Convert a Spark Row into triples.
      * @param row the input row.
-     * @param functionHashMap a hash map containing all the functions needed for the conversion.
      * @return String of triples
      */
-   public String convertRow(Row row, HashMap<URI, Function> functionHashMap){
-        FunctionFactory.availableFunctions = functionHashMap;
-        String triples = null;
+   public String convertRow(Row row){
+       String triples = null;
         try {
+            NTriplesAlternative myWriter = new NTriplesAlternative();
+            myWriter.startRDF();
             for (int i = 0; i < mappingList.size(); i++)
-                rdfWriter.handleStatementIter(performer.perform(row, mappingList.get(i), tm_predicates.get(i), listPOM.get(i), processor, i));
-            triples = rdfWriter.getString();
+                myWriter.handleStatementIter(performer.perform(row, mappingList.get(i), tm_predicates.get(i), listPOM.get(i), processor, i));
+            triples = myWriter.getString();
+            myWriter.endRDF();
         }
         catch (RDFHandlerException e) {
            System.out.println("ERROR while Handling Statement");
