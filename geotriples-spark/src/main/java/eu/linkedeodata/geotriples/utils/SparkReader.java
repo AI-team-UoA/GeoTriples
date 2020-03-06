@@ -2,24 +2,30 @@ package eu.linkedeodata.geotriples.utils;
 
 
 import be.ugent.mmlab.rml.core.Config;
+import be.ugent.mmlab.rml.model.TriplesMap;
 import com.vividsolutions.jts.geom.Geometry;
+import javafx.util.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.sql.*;
 import org.apache.spark.sql.api.java.UDF2;
-import org.apache.spark.sql.functions;
+import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.apache.spark.sql.types.*;
 import org.datasyslab.geospark.formatMapper.shapefileParser.ShapefileReader;
 import org.datasyslab.geospark.spatialRDD.SpatialRDD;
-import org.datasyslab.geosparksql.utils.Adapter;
+import scala.Tuple2;
 import scala.collection.mutable.WrappedArray;
+import scala.reflect.ClassTag;
+
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,6 +42,7 @@ public class SparkReader {
         KML
     }
 
+    private String[] headers;
     private String[] filenames;
     private Source source;
     private SparkSession spark;
@@ -48,7 +55,8 @@ public class SparkReader {
      * 
      * @param inputfile the file it will read
      */
-    public SparkReader(String inputfile, boolean isShpFolder){
+    public SparkReader(String inputfile, boolean isShpFolder, SparkSession session){
+        spark = session;
         log = Logger.getLogger("GEOTRIPLES-SPARK");
         log.setLevel(Level.INFO);
 
@@ -77,53 +85,61 @@ public class SparkReader {
             source = Source.KML;
 
         else {
-            // TODO throw and handle exception & write to logger
             log.error("This file format is not supported yet");
             System.exit(0);
         }
     }
-
-    
-    public boolean isSHP(){return source.equals(Source.SHP);}
-
     
     /**
      * Call the corresponding reader regarding the source of the input file
      *
      * @return a Spark's Dataset containing the data
-     * @param session Spark Session
      */
-    public Dataset<Row> read(SparkSession session, String repartition){
+    public JavaRDD<Row> read(String repartition){
 
-        spark = session;
-        Dataset<Row> dt = null;
         long startTime = System.currentTimeMillis();
+        JavaRDD<Row> rowRDD = null;
+        Dataset<Row> dt;
         try {
             switch (source) {
+                case SHP:
+                    int p = StringUtils.isNumeric(repartition) ? Integer.parseInt(repartition) : 0;
+                    rowRDD = readSHP(p);
+                    break;
                 case CSV:
                     dt = readCSV();
+                    // insert a column with ID
+                    dt = dt.withColumn(Config.GEOTRIPLES_AUTO_ID, functions.monotonicallyIncreasingId());
+                    headers = dt.columns();
+                    rowRDD = dt.javaRDD();
                     break;
                 case TSV:
                     dt = readTSV();
-                    break;
-                case SHP:
-                    dt = readSHP();
+                    // insert a column with ID
+                    dt = dt.withColumn(Config.GEOTRIPLES_AUTO_ID, functions.monotonicallyIncreasingId());
+                    headers = dt.columns();
+                    rowRDD = dt.javaRDD();
                     break;
                 case GEOJSON:
                     dt = readGeoJSON();
+                    // insert a column with ID
+                    dt = dt.withColumn(Config.GEOTRIPLES_AUTO_ID, functions.monotonicallyIncreasingId());
+                    headers = dt.columns();
+                    rowRDD = dt.javaRDD();
                     break;
                 case KML:
                     log.error("KML files are not Supported yet");
                     break;
             }
-            // insert a column with ID
-            dt = dt.withColumn(Config.GEOTRIPLES_AUTO_ID, functions.monotonicallyIncreasingId());
-            log.info("The input data was read into " + dt.javaRDD().getNumPartitions() + " partitions");
-            log.info("Input dataset(s) was loaded in " + (System.currentTimeMillis() - startTime) + " msec");
-            // repartition the loaded dataset if it is specified by user.
-            // if "repartition" is set to "defualt" the number of partitions is calculated based on input's size
-            // else the number must be defined by the user
-            if (repartition != null){
+
+            /*
+                 repartition the loaded dataset if it is specified by user.
+                 if "repartition" is set to "defualt" the number of partitions is calculated based on input's size
+                 else the number must be defined by the user
+            */
+            int partitions = rowRDD == null ? 0: rowRDD.getNumPartitions();
+            log.info("The input data was read into " + partitions + " partitions");
+            if (repartition != null && source != Source.SHP){
                 int new_partitions = 0;
                 if (repartition.equals("default")) {
                     try {
@@ -131,8 +147,8 @@ public class SparkReader {
                         FileSystem fs = FileSystem.get(conf);
                         for (String filename : filenames) {
                             Path input_path = new Path(filename);
-                            double shp_size = fs.getContentSummary(input_path).getLength();
-                            new_partitions += Math.ceil(shp_size / 120000000) + 1;
+                            double file_size = fs.getContentSummary(input_path).getLength();
+                            new_partitions += Math.ceil(file_size / 120000000) + 1;
                         }
                     }
                     catch(IOException e){
@@ -144,11 +160,10 @@ public class SparkReader {
                     new_partitions = Integer.parseInt(repartition);
 
                 if(new_partitions > 0){
-                    int partitions = dt.javaRDD().getNumPartitions();
                     if(partitions > new_partitions)
-                        dt = dt.coalesce(new_partitions);
+                        rowRDD = rowRDD.coalesce(new_partitions);
                     else
-                        dt = dt.repartition(new_partitions);
+                        rowRDD = rowRDD.repartition(new_partitions);
                     log.info("Dataset was repartitioned into: " + new_partitions + " partitions");
                 }
             }
@@ -158,9 +173,8 @@ public class SparkReader {
             ex.printStackTrace();
             System.exit(1);
         }
-        log.info("Dataset schema: ");
-        dt.printSchema();
-        return dt;
+        log.info("Input dataset(s) was loaded in " + (System.currentTimeMillis() - startTime) + " msec");
+        return rowRDD;
     }
 
 
@@ -192,18 +206,18 @@ public class SparkReader {
 
 
     /**
-     * Read multiple Shapefiles into one Dataset using the GeoSpark library.
-     * WARNING: GeoSpark always reads shapefiles into one partition and therefore
-     * it requires repartitioning which is a time-consuming method.
+     * Read multiple Shapefiles into a single JavaRDD.
+     * The files are read using the GeoSpark library into spark's Datasets and
+     * then are transformed into a JavaRDD of rows.
+     * WARNING: GeoSpark always reads shapefiles into a single partition!
      *
-     * @return a Spark's Dataset containing the data of the input shapefile(s).
+     * @return a JavaRDD of Rows.
      */
-    private Dataset<Row> readSHP(){
-
+    private JavaRDD<Row> readSHP(int partitions){
+        boolean headers_set = false;
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(spark.sparkContext());
-        List<Dataset<Row>> dt_list = new LinkedList<>();
-
-
+        List<JavaRDD<Row>> rdds = new ArrayList<>();
+        StructType schema =  new StructType();
         if (is_shp_folder){
             // read a folder that contains folders of shapefiles
             try {
@@ -215,7 +229,43 @@ public class SparkReader {
                     if (status.isDirectory()) {
                         String shapefile = status.getPath().toString();
                         SpatialRDD<Geometry> spatialRDD = ShapefileReader.readToGeometryRDD(jsc, shapefile);
-                        dt_list.add(Adapter.toDf(spatialRDD, spark));
+                        if (partitions > 0)
+                            spatialRDD.rawSpatialRDD = spatialRDD.rawSpatialRDD.repartition(partitions);
+
+                        /*
+                            reads the headers of the first shapefile, and set row's schema
+                            then repartition if rquested, and transform the spatialRDD into
+                            JavaRDD of rows.
+                         */
+                        if (!headers_set) {
+                            headers = new String[spatialRDD.fieldNames.size() + 2];
+                            headers[0] = "geometry";
+                            schema = schema.add(DataTypes.createStructField("geometry", DataTypes.StringType, true));
+                            for (int i = 0; i < spatialRDD.fieldNames.size(); i++) {
+                                headers[i+1] = spatialRDD.fieldNames.get(i);
+                                schema = schema.add(DataTypes.createStructField(spatialRDD.fieldNames.get(i), DataTypes.StringType, true));
+                            }
+                            headers[spatialRDD.fieldNames.size()+1] = Config.GEOTRIPLES_AUTO_ID;
+                            schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
+                            headers_set = true;
+                        }
+                        ClassTag<StructType> schemaCT = scala.reflect.ClassTag$.MODULE$.apply(StructType.class);
+                        Broadcast<StructType> schemaBD = spark.sparkContext().broadcast(schema, schemaCT);
+                        JavaRDD<Row> rowRDD = spatialRDD.rawSpatialRDD
+                                .zipWithUniqueId()
+                                .map((Tuple2<Geometry, Long> tuple) ->{
+                                    Geometry geom = tuple._1;
+                                    Long index = tuple._2;
+                                    String[] userdata = geom.getUserData().toString().split("\t");
+
+                                    Object[] values = new Object[userdata.length+2];
+                                    values[0] = geom.toText();
+                                    System.arraycopy(userdata, 0, values, 1, userdata.length);
+                                    values[userdata.length+1] = (Object) (index);
+
+                                    return (Row) new GenericRowWithSchema(values, schemaBD.value());
+                                });
+                        rdds.add(rowRDD);
                     }
                 }
             }
@@ -229,15 +279,51 @@ public class SparkReader {
             for (String filename : filenames) {
                 String shapefile = filename.substring(0, filename.lastIndexOf('/'));
                 SpatialRDD<Geometry> spatialRDD = ShapefileReader.readToGeometryRDD(jsc, shapefile);
-                dt_list.add(Adapter.toDf(spatialRDD, spark));
+                if (partitions > 0)
+                    spatialRDD.rawSpatialRDD = spatialRDD.rawSpatialRDD.repartition(partitions);
+
+                /*
+                    reads the headers of the first shapefile, and set row's schema
+                    then repartition if rquested, and transform the spatialRDD into
+                    JavaRDD of rows.
+                 */
+                if (!headers_set) {
+                    headers = new String[spatialRDD.fieldNames.size() + 2];
+                    headers[0] = "geometry";
+                    schema = schema.add(DataTypes.createStructField("geometry", DataTypes.StringType, true));
+                    for (int i = 0; i < spatialRDD.fieldNames.size(); i++) {
+                        headers[i+1] = spatialRDD.fieldNames.get(i);
+                        schema = schema.add(DataTypes.createStructField(spatialRDD.fieldNames.get(i), DataTypes.StringType, true));
+                    }
+                    headers[spatialRDD.fieldNames.size()+1] = Config.GEOTRIPLES_AUTO_ID;
+                    schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
+                    headers_set = true;
+                }
+                ClassTag<StructType> schemaCT = scala.reflect.ClassTag$.MODULE$.apply(StructType.class);
+                Broadcast<StructType> schemaBD = spark.sparkContext().broadcast(schema, schemaCT);
+                JavaRDD<Row> rowRDD = spatialRDD.rawSpatialRDD
+                        .zipWithUniqueId()
+                        .map((Tuple2<Geometry, Long> tuple) ->{
+                            Geometry geom = tuple._1;
+                            Long index = tuple._2;
+                            String[] userdata = geom.getUserData().toString().split("\t");
+
+                            Object[] values = new Object[userdata.length+2];
+                            values[0] = geom.toText();
+                            System.arraycopy(userdata, 0, values, 1, userdata.length);
+                            values[userdata.length+1] = (Object) (index);
+
+                            return (Row) new GenericRowWithSchema(values, schemaBD.value());
+                        });
+                rdds.add(rowRDD);
             }
         }
-        Dataset<Row> dt = dt_list.get(0);
-        dt_list.remove(0);
-        for (Dataset<Row> dataset: dt_list)
-            dt = dt.union(dataset);
+        JavaRDD<Row> rowRDD = rdds.get(0);
+        rdds.remove(0);
+        for (JavaRDD<Row> rdd: rdds)
+            rowRDD = rowRDD.union(rdd);
 
-        return dt;
+        return rowRDD;
     }
 
 
@@ -280,6 +366,10 @@ public class SparkReader {
         dataset = dataset.drop(dataset.col("type")).drop(dataset.col("coordinates"));
 
         return dataset;
+    }
+
+    public String[] getHeaders() {
+        return headers;
     }
 
 }
