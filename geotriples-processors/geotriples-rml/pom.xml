@@ -65,6 +65,8 @@
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
+
+
 		<dependency>
 			<groupId>net.antidot</groupId>
 			<artifactId>db2triples</artifactId>
@@ -234,13 +236,32 @@
 	</build>
 	
 	<repositories>
+
+
+
+			<repository>
+				<id>osgeo</id>
+				<name>OSGeo Release Repository</name>
+				<url>https://repo.osgeo.org/repository/release/</url>
+				<snapshots><enabled>false</enabled></snapshots>
+				<releases><enabled>true</enabled></releases>
+			</repository>
+			<repository>
+				<id>osgeo-snapshot</id>
+				<name>OSGeo Snapshot Repository</name>
+				<url>https://repo.osgeo.org/repository/snapshot/</url>
+				<snapshots><enabled>true</enabled></snapshots>
+				<releases><enabled>false</enabled></releases>
+			</repository>
+
+
 		<repository>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 			<id>central</id>
 			<name>Maven Repository Switchboard</name>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 		<!-- Temporary: MonetDB jdbc -->
 		<repository>
@@ -265,15 +286,6 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
-		<!-- Geotools -->
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>opengeo</id>
-			<name>OpenGeo Maven Repository</name>
-			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
 		<!-- GeoTriples repo -->
 		<repository>
