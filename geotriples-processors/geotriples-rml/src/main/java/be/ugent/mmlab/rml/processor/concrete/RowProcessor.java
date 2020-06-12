@@ -412,7 +412,7 @@ public  class RowProcessor extends AbstractRMLProcessor {
                         else
                             replacement = config_replacements.get(pos);
 
-                        replacement = replacement.trim();
+                        replacement = replacement.replace("\"", "").trim();
                         if (replacement.equals("")) continue;
                         template = template.replaceAll("\\{" + quote + "\\}",
                                 Matcher.quoteReplacement(replacement));
@@ -421,7 +421,7 @@ public  class RowProcessor extends AbstractRMLProcessor {
 
                 if (template != null && !template.equals("")) {
                         if (map.getTermType().equals(TermType.LITERAL))
-                            return template.replace("\"", "");;
+                            return template;;
 
                     if (template.startsWith("www."))
                         template = "http://" + template;
