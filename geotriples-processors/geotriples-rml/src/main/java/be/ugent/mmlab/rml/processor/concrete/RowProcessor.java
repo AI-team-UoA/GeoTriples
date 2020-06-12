@@ -420,6 +420,9 @@ public  class RowProcessor extends AbstractRMLProcessor {
                 }
 
                 if (template != null && !template.equals("")) {
+                        if (map.getTermType().equals(TermType.LITERAL))
+                            return template.replace("\"", "");;
+
                     if (template.startsWith("www."))
                         template = "http://" + template;
                     object = factory.createURI(template);
