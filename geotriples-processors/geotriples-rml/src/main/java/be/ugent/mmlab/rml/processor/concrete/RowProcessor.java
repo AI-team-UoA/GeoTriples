@@ -400,7 +400,7 @@ public  class RowProcessor extends AbstractRMLProcessor {
                 String template = obj_templates.get(index);
                 List<String> tokens = obj_tokens.get(index);
                 List<String> replacements_pos = obj_replacements_pos.get(index);
-
+                boolean changed = false;
                 for(String expression : tokens){
 
                     String quote = Pattern.quote(expression);
@@ -414,12 +414,13 @@ public  class RowProcessor extends AbstractRMLProcessor {
 
                         replacement = replacement.replace("\"", "").trim();
                         if (replacement.equals("")) continue;
+                        changed = true;
                         template = template.replaceAll("\\{" + quote + "\\}",
                                 Matcher.quoteReplacement(replacement));
                     }
                 }
 
-                if (template != null && !template.equals("")) {
+                if (template != null && !template.equals("") && changed) {
                         if (map.getTermType().equals(TermType.LITERAL))
                             return template;;
 
