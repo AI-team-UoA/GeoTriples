@@ -323,10 +323,10 @@ public  class RowProcessor extends AbstractRMLProcessor {
                 break;
             case LITERAL:
                 if (objectMap.getLanguageTag() != null && !value.equals("")) {
-                    result = factory.createLiteral(value.toString(), objectMap.getLanguageTag());
+                    result = factory.createLiteral(value.toString().trim(), objectMap.getLanguageTag());
 
                 } else if (value != null && !value.equals("") && objectMap.getDataType() != null) {
-                    result = factory.createLiteral(value.toString(), objectMap.getDataType());
+                    result = factory.createLiteral(value.toString().trim(), objectMap.getDataType());
 
                 } else if (value != null && !value.equals("")) {
                     result = factory.createLiteral(value.toString().trim());
@@ -408,11 +408,11 @@ public  class RowProcessor extends AbstractRMLProcessor {
                     for(String pos : replacements_pos) {
                         String replacement;
                         if (headers.contains(pos))
-                            replacement = row.getAs(pos).toString();
+                            replacement = row.getAs(pos).toString().trim();
                         else
-                            replacement = config_replacements.get(pos);
+                            replacement = config_replacements.get(pos).trim();
 
-                        replacement = replacement.replace("\"", "").trim();
+                        replacement = replacement.replace("\"", "");
                         if (replacement.equals("")) continue;
                         changed = true;
                         template = template.replaceAll("\\{" + quote + "\\}",
