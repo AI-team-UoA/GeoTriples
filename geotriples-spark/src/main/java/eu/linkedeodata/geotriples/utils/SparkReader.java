@@ -2,9 +2,7 @@ package eu.linkedeodata.geotriples.utils;
 
 
 import be.ugent.mmlab.rml.core.Config;
-import be.ugent.mmlab.rml.model.TriplesMap;
 import com.vividsolutions.jts.geom.Geometry;
-import javafx.util.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -26,7 +24,6 @@ import scala.reflect.ClassTag;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

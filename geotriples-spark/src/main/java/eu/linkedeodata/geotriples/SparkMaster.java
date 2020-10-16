@@ -7,7 +7,6 @@ import be.ugent.mmlab.rml.model.RMLMapping;
 import be.ugent.mmlab.rml.model.TriplesMap;
 import eu.linkedeodata.geotriples.Converters.RML_Converter;
 import eu.linkedeodata.geotriples.utils.SparkReader;
-import javafx.util.Pair;
 import jena.cmdline.ArgDecl;
 import jena.cmdline.CommandLine;
 import org.apache.hadoop.conf.Configuration;
@@ -24,7 +23,6 @@ import org.apache.spark.serializer.KryoSerializer;
 import org.apache.spark.sql.*;
 import org.datasyslab.geospark.serde.GeoSparkKryoRegistrator;
 import org.openrdf.model.URI;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -287,15 +285,15 @@ public class SparkMaster  {
     private void convert_partition(ArrayList<TriplesMap> mapping_list){
         SparkContext sc = SparkContext.getOrCreate();
 
-        Pair<ArrayList<TriplesMap>, List<String>> transformation_info = new Pair<>(mapping_list, Arrays.asList(reader.getHeaders()));
-        ClassTag<Pair<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Pair.class);
-        Broadcast<Pair<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
+        Tuple2<ArrayList<TriplesMap>, List<String>> transformation_info = new Tuple2<>(mapping_list, Arrays.asList(reader.getHeaders()));
+        ClassTag<Tuple2<ArrayList<TriplesMap>, List<String>>> classTag_pair = scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class);
+        Broadcast<Tuple2<ArrayList<TriplesMap>, List<String>>> bd_info = sc.broadcast(transformation_info, classTag_pair);
 
         rowRDD
             .mapPartitions(
             (Iterator<Row> rows_iter) -> {
-                ArrayList<TriplesMap> p_mapping_list = bd_info.value().getKey();
-                List<String> p_header = bd_info.value().getValue();
+                ArrayList<TriplesMap> p_mapping_list = bd_info.value()._1();
+                List<String> p_header = bd_info.value()._2();
                 RML_Converter rml_converter = new RML_Converter(p_mapping_list, p_header);
                 rml_converter.start();
                 rml_converter.registerFunctions();
