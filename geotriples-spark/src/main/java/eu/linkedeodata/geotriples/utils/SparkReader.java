@@ -255,8 +255,8 @@ public class SparkReader {
 
                                     Object[] values = new Object[userdata.length+2];
                                     values[0] = geom.toText();
-                                    System.arraycopy(userdata, 0, values, 1, userdata.length);
-                                    values[userdata.length+1] = (Object) (index);
+                                    values[1] = (Object) (index);
+                                    System.arraycopy(userdata, 0, values, 2, userdata.length);
 
                                     return (Row) new GenericRowWithSchema(values, schemaBD.value());
                                 });
@@ -283,12 +283,12 @@ public class SparkReader {
                     headers = new String[spatialRDD.fieldNames.size() + 2];
                     headers[0] = "geometry";
                     schema = schema.add(DataTypes.createStructField("geometry", DataTypes.StringType, true));
+                    headers[1] = Config.GEOTRIPLES_AUTO_ID;
+                    schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
                     for (int i = 0; i < spatialRDD.fieldNames.size(); i++) {
-                        headers[i+1] = spatialRDD.fieldNames.get(i);
+                        headers[i+2] = spatialRDD.fieldNames.get(i);
                         schema = schema.add(DataTypes.createStructField(spatialRDD.fieldNames.get(i), DataTypes.StringType, true));
                     }
-                    headers[spatialRDD.fieldNames.size()+1] = Config.GEOTRIPLES_AUTO_ID;
-                    schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
                     headers_set = true;
                 }
                 ClassTag<StructType> schemaCT = scala.reflect.ClassTag$.MODULE$.apply(StructType.class);
@@ -302,16 +302,15 @@ public class SparkReader {
 
                             Object[] values = new Object[userdata.length+2];
                             values[0] = geom.toText();
-                            System.arraycopy(userdata, 0, values, 1, userdata.length);
-                            values[userdata.length+1] = (Object) (index);
+                            values[1] = (Object) (index);
+                            System.arraycopy(userdata, 0, values, 2, userdata.length);
 
                             return (Row) new GenericRowWithSchema(values, schemaBD.value());
                         });
                 rdds.add(rowRDD);
             }
         }
-        JavaRDD<Row> rowRDD = rdds.get(0);
-        rdds.remove(0);
+        JavaRDD<Row> rowRDD = rdds.remove(0);
         for (JavaRDD<Row> rdd: rdds)
             rowRDD = rowRDD.union(rdd);
 
