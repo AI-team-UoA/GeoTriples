@@ -226,24 +226,22 @@ public class SparkReader {
                     if (status.isDirectory()) {
                         String shapefile = status.getPath().toString();
                         SpatialRDD<Geometry> spatialRDD = ShapefileReader.readToGeometryRDD(jsc, shapefile);
-                        if (partitions > 0)
-                            spatialRDD.rawSpatialRDD = spatialRDD.rawSpatialRDD.repartition(partitions);
 
                         /*
                             reads the headers of the first shapefile, and set row's schema
-                            then repartition if rquested, and transform the spatialRDD into
+                            then repartition if requested, and transform the spatialRDD into
                             JavaRDD of rows.
                          */
                         if (!headers_set) {
                             headers = new String[spatialRDD.fieldNames.size() + 2];
                             headers[0] = "geometry";
                             schema = schema.add(DataTypes.createStructField("geometry", DataTypes.StringType, true));
+                            headers[1] = Config.GEOTRIPLES_AUTO_ID;
+                            schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
                             for (int i = 0; i < spatialRDD.fieldNames.size(); i++) {
-                                headers[i+1] = spatialRDD.fieldNames.get(i);
+                                headers[i+2] = spatialRDD.fieldNames.get(i);
                                 schema = schema.add(DataTypes.createStructField(spatialRDD.fieldNames.get(i), DataTypes.StringType, true));
                             }
-                            headers[spatialRDD.fieldNames.size()+1] = Config.GEOTRIPLES_AUTO_ID;
-                            schema = schema.add(DataTypes.createStructField(Config.GEOTRIPLES_AUTO_ID, DataTypes.LongType, false));
                             headers_set = true;
                         }
                         ClassTag<StructType> schemaCT = scala.reflect.ClassTag$.MODULE$.apply(StructType.class);
@@ -276,12 +274,9 @@ public class SparkReader {
             for (String filename : filenames) {
                 String shapefile = filename.substring(0, filename.lastIndexOf('/'));
                 SpatialRDD<Geometry> spatialRDD = ShapefileReader.readToGeometryRDD(jsc, shapefile);
-                if (partitions > 0)
-                    spatialRDD.rawSpatialRDD = spatialRDD.rawSpatialRDD.repartition(partitions);
-
                 /*
                     reads the headers of the first shapefile, and set row's schema
-                    then repartition if rquested, and transform the spatialRDD into
+                    then repartition if requested, and transform the spatialRDD into
                     JavaRDD of rows.
                  */
                 if (!headers_set) {
@@ -319,6 +314,9 @@ public class SparkReader {
         rdds.remove(0);
         for (JavaRDD<Row> rdd: rdds)
             rowRDD = rowRDD.union(rdd);
+
+        if (partitions > 0)
+            rowRDD = rowRDD.repartition(partitions);
 
         return rowRDD;
     }
