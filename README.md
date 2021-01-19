@@ -7,20 +7,27 @@ geospatial data stored in raw files (shapefiles, CSV, KML, XML, GML and GeoJSON)
 
 ## Quickstart ##
 ### Use GeoTriples binaries (Unix) ###
-Assuming [Java >=7](https://www.java.com/en/download/) installed:
+Assuming [Java >=7](https://www.java.com/en/download/) is installed:
 
-Download GeoTriples binaries [here](http://geotriples.di.uoa.gr/downloads/geotriples-1.1.6-bin.zip)
+Download GeoTriples binaries from [here](http://geotriples.di.uoa.gr/downloads/geotriples-1.1.6-bin.zip)
 *	Unzip the downloaded file `geotriples-<version>-bin.zip`
 *	Change directory to `geotriples-<version>-bin`
 *	Under the `bin` directory you can find the available starter script for GeoTriples
 
-	> `bin/geotriples-cmd`
+**Generate Mapping files:**
+
+    bin/geotriples-all generate_mapping -o <output_file (.ttl)> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+
+**Transform file into RDF**
+    
+    bin/geotriples-all dump_rdf -o <output_file> -b http://example.com (-sh <shp file>) <path_to_the_mapping_file>
+
 	
 See more at Wiki pages
 
 ## Execution by source
 
-Install the source code by using
+Clone this repository and install the source code by using
     
     mvn package 
 
@@ -30,6 +37,7 @@ Install the source code by using
 
 * **-o output_file** the name of the produced mapping file (RML/R2RML)
 * **-b URI_base** the base URI that will describe the entities
+* use the option **-rml** so the produced mapping file to be an RML file
 
 <br/>
 
@@ -40,18 +48,8 @@ Install the source code by using
 * **-o output_file** the path of the produced file
 * **-b URI_base** the base URI that will describe the entities
 * **-sh shp_file** if the input is a shapefile specify the .shp path using this flag 
+* use the **-rml** option if the input mapping file is expected to be an RML file 
 
-## Execution by binaries
-
-**Generate Mapping files:**
-
-    bin/geotriples-all generate_mapping -o <output_file (.ttl)> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
-    
-<br/>
-
-**Transform file into RDF**
-    
-    bin/geotriples-all dump_rdf -o <output_file> -b http://example.com (-sh <shp file>) <path_to_the_mapping_file>
 
 
 ---
@@ -61,7 +59,8 @@ Install the source code by using
 GeoTriples-Spark is an extended version of GeoTriples capable of transforming big geospatial data into RDF graphs.
 To enable the transformation of big geospatial
 data, we extended GeoTriples to run on top of Apache Spark and Hadoop or [Hops](https://github.com/hopshadoop/hops) (a new distribution of Apache Hadoop developed by KTH, RISE SICS, and Logical Clocks AB). GeoTriples-Spark can
-run in a standalone machine or in a Hadoop based cluster, but it is more efficient when it runs on Hops as it is a write-intensive application.
+run in a standalone machine or in a Hadoop based cluster, but it is more efficient when it runs on Hops as it is a write-intensive application. GeoTriples-Sparks supports the transformation
+of CSV, GeoJSON and Shapefiles.
 
 ### Requirements
 * Java 8
