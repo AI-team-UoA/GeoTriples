@@ -60,7 +60,7 @@ GeoTriples-Spark is an extended version of GeoTriples capable of transforming bi
 To enable the transformation of big geospatial
 data, we extended GeoTriples to run on top of Apache Spark and Hadoop or [Hops](https://github.com/hopshadoop/hops) (a new distribution of Apache Hadoop developed by KTH, RISE SICS, and Logical Clocks AB). GeoTriples-Spark can
 run in a standalone machine or in a Hadoop based cluster, but it is more efficient when it runs on Hops as it is a write-intensive application. GeoTriples-Sparks supports the transformation
-of CSV, GeoJSON and Shapefiles.
+of CSV, GeoJSON and Shapefiles. You can examine the performance of GeoTriples-Spark in [ISWC-experiments](https://docs.google.com/spreadsheets/d/1kTQFSUhLVtBTo9zWv184jlVSsY2gCLyfLZ4-UKsvm7A/edit?usp=sharing)
 
 ### Requirements
 * Java 8
