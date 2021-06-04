@@ -1,4 +1,4 @@
-# GeoTriples
+# GeoTriples [![DOI](https://zenodo.org/badge/29589129.svg)](https://zenodo.org/badge/latestdoi/29589129)
 Publishing geospatial data as Linked Geospatial Data. GeoTriples generates and processes extended R2RML and RML 
 mappings that transform geospatial data from many input formats into RDF. GeoTriples allows the transformation of 
 geospatial data stored in raw files (shapefiles, CSV, KML, XML, GML and GeoJSON) and spatially-enabled RDBMS 
