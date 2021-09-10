@@ -16,11 +16,11 @@ Download GeoTriples binaries from [here](http://geotriples.di.uoa.gr/downloads/g
 
 **Generate Mapping files:**
 
-    bin/geotriples-all generate_mapping -o <output_file (.ttl)> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+    bin/geotriples-all generate_mapping -o <output_file (.ttl)> -b <URI base> <input file>
 
 **Transform file into RDF**
     
-    bin/geotriples-all dump_rdf -o <output_file> -b http://example.com (-sh <shp file>) <path_to_the_mapping_file>
+    bin/geotriples-all dump_rdf -o <output_file> -b http://example.com (-sh <shp file>) <path_to_the_mapping_file (.ttl)>
 
 	
 See more at Wiki pages
