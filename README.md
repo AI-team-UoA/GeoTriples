@@ -7,7 +7,7 @@ geospatial data stored in raw files (shapefiles, CSV, KML, XML, GML and GeoJSON)
 
 ## Quickstart ##
 ### Use GeoTriples binaries (Unix) ###
-Assuming [Java >=7](https://www.java.com/en/download/) is installed:
+Assuming [Java 8](https://www.java.com/en/download/) is installed:
 
 Download GeoTriples binaries from [here](http://geotriples.di.uoa.gr/downloads/geotriples-1.1.6-bin.zip)
 *	Unzip the downloaded file `geotriples-<version>-bin.zip`
@@ -43,12 +43,12 @@ Clone this repository and install the source code by using
 
 **Transform file into RDF**
 
-    java -cp <geotriples-core/ dependencies jar> eu.linkedeodata.geotriples.GeoTriplesCMD dump_rdf -o <output file> -b <URI base> (-sh <shp file>) <(produced) mapping file (.ttl)>
+    java -cp <geotriples-core/ dependencies jar> eu.linkedeodata.geotriples.GeoTriplesCMD dump_rdf -o <output file> -b <URI base> (-sh <shp file>) (-rml) <(produced) mapping file (.ttl)>
     
 * **-o output_file** the path of the produced file
 * **-b URI_base** the base URI that will describe the entities
 * **-sh shp_file** if the input is a shapefile specify the .shp path using this flag 
-* use the **-rml** option if the input mapping file is expected to be an RML file 
+* use the **-rml** option if the input mapping file is expected to be an RML file, required for CSV files 
 
 
 
