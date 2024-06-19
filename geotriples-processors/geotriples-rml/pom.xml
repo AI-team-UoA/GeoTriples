@@ -273,40 +273,18 @@
 			</snapshots>
 			<id>strabon.testing</id>
 			<name>Strabon - testing maven repository</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/testing/</url>
+			<url>https://geotriples.di.uoa.gr/repos/</url>
 		</repository>
 		<!-- Temporary: Joseki dependencies -->
 		<repository>
 			<id>geotriples.dependencies</id>
 			<name>GeoTriples - maven repository - dependencies</name>
-			<url>http://maven.strabon.di.uoa.gr/content/repositories/geotriples.dependencies/</url>
+			<url>https://geotriples.di.uoa.gr/repos/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<!-- GeoTriples repo -->
-		<repository>
-			<id>geotriples.repo</id>
-			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>geotriples.repo.snapshots</id>
-			<url>https://raw.github.com/LinkedEOData/GeoTriples/mvn-repo-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
 
